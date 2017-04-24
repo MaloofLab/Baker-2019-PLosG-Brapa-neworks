@@ -178,12 +178,13 @@ $(document).ready(function () {
 <h3>set up</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShlZGdlUilcbmxpYnJhcnkoYm94cilcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShlZGdlUilcbmxpYnJhcnkoYm94cilcblxuYGBgIn0= -->
 <pre class="r"><code>library(edgeR)
-library(boxr)</code></pre>
+library(boxr)
+</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiV2VsY29tZSB0byBib3hyIDAuMy40IVxuQnVnIHJlcG9ydHMgJiBHZXR0aW5nIEhlbHA6IGh0dHBzOi8vZ2l0aHViLmNvbS9icmVuZGFuLVIvYm94ci9pc3N1ZXNcbiJ9 -->
-<pre><code>Welcome to boxr 0.3.4!
+<!-- rnb-output-begin eyJkYXRhIjoiV2VsY29tZSB0byBib3hyIDAuMy40Ljk5OTk5IVxuQnVnIHJlcG9ydHMgJiBHZXR0aW5nIEhlbHA6IGh0dHBzOi8vZ2l0aHViLmNvbS9icmVuZGFuLVIvYm94ci9pc3N1ZXNcbiJ9 -->
+<pre><code>Welcome to boxr 0.3.4.99999!
 Bug reports &amp; Getting Help: https://github.com/brendan-R/boxr/issues</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShtYWdyaXR0cilcbmJveF9hdXRoKClcbmBgYCJ9 -->
@@ -198,28 +199,29 @@ boxr: Authenticated at box.com as Julin Maloof (jnmaloof@ucdavis.edu)</code></pr
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYm94X3NldHdkKDI0NTAzOTg3ODYwKVxuYGBgIn0= -->
 <pre class="r"><code>box_setwd(24503987860)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiYm94LmNvbSB3b3JraW5nIGRpcmVjdG9yeSBjaGFuZ2VkIHRvICdCcmFwYU5ldHdvcmtzJ1xuXG4gICAgICBpZDogMjQ1MDM5ODc4NjBcbiAgICB0cmVlOiBBbGwgRmlsZXMvQnJhcGFOZXR3b3Jrc1xuICAgb3duZXI6IGpubWFsb29mQHVjZGF2aXMuZWR1XG5jb250ZW50czogNCBmaWxlcywgMCBmb2xkZXJzXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiYm94LmNvbSB3b3JraW5nIGRpcmVjdG9yeSBjaGFuZ2VkIHRvICdCcmFwYU5ldHdvcmtzJ1xuXG4gICAgICBpZDogMjQ1MDM5ODc4NjBcbiAgICB0cmVlOiBBbGwgRmlsZXMvQnJhcGFOZXR3b3Jrc1xuICAgb3duZXI6IGpubWFsb29mQHVjZGF2aXMuZWR1XG5jb250ZW50czogNSBmaWxlcywgMCBmb2xkZXJzXG4ifQ== -->
 <pre><code>box.com working directory changed to 'BrapaNetworks'
 
       id: 24503987860
     tree: All Files/BrapaNetworks
    owner: jnmaloof@ucdavis.edu
-contents: 4 files, 0 folders</code></pre>
+contents: 5 files, 0 folders</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYm94X2xzKClcbmBgYCJ9 -->
 <pre class="r"><code>box_ls()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5ib3guY29tIHJlbW90ZSBvYmplY3QgbGlzdCAoNCBvYmplY3RzKVxuXG4gIFN1bW1hcnkgb2YgZmlyc3QgNDpcblxuICAgICAgICAgICAgICAgICAgICBuYW1lIHR5cGUgICAgICAgICAgIGlkICAgc2l6ZSAgICAgICAgICAgICAgICBvd25lclxuMSAgICAgICBDb3VudHNWb29tLlJkYXRhIGZpbGUgMTYyMzYyNTkyNzg1IDI0MCBNQiBqbm1hbG9vZkB1Y2RhdmlzLmVkdVxuMiBOb3JtYWxpemVkQ291bnRzLlJEYXRhIGZpbGUgMTYyMzQxNTM5NDU4IDEwMCBNQiBqbm1hbG9vZkB1Y2RhdmlzLmVkdVxuMyAgICAgICAgUklMX1RNTV9DUE0uY3N2IGZpbGUgMTYyMzUyMjI5NTQ0IDYzMCBNQiBqbm1hbG9vZkB1Y2RhdmlzLmVkdVxuNCAgIFJJTF92MS41X21hcHBpbmcudHN2IGZpbGUgMTYyMjE4MDg5Njg1IDExMCBNQiBqbm1hbG9vZkB1Y2RhdmlzLmVkdVxuXG5cblVzZSBhcy5kYXRhLmZyYW1lKCkgdG8gZXh0cmFjdCBmdWxsIHJlc3VsdHMuXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5ib3guY29tIHJlbW90ZSBvYmplY3QgbGlzdCAoNSBvYmplY3RzKVxuXG4gIFN1bW1hcnkgb2YgZmlyc3QgNTpcblxuICAgICAgICAgICAgICAgICAgICBuYW1lIHR5cGUgICAgICAgICAgIGlkICAgc2l6ZSAgICAgICAgICAgICAgICBvd25lclxuMSAgICAgICBDb3VudHNWb29tLlJkYXRhIGZpbGUgMTYyMzYyNTkyNzg1IDI0MCBNQiBqbm1hbG9vZkB1Y2RhdmlzLmVkdVxuMiBOb3JtYWxpemVkQ291bnRzLlJEYXRhIGZpbGUgMTYyMzQxNTM5NDU4IDEwMCBNQiBqbm1hbG9vZkB1Y2RhdmlzLmVkdVxuMyAgICAgICAgUklMX1RNTV9DUE0uY3N2IGZpbGUgMTYyMzUyMjI5NTQ0IDYzMCBNQiBqbm1hbG9vZkB1Y2RhdmlzLmVkdVxuNCAgIFJJTF92MS41X21hcHBpbmcudHN2IGZpbGUgMTYyMjE4MDg5Njg1IDExMCBNQiBqbm1hbG9vZkB1Y2RhdmlzLmVkdVxuNSAgICAgICAgICAgICB0ZXN0LlJkYXRhIGZpbGUgMTYyOTIxMDY5Mzc2ICAgNjQgQiBqbm1hbG9vZkB1Y2RhdmlzLmVkdVxuXG5cblVzZSBhcy5kYXRhLmZyYW1lKCkgdG8gZXh0cmFjdCBmdWxsIHJlc3VsdHMuXG4ifQ== -->
 <pre><code>
-box.com remote object list (4 objects)
+box.com remote object list (5 objects)
 
-  Summary of first 4:
+  Summary of first 5:
 
                     name type           id   size                owner
 1       CountsVoom.Rdata file 162362592785 240 MB jnmaloof@ucdavis.edu
 2 NormalizedCounts.RData file 162341539458 100 MB jnmaloof@ucdavis.edu
 3        RIL_TMM_CPM.csv file 162352229544 630 MB jnmaloof@ucdavis.edu
 4   RIL_v1.5_mapping.tsv file 162218089685 110 MB jnmaloof@ucdavis.edu
+5             test.Rdata file 162921069376   64 B jnmaloof@ucdavis.edu
 
 
 Use as.data.frame() to extract full results.</code></pre>
@@ -404,9 +406,25 @@ box.com remote file reference
 <pre class="r"><code>box_save(counts.voom,file_name = &quot;CountsVoom.Rdata&quot;)
 </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiQXV0by1yZWZyZXNoaW5nIHN0YWxlIE9BdXRoIHRva2VuLlxuIn0= -->
-<pre><code>Auto-refreshing stale OAuth token.</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMCVcbiAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gIHw9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PXwgMTAwJVxuIn0= -->
+<pre><code>
+  |                                                                                                           
+  |                                                                                                     |   0%
+  |                                                                                                           
+  |=====================================================================================================| 100%</code></pre>
 <!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRmlsZSAnQ291bnRzVm9vbS5SZGF0YScgYWxlYWR5IGV4aXN0cy4gQXR0ZW1wdGluZyB0byB1cGxvYWQgbmV3IHZlcnNpb24gKFYzKS5cbiJ9 -->
+<pre><code>File 'CountsVoom.Rdata' aleady exists. Attempting to upload new version (V3).</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudm9vbS5kZiA8LSBhcy5kYXRhLmZyYW1lKGNvdW50cy52b29tKVxud3JpdGUuY3N2KHZvb20uZGYsZmlsZT1cInZvb20uY3N2XCIscm93Lm5hbWVzID0gVFJVRSlcbmJveF93cml0ZSh2b29tLmRmLGZpbGVuYW1lID0gXCJ2b29tLmNzdi5nelwiKVxuYGBgIn0= -->
+<pre class="r"><code>voom.df &lt;- as.data.frame(counts.voom)
+write.csv(voom.df,file=&quot;voom.csv&quot;,row.names = TRUE)
+box_write(voom.df,filename = &quot;voom.csv.gz&quot;)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -479,9 +497,10 @@ box_save(counts.dge.int,file_name = &quot;NormalizedCountsInt.RData&quot;)</code
 <p>(Not working…)</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbImNvdW50LnZvb20uaW50MiA8LSBjb3VudHMudm9vbS5pbnRbLChwZGF0YSRSSUw9PVwiUklMXzIzNFwiIHwgcGRhdGEkUklMPT1cIlJJTF8zMTFcIildICMgdGhlc2UgdHdvIGxpbmVzIGFyZSBtaXNzaW5nIFVOIGRhdGEgYW5kIHNvIHRoZSBpbnRlcmFjdGlvbiB0ZXJtcyBjYW5ub3QgYmUgZXN0aW1hdGVkLCBhbmQgdGhlcmZvcmUgd2UgZ2V0IGFuIGVycm9yIHVubGVzcyB3ZSByZW1vdmUgdGhlbS4iLCJ2b29tLmludC5maXQgPC0gbG1GaXQoY291bnRzLnZvb20uaW50LGRlc2lnbj1kZXNpZ24uaW50KSIsInZvb20uaW50LmZpdCA8LSBlQmF5ZXModm9vbS5pbnQuZml0KSIsInZvb20uaW50LnRvcFRhYmxlIDwtIHRvcFRhYmxlRih2b29tLmZpdC5pbnQsbnVtYmVyPUluZikiLCJzYXZlKGNvdW50cy52b29tLmludCwgdm9vbS5pbnQuZml0LCB2b29tLmludC50b3BUYWJsZSwgZmlsZT1cInZvb20uaW50LlJkYXRhXCIpIl19 -->
-<pre class="r"><code>count.voom.int2 &lt;- counts.voom.int[,(pdata$RIL==&quot;RIL_234&quot; | pdata$RIL==&quot;RIL_311&quot;)] # these two lines are missing UN data and so the interaction terms cannot be estimated, and therfore we get an error unless we remove them.
-voom.int.fit &lt;- lmFit(counts.voom.int,design=design.int)
+<!-- rnb-source-begin eyJkYXRhIjpbImNvdW50cy52b29tLmludDIgPC0gY291bnRzLnZvb20uaW50WywhKHBkYXRhJFJJTD09XCJSSUxfMjM0XCIgfCBwZGF0YSRSSUw9PVwiUklMXzMxMVwiKV0gIyB0aGVzZSB0d28gbGluZXMgYXJlIG1pc3NpbmcgVU4gZGF0YSBhbmQgc28gdGhlIGludGVyYWN0aW9uIHRlcm1zIGNhbm5vdCBiZSBlc3RpbWF0ZWQsIGFuZCB0aGVyZm9yZSB3ZSBnZXQgYW4gZXJyb3IgdW5sZXNzIHdlIHJlbW92ZSB0aGVtLiIsImRlc2lnbi5pbnQyIDwtIGRlc2lnbi5pbnRbIShwZGF0YSRSSUw9PVwiUklMXzIzNFwiIHwgcGRhdGEkUklMPT1cIlJJTF8zMTFcIiksXSIsInZvb20uaW50LmZpdCA8LSBsbUZpdChjb3VudHMudm9vbS5pbnQyLGRlc2lnbj1kZXNpZ24uaW50MikiLCJ2b29tLmludC5maXQgPC0gZUJheWVzKHZvb20uaW50LmZpdCkiLCJ2b29tLmludC50b3BUYWJsZSA8LSB0b3BUYWJsZUYodm9vbS5maXQuaW50LG51bWJlcj1JbmYpIiwic2F2ZShjb3VudHMudm9vbS5pbnQsIHZvb20uaW50LmZpdCwgdm9vbS5pbnQudG9wVGFibGUsIGZpbGU9XCJ2b29tLmludC5SZGF0YVwiKSJdfQ== -->
+<pre class="r"><code>counts.voom.int2 &lt;- counts.voom.int[,!(pdata$RIL==&quot;RIL_234&quot; | pdata$RIL==&quot;RIL_311&quot;)] # these two lines are missing UN data and so the interaction terms cannot be estimated, and therfore we get an error unless we remove them.
+design.int2 &lt;- design.int[!(pdata$RIL==&quot;RIL_234&quot; | pdata$RIL==&quot;RIL_311&quot;),]
+voom.int.fit &lt;- lmFit(counts.voom.int2,design=design.int2)
 voom.int.fit &lt;- eBayes(voom.int.fit)
 voom.int.topTable &lt;- topTableF(voom.fit.int,number=Inf)
 save(counts.voom.int, voom.int.fit, voom.int.topTable, file=&quot;voom.int.Rdata&quot;)</code></pre>
@@ -499,7 +518,7 @@ save(counts.voom.int, voom.int.fit, voom.int.topTable, file=&quot;voom.int.Rdata
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUHJvY2VzcyBDb3VudHMiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCkNyZWF0aW5nIEIuIHJhcGEgbmV0d29ya3MgZnJvbSBlUVRMIGRhdGEgdG8gZW5oYW5jZSBSb2IgQmFrZXIgZXQgYWwncyBGVlQgYW5hbHlzaXMgZm9yIHN0ZW0gZWxvbmdhdGlvbi4KClVzaW5nIEJveFIgdG8gY29ubmVjdCBSIHRvIEJveAoKIyMjIHNldCB1cApgYGB7ciBzZXRfdXB9CmxpYnJhcnkoZWRnZVIpCmxpYnJhcnkoYm94cikKbGlicmFyeShtYWdyaXR0cikKYm94X2F1dGgoKQpib3hfc2V0d2QoMjQ1MDM5ODc4NjApCmJveF9scygpCmBgYAoKIyMjIEdldCBkYXRhCmBgYHtyfQpjb3VudHMgPC0gYm94X3JlYWRfdHN2KDE2MjIxODA4OTY4NSkKcm93Lm5hbWVzKGNvdW50cykgPC0gY291bnRzJGdlbmUKY291bnRzIDwtIGNvdW50cyBbLTEsLTFdICNyZW1vdmUgZmlyc3Qgcm93ICh1bWFwcGVkIHJlYWRzKSBhbmQgZmlyc3QgY29sdW1uIChnZW5lIElEcykKY291bnRzW2lzLm5hKGNvdW50cyldIDwtIDAKaGVhZChjb3VudHNbLDE6MTBdKQpzdW1tYXJ5KGNvdW50c1ssMToxMF0pCmBgYAoKIyMjIHNldCB1cCBkZXNjcmlwdGl2ZSBkYXRhIGZyYW1lCmBgYHtyfQpwZGF0YSA8LSBjb2xuYW1lcyhjb3VudHMpICU+JSBkYXRhLmZyYW1lKGZpbGU9LiwKICAgICAgICAgICAgICAgICAgICBSSUw9cmVnbWF0Y2hlcyguLHJlZ2V4cHIoIlJJTF9bMC05XSoiLC4pKSwKICAgICAgICAgICAgICAgICAgICB0cnQ9cmVnbWF0Y2hlcyguLHJlZ2V4cHIoIkNSfFVOIiwuKSksCiAgICAgICAgICAgICAgICAgICAgcmVwPXJlZ21hdGNoZXMoLixyZWdleHByKCJSZXBbMC05XSoiLC4pKSwKICAgICAgICAgICAgICAgICAgICBzdHJpbmdzQXNGYWN0b3JzID0gRkFMU0UKKQpwZGF0YSRncm91cCA8LSBwYXN0ZShwZGF0YSRSSUwscGRhdGEkdHJ0LHNlcD0iXyIpCmhlYWQocGRhdGEpCmBgYAoKYGBge3J9CmNvdW50cy5kZ2UgPC0gREdFTGlzdChjb3VudHM9Y291bnRzLGdyb3VwID0gcGRhdGEkZ3JvdXApCmNvdW50cy5kZ2Ukc2FtcGxlcwpgYGAKCkZpbHRlcgpgYGB7cn0KbnJvdyhjb3VudHMuZGdlKQpjb3VudHMuZGdlIDwtIGNvdW50cy5kZ2Vbcm93U3VtcyhjcG0oY291bnRzLmRnZSk+MikgPj0gODQsLGtlZXAubGliLnNpemVzPUZBTFNFXQpjb3VudHMuZGdlJHNhbXBsZXMKbnJvdyhjb3VudHMuZGdlKQpgYGAKS2VwdCAyOCw4NjMgZ2VuZXMgb2YgNDMsMTUwCgpOb3JtYWxpemUKYGBge3J9CmNvdW50cy5kZ2UgPC0gY2FsY05vcm1GYWN0b3JzKGNvdW50cy5kZ2UpCmNvdW50cy5kZ2Ukc2FtcGxlcwpjb3VudHMubG9nLmNwbSA8LSBjcG0oY291bnRzLGxvZz1UUlVFKQpib3hfd3JpdGUoY291bnRzLmxvZy5jcG0sIlJJTF9UTU1fQ1BNLmNzdi5neiIpCmBgYAoKZXN0aW1hdGUgZGlzcGVyc2lvbnMKYGBge3J9CmRlc2lnbiA8LSBtb2RlbC5tYXRyaXgofnBkYXRhJFJJTCArIHBkYXRhJHRydCkKY291bnRzLmRnZSA8LSBlc3RpbWF0ZURpc3AoY291bnRzLmRnZSxkZXNpZ24gPSBkZXNpZ24pCmBgYAoKYGBge3J9CmJveF9hdXRoKCkKYm94X3NhdmUoY291bnRzLGNvdW50cy5kZ2UsZmlsZV9uYW1lID0gIk5vcm1hbGl6ZWRDb3VudHMuUkRhdGEiKQpgYGAKCmBgYHtyfQpjb3VudHMudm9vbSA8LSB2b29tKGNvdW50cy5kZ2UsZGVzaWduID0gZGVzaWduKQpzYXZlKGNvdW50cy52b29tLCBmaWxlID0gIkNvdW50c1Zvb20uUmRhdGEiKQpib3hfc2F2ZShjb3VudHMudm9vbSxmaWxlX25hbWUgPSAiQ291bnRzVm9vbS5SZGF0YSIpCmBgYAoKCgpgYGB7cn0KZGVzaWduLmludCA8LSBtb2RlbC5tYXRyaXgofnBkYXRhJFJJTCpwZGF0YSR0cnQpCmNvdW50cy52b29tLmludCA8LSB2b29tKGNvdW50cy5kZ2UsZGVzaWduID0gZGVzaWduKQpzYXZlKGNvdW50cy52b29tLmludCxmaWxlID0gIkNvdW50c1Zvb21JbnQuUmRhdGEiKQpib3hfc2F2ZShjb3VudHMudm9vbS5pbnQsZmlsZV9uYW1lID0gIkNvdW50c1Zvb21JbnQuUmRhdGEiKQp2b29tLmRmIDwtIGFzLmRhdGEuZnJhbWUoY291bnRzLnZvb20pCndyaXRlLmNzdih2b29tLmRmLGZpbGU9InZvb20uY3N2Iixyb3cubmFtZXMgPSBUUlVFKQpib3hfd3JpdGUodm9vbS5kZixmaWxlbmFtZSA9ICJ2b29tLmNzdi5neiIpCmBgYAoKYGBge3J9CmJveF9hdXRoKCkKY291bnRzLmRnZS5pbnQgPC0gZXN0aW1hdGVEaXNwKGNvdW50cy5kZ2UsZGVzaWduPWRlc2lnbi5pbnQpCmJveF9zYXZlKGNvdW50cy5kZ2UuaW50LGZpbGVfbmFtZSA9ICJOb3JtYWxpemVkQ291bnRzSW50LlJEYXRhIikKYGBgCgpGaXR0ZWQgdmFsdWVzIGFkZGl0aWl2ZQpgYGB7cn0Kdm9vbS5maXQgPC0gbG1GaXQoY291bnRzLnZvb20sZGVzaWduPWRlc2lnbikKdm9vbS5maXQgPC0gZUJheWVzKHZvb20uZml0KQp2b29tLnRvcFRhYmxlIDwtIHRvcFRhYmxlRih2b29tLmZpdCxudW1iZXI9SW5mKQpzYXZlKGNvdW50cy52b29tLCB2b29tLmZpdCwgdm9vbS50b3BUYWJsZSwgZmlsZT0idm9vbS5SZGF0YSIpCmBgYAoKRml0dGVkIHZhbHVlcyBpbnRlcmFjdGlvbgoKKE5vdCB3b3JraW5nLi4uKQpgYGB7ciwgZXZhbD1GQUxTRX0KY291bnQudm9vbS5pbnQyIDwtIGNvdW50cy52b29tLmludFssKHBkYXRhJFJJTD09IlJJTF8yMzQiIHwgcGRhdGEkUklMPT0iUklMXzMxMSIpXSAjIHRoZXNlIHR3byBsaW5lcyBhcmUgbWlzc2luZyBVTiBkYXRhIGFuZCBzbyB0aGUgaW50ZXJhY3Rpb24gdGVybXMgY2Fubm90IGJlIGVzdGltYXRlZCwgYW5kIHRoZXJmb3JlIHdlIGdldCBhbiBlcnJvciB1bmxlc3Mgd2UgcmVtb3ZlIHRoZW0uCnZvb20uaW50LmZpdCA8LSBsbUZpdChjb3VudHMudm9vbS5pbnQsZGVzaWduPWRlc2lnbi5pbnQpCnZvb20uaW50LmZpdCA8LSBlQmF5ZXModm9vbS5pbnQuZml0KQp2b29tLmludC50b3BUYWJsZSA8LSB0b3BUYWJsZUYodm9vbS5maXQuaW50LG51bWJlcj1JbmYpCnNhdmUoY291bnRzLnZvb20uaW50LCB2b29tLmludC5maXQsIHZvb20uaW50LnRvcFRhYmxlLCBmaWxlPSJ2b29tLmludC5SZGF0YSIpCmBgYAoKCgpgYGB7cn0KYGBgCgpgYGB7cn0KCmBgYAoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUHJvY2VzcyBDb3VudHMiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCkNyZWF0aW5nIEIuIHJhcGEgbmV0d29ya3MgZnJvbSBlUVRMIGRhdGEgdG8gZW5oYW5jZSBSb2IgQmFrZXIgZXQgYWwncyBGVlQgYW5hbHlzaXMgZm9yIHN0ZW0gZWxvbmdhdGlvbi4KClVzaW5nIEJveFIgdG8gY29ubmVjdCBSIHRvIEJveAoKIyMjIHNldCB1cApgYGB7ciBzZXRfdXB9CmxpYnJhcnkoZWRnZVIpCmxpYnJhcnkoYm94cikKbGlicmFyeShtYWdyaXR0cikKYm94X2F1dGgoKQpib3hfc2V0d2QoMjQ1MDM5ODc4NjApCmJveF9scygpCmBgYAoKIyMjIEdldCBkYXRhCmBgYHtyfQpjb3VudHMgPC0gYm94X3JlYWRfdHN2KDE2MjIxODA4OTY4NSkKcm93Lm5hbWVzKGNvdW50cykgPC0gY291bnRzJGdlbmUKY291bnRzIDwtIGNvdW50cyBbLTEsLTFdICNyZW1vdmUgZmlyc3Qgcm93ICh1bWFwcGVkIHJlYWRzKSBhbmQgZmlyc3QgY29sdW1uIChnZW5lIElEcykKY291bnRzW2lzLm5hKGNvdW50cyldIDwtIDAKaGVhZChjb3VudHNbLDE6MTBdKQpzdW1tYXJ5KGNvdW50c1ssMToxMF0pCmBgYAoKIyMjIHNldCB1cCBkZXNjcmlwdGl2ZSBkYXRhIGZyYW1lCmBgYHtyfQpwZGF0YSA8LSBjb2xuYW1lcyhjb3VudHMpICU+JSBkYXRhLmZyYW1lKGZpbGU9LiwKICAgICAgICAgICAgICAgICAgICBSSUw9cmVnbWF0Y2hlcyguLHJlZ2V4cHIoIlJJTF9bMC05XSoiLC4pKSwKICAgICAgICAgICAgICAgICAgICB0cnQ9cmVnbWF0Y2hlcyguLHJlZ2V4cHIoIkNSfFVOIiwuKSksCiAgICAgICAgICAgICAgICAgICAgcmVwPXJlZ21hdGNoZXMoLixyZWdleHByKCJSZXBbMC05XSoiLC4pKSwKICAgICAgICAgICAgICAgICAgICBzdHJpbmdzQXNGYWN0b3JzID0gRkFMU0UKKQpwZGF0YSRncm91cCA8LSBwYXN0ZShwZGF0YSRSSUwscGRhdGEkdHJ0LHNlcD0iXyIpCmhlYWQocGRhdGEpCmBgYAoKYGBge3J9CmNvdW50cy5kZ2UgPC0gREdFTGlzdChjb3VudHM9Y291bnRzLGdyb3VwID0gcGRhdGEkZ3JvdXApCmNvdW50cy5kZ2Ukc2FtcGxlcwpgYGAKCkZpbHRlcgpgYGB7cn0KbnJvdyhjb3VudHMuZGdlKQpjb3VudHMuZGdlIDwtIGNvdW50cy5kZ2Vbcm93U3VtcyhjcG0oY291bnRzLmRnZSk+MikgPj0gODQsLGtlZXAubGliLnNpemVzPUZBTFNFXQpjb3VudHMuZGdlJHNhbXBsZXMKbnJvdyhjb3VudHMuZGdlKQpgYGAKS2VwdCAyOCw4NjMgZ2VuZXMgb2YgNDMsMTUwCgpOb3JtYWxpemUKYGBge3J9CmNvdW50cy5kZ2UgPC0gY2FsY05vcm1GYWN0b3JzKGNvdW50cy5kZ2UpCmNvdW50cy5kZ2Ukc2FtcGxlcwpjb3VudHMubG9nLmNwbSA8LSBjcG0oY291bnRzLGxvZz1UUlVFKQpib3hfd3JpdGUoY291bnRzLmxvZy5jcG0sIlJJTF9UTU1fQ1BNLmNzdi5neiIpCmBgYAoKZXN0aW1hdGUgZGlzcGVyc2lvbnMKYGBge3J9CmRlc2lnbiA8LSBtb2RlbC5tYXRyaXgofnBkYXRhJFJJTCArIHBkYXRhJHRydCkKY291bnRzLmRnZSA8LSBlc3RpbWF0ZURpc3AoY291bnRzLmRnZSxkZXNpZ24gPSBkZXNpZ24pCmBgYAoKYGBge3J9CmJveF9hdXRoKCkKYm94X3NhdmUoY291bnRzLGNvdW50cy5kZ2UsZmlsZV9uYW1lID0gIk5vcm1hbGl6ZWRDb3VudHMuUkRhdGEiKQpgYGAKCmBgYHtyfQpjb3VudHMudm9vbSA8LSB2b29tKGNvdW50cy5kZ2UsZGVzaWduID0gZGVzaWduKQpzYXZlKGNvdW50cy52b29tLCBmaWxlID0gIkNvdW50c1Zvb20uUmRhdGEiKQpib3hfc2F2ZShjb3VudHMudm9vbSxmaWxlX25hbWUgPSAiQ291bnRzVm9vbS5SZGF0YSIpCmBgYAoKYGBge3J9CnZvb20uZGYgPC0gYXMuZGF0YS5mcmFtZShjb3VudHMudm9vbSkKd3JpdGUuY3N2KHZvb20uZGYsZmlsZT0idm9vbS5jc3YiLHJvdy5uYW1lcyA9IFRSVUUpCmJveF93cml0ZSh2b29tLmRmLGZpbGVuYW1lID0gInZvb20uY3N2Lmd6IikKYGBgCgoKYGBge3J9CmRlc2lnbi5pbnQgPC0gbW9kZWwubWF0cml4KH5wZGF0YSRSSUwqcGRhdGEkdHJ0KQpjb3VudHMudm9vbS5pbnQgPC0gdm9vbShjb3VudHMuZGdlLGRlc2lnbiA9IGRlc2lnbikKc2F2ZShjb3VudHMudm9vbS5pbnQsZmlsZSA9ICJDb3VudHNWb29tSW50LlJkYXRhIikKYm94X3NhdmUoY291bnRzLnZvb20uaW50LGZpbGVfbmFtZSA9ICJDb3VudHNWb29tSW50LlJkYXRhIikKYGBgCgpgYGB7cn0KYm94X2F1dGgoKQpjb3VudHMuZGdlLmludCA8LSBlc3RpbWF0ZURpc3AoY291bnRzLmRnZSxkZXNpZ249ZGVzaWduLmludCkKYm94X3NhdmUoY291bnRzLmRnZS5pbnQsZmlsZV9uYW1lID0gIk5vcm1hbGl6ZWRDb3VudHNJbnQuUkRhdGEiKQpgYGAKCkZpdHRlZCB2YWx1ZXMgYWRkaXRpaXZlCmBgYHtyfQp2b29tLmZpdCA8LSBsbUZpdChjb3VudHMudm9vbSxkZXNpZ249ZGVzaWduKQp2b29tLmZpdCA8LSBlQmF5ZXModm9vbS5maXQpCnZvb20udG9wVGFibGUgPC0gdG9wVGFibGVGKHZvb20uZml0LG51bWJlcj1JbmYpCnNhdmUoY291bnRzLnZvb20sIHZvb20uZml0LCB2b29tLnRvcFRhYmxlLCBmaWxlPSJ2b29tLlJkYXRhIikKYGBgCgpGaXR0ZWQgdmFsdWVzIGludGVyYWN0aW9uCgooTm90IHdvcmtpbmcuLi4pCmBgYHtyLCBldmFsPUZBTFNFfQpjb3VudHMudm9vbS5pbnQyIDwtIGNvdW50cy52b29tLmludFssIShwZGF0YSRSSUw9PSJSSUxfMjM0IiB8IHBkYXRhJFJJTD09IlJJTF8zMTEiKV0gIyB0aGVzZSB0d28gbGluZXMgYXJlIG1pc3NpbmcgVU4gZGF0YSBhbmQgc28gdGhlIGludGVyYWN0aW9uIHRlcm1zIGNhbm5vdCBiZSBlc3RpbWF0ZWQsIGFuZCB0aGVyZm9yZSB3ZSBnZXQgYW4gZXJyb3IgdW5sZXNzIHdlIHJlbW92ZSB0aGVtLgpkZXNpZ24uaW50MiA8LSBkZXNpZ24uaW50WyEocGRhdGEkUklMPT0iUklMXzIzNCIgfCBwZGF0YSRSSUw9PSJSSUxfMzExIiksXQp2b29tLmludC5maXQgPC0gbG1GaXQoY291bnRzLnZvb20uaW50MixkZXNpZ249ZGVzaWduLmludDIpCnZvb20uaW50LmZpdCA8LSBlQmF5ZXModm9vbS5pbnQuZml0KQp2b29tLmludC50b3BUYWJsZSA8LSB0b3BUYWJsZUYodm9vbS5maXQuaW50LG51bWJlcj1JbmYpCnNhdmUoY291bnRzLnZvb20uaW50LCB2b29tLmludC5maXQsIHZvb20uaW50LnRvcFRhYmxlLCBmaWxlPSJ2b29tLmludC5SZGF0YSIpCmBgYAoKCgpgYGB7cn0KYGBgCgpgYGB7cn0KCmBgYAoK</div>
 
 
 

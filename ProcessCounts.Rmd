@@ -78,6 +78,11 @@ save(counts.voom, file = "CountsVoom.Rdata")
 box_save(counts.voom,file_name = "CountsVoom.Rdata")
 ```
 
+```{r}
+voom.df <- as.data.frame(counts.voom)
+write.csv(voom.df,file="voom.csv",row.names = TRUE)
+box_write(voom.df,filename = "voom.csv.gz")
+```
 
 
 ```{r}
@@ -85,9 +90,6 @@ design.int <- model.matrix(~pdata$RIL*pdata$trt)
 counts.voom.int <- voom(counts.dge,design = design)
 save(counts.voom.int,file = "CountsVoomInt.Rdata")
 box_save(counts.voom.int,file_name = "CountsVoomInt.Rdata")
-voom.df <- as.data.frame(counts.voom)
-write.csv(voom.df,file="voom.csv",row.names = TRUE)
-box_write(voom.df,filename = "voom.csv.gz")
 ```
 
 ```{r}
@@ -108,8 +110,9 @@ Fitted values interaction
 
 (Not working...)
 ```{r, eval=FALSE}
-count.voom.int2 <- counts.voom.int[,(pdata$RIL=="RIL_234" | pdata$RIL=="RIL_311")] # these two lines are missing UN data and so the interaction terms cannot be estimated, and therfore we get an error unless we remove them.
-voom.int.fit <- lmFit(counts.voom.int,design=design.int)
+counts.voom.int2 <- counts.voom.int[,!(pdata$RIL=="RIL_234" | pdata$RIL=="RIL_311")] # these two lines are missing UN data and so the interaction terms cannot be estimated, and therfore we get an error unless we remove them.
+design.int2 <- design.int[!(pdata$RIL=="RIL_234" | pdata$RIL=="RIL_311"),]
+voom.int.fit <- lmFit(counts.voom.int2,design=design.int2)
 voom.int.fit <- eBayes(voom.int.fit)
 voom.int.topTable <- topTableF(voom.fit.int,number=Inf)
 save(counts.voom.int, voom.int.fit, voom.int.topTable, file="voom.int.Rdata")
