@@ -1,0 +1,126 @@
+---
+title: "Process Counts"
+output: html_notebook
+---
+
+Creating B. rapa networks from eQTL data to enhance Rob Baker et al's FVT analysis for stem elongation.
+
+Using BoxR to connect R to Box
+
+### set up
+```{r set_up}
+library(edgeR)
+library(boxr)
+library(magrittr)
+box_auth()
+box_setwd(24503987860)
+box_ls()
+```
+
+### Get data
+```{r}
+counts <- box_read_tsv(162218089685)
+row.names(counts) <- counts$gene
+counts <- counts [-1,-1] #remove first row (umapped reads) and first column (gene IDs)
+counts[is.na(counts)] <- 0
+head(counts[,1:10])
+summary(counts[,1:10])
+```
+
+### set up descriptive data frame
+```{r}
+pdata <- colnames(counts) %>% data.frame(file=.,
+                    RIL=regmatches(.,regexpr("RIL_[0-9]*",.)),
+                    trt=regmatches(.,regexpr("CR|UN",.)),
+                    rep=regmatches(.,regexpr("Rep[0-9]*",.)),
+                    stringsAsFactors = FALSE
+)
+pdata$group <- paste(pdata$RIL,pdata$trt,sep="_")
+head(pdata)
+```
+
+```{r}
+counts.dge <- DGEList(counts=counts,group = pdata$group)
+counts.dge$samples
+```
+
+Filter
+```{r}
+nrow(counts.dge)
+counts.dge <- counts.dge[rowSums(cpm(counts.dge)>2) >= 84,,keep.lib.sizes=FALSE]
+counts.dge$samples
+nrow(counts.dge)
+```
+Kept 28,863 genes of 43,150
+
+Normalize
+```{r}
+counts.dge <- calcNormFactors(counts.dge)
+counts.dge$samples
+counts.log.cpm <- cpm(counts,log=TRUE)
+box_write(counts.log.cpm,"RIL_TMM_CPM.csv.gz")
+```
+
+estimate dispersions
+```{r}
+design <- model.matrix(~pdata$RIL + pdata$trt)
+counts.dge <- estimateDisp(counts.dge,design = design)
+```
+
+```{r}
+box_auth()
+box_save(counts,counts.dge,file_name = "NormalizedCounts.RData")
+```
+
+```{r}
+counts.voom <- voom(counts.dge,design = design)
+save(counts.voom, file = "CountsVoom.Rdata")
+box_save(counts.voom,file_name = "CountsVoom.Rdata")
+```
+
+
+
+```{r}
+design.int <- model.matrix(~pdata$RIL*pdata$trt)
+counts.voom.int <- voom(counts.dge,design = design)
+save(counts.voom.int,file = "CountsVoomInt.Rdata")
+box_save(counts.voom.int,file_name = "CountsVoomInt.Rdata")
+voom.df <- as.data.frame(counts.voom)
+write.csv(voom.df,file="voom.csv",row.names = TRUE)
+box_write(voom.df,filename = "voom.csv.gz")
+```
+
+```{r}
+box_auth()
+counts.dge.int <- estimateDisp(counts.dge,design=design.int)
+box_save(counts.dge.int,file_name = "NormalizedCountsInt.RData")
+```
+
+Fitted values additiive
+```{r}
+voom.fit <- lmFit(counts.voom,design=design)
+voom.fit <- eBayes(voom.fit)
+voom.topTable <- topTableF(voom.fit,number=Inf)
+save(counts.voom, voom.fit, voom.topTable, file="voom.Rdata")
+```
+
+Fitted values interaction
+
+(Not working...)
+```{r, eval=FALSE}
+count.voom.int2 <- counts.voom.int[,(pdata$RIL=="RIL_234" | pdata$RIL=="RIL_311")] # these two lines are missing UN data and so the interaction terms cannot be estimated, and therfore we get an error unless we remove them.
+voom.int.fit <- lmFit(counts.voom.int,design=design.int)
+voom.int.fit <- eBayes(voom.int.fit)
+voom.int.topTable <- topTableF(voom.fit.int,number=Inf)
+save(counts.voom.int, voom.int.fit, voom.int.topTable, file="voom.int.Rdata")
+```
+
+
+
+```{r}
+```
+
+```{r}
+
+```
+

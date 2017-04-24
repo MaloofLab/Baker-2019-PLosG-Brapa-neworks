@@ -1,0 +1,19 @@
+---
+title: "B. rapa annotation"
+output: html_notebook
+---
+
+Want to get Arabidopsis best hits for each B.rapa gene.
+
+Use the UCD B.rapa CDS fasta file,  [File S4 Devistty et al (G3)](http://www.g3journal.org/content/4/11/2065.supplemental)
+
+BLAST against [TAIR10 CDS](ftp://ftp.arabidopsis.org/home/tair/Sequences/blast_datasets/TAIR10_blastsets/TAIR10_cds_20110103_representative_gene_model_updated)
+
+Because these organisms are relatively closely related I will use blastn instead of blastp to focus on best match
+
+Get sequences
+```{bash}
+echo "hello world"
+```
+
+
