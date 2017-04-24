@@ -13,7 +13,104 @@ Because these organisms are relatively closely related I will use blastn instead
 
 Get sequences
 ```{bash}
-echo "hello world"
+wget -nv ftp://ftp.arabidopsis.org/home/tair/Sequences/blast_datasets/TAIR10_blastsets/TAIR10_cds_20101214_updated
+wget -nv http://www.g3journal.org/highwire/filestream/472465/field_highwire_adjunct_files/6/FileS4.zip
 ```
 
+```{bash}
+mv TAIR10_cds_20101214_updated At.TAIR10.cds.fa
+unzip -o FileS4.zip
+makeblastdb -in At.TAIR10.cds.fa -dbtype nucl
+```
+
+```{bash}
+blastn -query Brassica_rapa_final_CDS.fa \
+  -db At.TAIR10.cds.fa \
+  -strand both \
+  -task dc-megablast \
+  -outfmt 10 \
+  -culling_limit 1 \
+  -max_target_seqs 1 \
+  -max_hsps 1 \
+  -evalue 10e-4 \
+  -num_threads 3 \
+  -template_type coding \
+  -template_length 16 \
+  -out Brapa_vs_At_dc-megablast_out.csv
+head Brapa_vs_At_dc-megablast_out.csv
+```
+
+Compare hits vs queries
+```{bash}
+grep -c ">" Brassica_rapa_final_CDS.fa # total number of query sequences
+wc -l Brapa_vs_At_dc-megablast_out.csv # total number of queries with a hit
+```
+
+So 39709 of 44239 queries had a hit.  Seems reasonable
+
+Import results
+```{r}
+brapa.blast <- read.csv("Brapa_vs_At_dc-megablast_out.csv", header = FALSE,as.is = TRUE)
+colnames(brapa.blast) <- c("query","subject","perc_ID","aln_length","mismatch","gap_open","qstart","qend","sstart","send","eval","score")
+head(brapa.blast)
+summary(brapa.blast)
+```
+
+Add annotations from TAIR
+
+Install database (only needs to be done once)
+```{r, eval=FALSE}
+source("https://bioconductor.org/biocLite.R")
+biocLite("org.At.tair.db")
+```
+
+
+```{r}
+library(org.At.tair.db)
+brapa.blast$AGI <- sub("\\..*$","",brapa.blast$subject)
+
+brapa.blast$At_symbol <- mapIds(org.At.tair.db,
+       keys=brapa.blast$AGI,
+       column = "SYMBOL",
+       keytype = "TAIR",
+       multiVals = function(x) paste(x,collapse = ";") )
+
+brapa.blast$At_description <- 
+  mapIds(org.At.tair.db,
+       keys=brapa.blast$AGI,
+       column = "GENENAME",
+       keytype = "TAIR",
+       multiVals = function(x) paste(x,collapse = ";") )
+
+head(brapa.blast)
+```
+
+Now add location information
+
+convert big bed to bed
+```{bash}
+bigBedtoBed brassica_rapa_v15_final_transcripts.bb brassica_rapa_v15_final_transcripts.bed
+```
+
+
+```{r}
+Br.bed <- read.delim("brassica_rapa_v15_final_transcripts.bed",header=FALSE,as.is = TRUE)
+colnames(Br.bed) <- unlist(strsplit("chrom start end name score strand thickStart thickEnd itemRgb blockCount blockSizes blockStarts",split=" "))
+head(Br.bed)
+summary(Br.bed)
+```
+
+```{r}
+Brapa.annotated <- merge(Br.bed[,1:4],brapa.blast,by.x="name",by.y="query")
+Brapa.annotated <- Brapa.annotated[,unlist(strsplit("name chrom start end subject AGI At_symbol At_description perc_ID aln_length mismatch gap_open qstart qend sstart send eval score",split = " "))] # reorder columns 
+Brapa.annotated <- Brapa.annotated[order(Brapa.annotated$chrom, Brapa.annotated$start),] 
+head(Brapa.annotated)
+```
+
+```{r}
+library(boxr)
+box_auth()
+write.csv(Brapa.annotated,"Brapa_V1.5_annotated.csv")
+box_write(Brapa.annotated,filename = "Brapa_V1.5_annotated.csv.gz", dir_id = 24503987860)
+```
 

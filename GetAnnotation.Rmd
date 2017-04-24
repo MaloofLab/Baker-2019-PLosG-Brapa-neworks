@@ -1,0 +1,55 @@
+---
+title: "QueryAnnotation"
+author: "Julin N Maloof"
+date: "4/24/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Setup and Load annotation
+```{r}
+library(plyr)
+BrapaAnnotation <- read.csv("Brapa_V1.5_annotated.csv",row.names=1)
+head(BrapaAnnotation)
+```
+
+## simplest query
+
+get genes in an interval (in this case chrom A04 between 10000 and 220000 bp)
+```{r}
+results <- subset(BrapaAnnotation, chrom=="A04" &
+                    start >= 10000 &
+                    end <= 220000)
+head(results)
+tail(results)
+```
+
+
+## Make query table
+Create an example query table.  This could be an imported CSV, etc.  You would do this if you had a lot of regions you wanted to query.  Each row is one region of interest
+```{r}
+qtl_query <- data.frame(
+  qname=c("QTL1","QTL2","QTL3","QTL4"), # could be anything
+  chrom=c("AO1","A04","A04","A06"),
+  start=c(80000,20000,999999,53),
+  end=c(100000,300000,1200000,20000),stringsAsFactors = FALSE)
+  
+qtl_query
+```
+
+```{r}
+results <- lapply(1:nrow(qtl_query),function(row) {
+  qtl <- qtl_query[row,]
+  results <- subset(BrapaAnnotation, chrom==qtl$chrom &
+                    start >= qtl$start &
+                    end <= qtl$end)
+}
+)
+names(results) <- qtl_query$qname
+results <- ldply(results)
+head(results)
+```
+
