@@ -20,8 +20,9 @@ box_ls()
 ### First attempt, use RIL means
 Get data
 ```{r}
-box_load(162362592785)
+#box_load(162362592785)
 load("~/Box Sync/BrapaNetworks/CountsVoom.Rdata")
+annotation  <- read.csv("~/Box Sync/BrapaNetworks/Brapa_V1.5_annotated.csv.gz")
 ```
 
 Summarize means
@@ -49,13 +50,13 @@ genes.of.interest <- row.names(RIL.pvals)[1:10000]
 expr.data <- voom.fit$coefficients[genes.of.interest,]
 expr.data <- expr.data[,-grep("trt",colnames(expr.data))]
 dim(expr.data)
-head(expr.data)
+head(expr.data[,1:6])
 ```
 
 ```{r}
 expr.data[,-1] <- expr.data[,-1] + expr.data[,1] # add the intercept to the coefficients
 colnames(expr.data) <- sub("pdata$RIL","",colnames(expr.data),fixed=TRUE)
-head(expr.data)
+head(expr.data[,1:6])
 ```
 
 Get Rob's Data
@@ -64,42 +65,46 @@ blups2011 <- box_read_csv(164446516413)
 blups2012 <- box_read_csv(164446639332)
 blups2011$Line %<>% paste("RIL",.,sep="_")
 blups2012$Line %<>% paste("RIL",.,sep="_")
+blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
+blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
 head(blups2011)
 head(blups2012)
 ```
 
 Merge Data
 ```{r}
-blups.combined <- merge(blups2011,blups2012,by="Line",all=TRUE, suffixes=c(".2011",".2012"))
-blups.combined %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
-head(blups.combined)
-expr.blup <- merge(blups.combined,t(expr.data),by.x="Line",by.y=0)
-head(expr.blup)
+expr.blup.2011 <- merge(blups2011,t(expr.data),by.x="Line",by.y=0)
+expr.blup.2012 <- merge(blups2012,t(expr.data),by.x="Line",by.y=0)
+head(expr.blup.2011)
+head(expr.blup.2012)
 ```
 
 Correlation
 ```{r}
-expr.blup.cor <- cor(expr.blup[,-1])
+expr.blup.2011.cor <- cor(expr.blup.2011[,-1])
+expr.blup.2012.cor <- cor(expr.blup.2012[,-1])
 ```
 
 Mutual Rank
 ```{r}
 sfInit(parallel = TRUE, cpus=4)
 
-expr.blup.rank <- sfApply(expr.blup.cor,2,function(x) rank(-abs(x)))
+expr.blup.2011.rank <- sfApply(expr.blup.2011.cor,2,function(x) rank(-abs(x)))
+expr.blup.2011.rank[1:10,1:10]
+expr.blup.2011.mr <- sqrt(expr.blup.2011.rank*t(expr.blup.2011.rank))
+expr.blup.2011.mr[1:10,1:10]
 
-expr.blup.rank[1:10,1:10]
-
-expr.blup.mr <- sqrt(expr.blup.rank*t(expr.blup.rank))
-
-expr.blup.mr[1:10,1:10]
+expr.blup.2012.rank <- sfApply(expr.blup.2012.cor,2,function(x) rank(-abs(x)))
+expr.blup.2012.rank[1:10,1:10]
+expr.blup.2012.mr <- sqrt(expr.blup.2012.rank*t(expr.blup.2012.rank))
+expr.blup.2012.mr[1:10,1:10]
 
 sfStop()
 ```
 
 
 ```{r}
-save(blups.combined,voom.fit,expr.blup,expr.blup.mr,file = "~/Box Sync/BrapaNetworks/MR.Rdata")
+save(blups2011,blups2012,voom.fit,expr.blup.2011, expr.blup.2012,expr.blup.2011.mr, expr.blup.2012.mr,file = "~/Box Sync/BrapaNetworks/MR.Rdata")
 ```
 
 Get graphs at different MR
@@ -143,16 +148,36 @@ Use different MR thresholds of 10 to 210 (absolute values) to build the network 
 
 ```{r lfy_sub, echo=FALSE, eval=FALSE}
 cutoffs <- c(10,20,30,50,80,100,130,210)
-blup.mr.graphs <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr, annotation= NA, neighborhood = colnames(blups.combined)[-1])
-names(blup.mr.graphs) <- sapply(blup.mr.graphs, function(x) paste("blup.mr.graph",x$cutoff,sep="."))
+blup.mr.graphs.2011 <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.2011.mr, annotation= NA, neighborhood = colnames(blups2011)[-1])
+names(blup.mr.graphs.2011) <- sapply(blup.mr.graphs.2011, function(x) paste("blup.mr.graph.2011",x$cutoff,sep="."))
+
+blup.mr.graphs.2012 <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.2012.mr, annotation= NA, neighborhood = colnames(blups2012)[-1])
+names(blup.mr.graphs.2012) <- sapply(blup.mr.graphs.2012, function(x) paste("blup.mr.graph.2012",x$cutoff,sep="."))
 ```
 
 ## plots
 
 ```{r plot, echo=FALSE, cache=TRUE}
 cutoff=200
-pdf("blup.mr.plots.pdf",height=12,width=12)
-result <- sapply(blup.mr.graphs,function (blup.graph) {
+pdf("blup.mr.plots.2011.pdf",height=12,width=12)
+result <- sapply(blup.mr.graphs.2011,function (blup.graph) {
+  if(blup.graph$cutoff <= cutoff) {
+    E(blup.graph$graph)$weight <- rank(E(blup.graph$graph)$mr)^(1/4)
+    plot(blup.graph$graph,
+         layout = layout_with_kk, 
+         vertex.label = #ifelse(is.na(V(blup.graph$graph)$gene)|V(blup.graph$graph)$gene=="",
+                               V(blup.graph$graph)$name ,
+                            #   V(blup.graph$graph)$gene),
+         vertex.label.cex=1,
+         main=paste("MR cutoff =",sub("blup.mr.graph.","",blup.graph$cutoff,fixed=T)))
+    rm(blup.graph)
+    }
+  })
+dev.off()
+
+cutoff=200
+pdf("blup.mr.plots.2012.pdf",height=12,width=12)
+result <- sapply(blup.mr.graphs.2012,function (blup.graph) {
   if(blup.graph$cutoff <= cutoff) {
     E(blup.graph$graph)$weight <- rank(E(blup.graph$graph)$mr)^(1/4)
     plot(blup.graph$graph,
