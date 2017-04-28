@@ -1,0 +1,33 @@
+---
+title: "MR Clustering"
+output: html_notebook
+---
+
+Notebook for generating mutual rank (MR) clusters
+
+```{r}
+library(boxr)
+library(magrittr)
+library(knitr)
+library(limma)
+box_auth()
+box_setwd(24503987860)
+box_ls()
+```
+
+### First attempt, use RIL means
+Get data
+```{r}
+#box_load(162362592785)
+load("~/Box Sync/BrapaNetworks/CountsVoom.Rdata")
+```
+
+Summarize means
+```{r}
+str(counts.voom)
+summary(counts.voom)
+voom.fit <- lmFit(counts.voom,design=counts.voom$design) #additive design is already there
+voom.fit <- eBayes(voom.fit)
+voom.pvals <- topTableF(voom.fit)
+```
+

@@ -37,6 +37,8 @@ pdata <- colnames(counts) %>% data.frame(file=.,
 )
 pdata$group <- paste(pdata$RIL,pdata$trt,sep="_")
 head(pdata)
+tail(pdata)
+sort(unique(pdata$RIL))
 ```
 
 ```{r}
