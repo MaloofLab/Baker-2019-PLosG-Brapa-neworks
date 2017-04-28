@@ -10,6 +10,8 @@ library(boxr)
 library(magrittr)
 library(knitr)
 library(limma)
+library(snowfall)
+library(igraph)
 box_auth()
 box_setwd(24503987860)
 box_ls()
@@ -18,7 +20,7 @@ box_ls()
 ### First attempt, use RIL means
 Get data
 ```{r}
-#box_load(162362592785)
+box_load(162362592785)
 load("~/Box Sync/BrapaNetworks/CountsVoom.Rdata")
 ```
 
@@ -28,6 +30,140 @@ str(counts.voom)
 summary(counts.voom)
 voom.fit <- lmFit(counts.voom,design=counts.voom$design) #additive design is already there
 voom.fit <- eBayes(voom.fit)
-voom.pvals <- topTableF(voom.fit)
+save(voom.fit,file="~/Box Sync/BrapaNetworks/voom.fit.Rdata")
 ```
 
+
+```{r}
+RIL.coefs <- grep("RIL",colnames(coef(voom.fit)))
+RIL.pvals <- topTable(voom.fit,coef = RIL.coefs,number = Inf)
+sum(RIL.pvals$adj.P.Val<0.05)
+sum(RIL.pvals$adj.P.Val<10e-10) 
+```
+So pretty much everything is highly significant
+
+Start by taking the top 10000
+
+```{r}
+genes.of.interest <- row.names(RIL.pvals)[1:10000]
+expr.data <- voom.fit$coefficients[genes.of.interest,]
+expr.data <- expr.data[,-grep("trt",colnames(expr.data))]
+dim(expr.data)
+head(expr.data)
+```
+
+```{r}
+expr.data[,-1] <- expr.data[,-1] + expr.data[,1] # add the intercept to the coefficients
+colnames(expr.data) <- sub("pdata$RIL","",colnames(expr.data),fixed=TRUE)
+head(expr.data)
+```
+
+Get Rob's Data
+```{r}
+blups2011 <- box_read_csv(164446516413)
+blups2012 <- box_read_csv(164446639332)
+blups2011$Line %<>% paste("RIL",.,sep="_")
+blups2012$Line %<>% paste("RIL",.,sep="_")
+head(blups2011)
+head(blups2012)
+```
+
+Merge Data
+```{r}
+blups.combined <- merge(blups2011,blups2012,by="Line",all=TRUE, suffixes=c(".2011",".2012"))
+blups.combined %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
+head(blups.combined)
+expr.blup <- merge(blups.combined,t(expr.data),by.x="Line",by.y=0)
+head(expr.blup)
+```
+
+Correlation
+```{r}
+expr.blup.cor <- cor(expr.blup[,-1])
+```
+
+Mutual Rank
+```{r}
+sfInit(parallel = TRUE, cpus=4)
+
+expr.blup.rank <- sfApply(expr.blup.cor,2,function(x) rank(-abs(x)))
+
+expr.blup.rank[1:10,1:10]
+
+expr.blup.mr <- sqrt(expr.blup.rank*t(expr.blup.rank))
+
+expr.blup.mr[1:10,1:10]
+
+sfStop()
+```
+
+
+```{r}
+save(blups.combined,voom.fit,expr.blup,expr.blup.mr,file = "~/Box Sync/BrapaNetworks/MR.Rdata")
+```
+
+Get graphs at different MR
+
+First: define some functions
+ 
+```{r mr_subgraphs, echo=FALSE, cache.lazy=FALSE, warning=FALSE, eval=TRUE }
+load("~/Box Sync/BrapaNetworks/MR.Rdata")
+get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NA,neighborhood,order=1) {
+  #function to extract LFY graph at a specificed correlation cutoff
+  gene.mr.tmp <- mr.matrix
+  gene.mr.tmp[abs(gene.mr.tmp) > mr.cutoff] <- 0
+  gene.mr.tmp[is.na(gene.mr.tmp)] <- 0 #important! otherwise vertices with NA edges are connected
+  
+  gene.graph <- graph.adjacency(adjmatrix = gene.mr.tmp,
+                                mode="undirected",
+                                weighted="mr",
+                                diag=FALSE)
+  
+  #clust.membership <- clusters(gene.graph)$membership
+  
+  #colbar <- rainbow(max(clust.membership)+1)                 #define colors
+  #V(gene.graph)$color <- colbar[clust.membership+1]             #assign colors to nodes
+  sub.graphs <- graph.neighborhood(gene.graph,order=order,nodes=neighborhood) #for each ndoe of interest get all other nodes within order of 1
+  
+  #get combnined list of vertices...
+  
+  sub.vertices <- unique(names(unlist(sapply(sub.graphs, V))))
+  
+  combined.sub.graph <- induced_subgraph(gene.graph,sub.vertices)
+  
+  V(combined.sub.graph)$color <- "lightblue"
+  V(combined.sub.graph)[neighborhood]$color <- "red"
+  if(!is.na(annotation)) V(combined.sub.graph)$gene <- annotation$SYMBOL[match(V(combined.sub.graph)$name,annotation$TAIR)]
+  list(cutoff=mr.cutoff,graph=combined.sub.graph)
+  }
+```
+
+## Get blup networks at different MR thresholds
+Use different MR thresholds of 10 to 210 (absolute values) to build the network (genes with a correlation higher than the threshold were considered connected).  I then subset the network to take all genes "directly" connected to LFY.
+
+```{r lfy_sub, echo=FALSE, eval=FALSE}
+cutoffs <- c(10,20,30,50,80,100,130,210)
+blup.mr.graphs <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr, annotation= NA, neighborhood = colnames(blups.combined)[-1])
+names(blup.mr.graphs) <- sapply(blup.mr.graphs, function(x) paste("blup.mr.graph",x$cutoff,sep="."))
+```
+
+## plots
+
+```{r plot, echo=FALSE, cache=TRUE}
+cutoff=200
+pdf("blup.mr.plots.pdf",height=12,width=12)
+result <- sapply(blup.mr.graphs,function (blup.graph) {
+  if(blup.graph$cutoff <= cutoff) {
+    E(blup.graph$graph)$weight <- rank(E(blup.graph$graph)$mr)^(1/4)
+    plot(blup.graph$graph,
+         layout = layout_with_kk, 
+         vertex.label = #ifelse(is.na(V(blup.graph$graph)$gene)|V(blup.graph$graph)$gene=="",
+                               V(blup.graph$graph)$name ,
+                            #   V(blup.graph$graph)$gene),
+         vertex.label.cex=1,
+         main=paste("MR cutoff =",sub("blup.mr.graph.","",blup.graph$cutoff,fixed=T)))
+    rm(blup.graph)
+    }
+  })
+dev.off()
+```
