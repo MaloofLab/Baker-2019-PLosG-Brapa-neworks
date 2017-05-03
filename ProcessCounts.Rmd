@@ -201,10 +201,6 @@ design.UN <- model.matrix(~pdata.UN$RIL)
 counts.voom.CR <- voom(counts.dge.CR,design = design.CR)
 
 counts.voom.UN <- voom(counts.dge.UN,design = design.UN)
-
-save(counts.voom.CR, counts.voom.UN, file = "~/Box Sync/BrapaNetworks/CountsVoom_CR_UN.Rdata")
-
-#box_save(counts.voom,file_name = "CountsVoom.Rdata")
 ```
 
 ```{r}
@@ -225,7 +221,7 @@ voom.topTable.CR <- topTableF(voom.fit.CR,number=Inf)
 voom.fit.UN <- lmFit(counts.voom.UN,design=design.UN)
 voom.fit.UN <- eBayes(voom.fit.UN)
 voom.topTable.UN <- topTableF(voom.fit.UN,number=Inf)
-save(counts.voom.CR, counts.voom.UN, voom.fit.CR, voom.fit.UN, voom.topTable.CR, voom.topTable.UN, file="voom_CR_UN.Rdata")
+save(counts.voom.CR, counts.voom.UN, voom.fit.CR, voom.fit.UN, voom.topTable.CR, voom.topTable.UN, file="~/Box Sync/BrapaNetworks/voom_CR_UN.Rdata")
 ```
 
 
