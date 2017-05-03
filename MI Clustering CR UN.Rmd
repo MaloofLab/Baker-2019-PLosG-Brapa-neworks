@@ -135,8 +135,7 @@ Get graphs at different MR
 First: define some functions
  
 ```{r mr_subgraphs, echo=FALSE, cache.lazy=FALSE, warning=FALSE, eval=TRUE }
-load("~/Box Sync/BrapaNetworks/MR_CR_UN.Rdata")
-get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NA,neighborhood,order=1) {
+get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NULL,neighborhood,order=1) {
   #function to extract LFY graph at a specificed correlation cutoff
   gene.mr.tmp <- mr.matrix
   gene.mr.tmp[abs(gene.mr.tmp) > mr.cutoff] <- 0
@@ -161,20 +160,27 @@ get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NA,neighborhood,order
   
   V(combined.sub.graph)$color <- "lightblue"
   V(combined.sub.graph)[neighborhood]$color <- "red"
-  if(!is.na(annotation)) V(combined.sub.graph)$gene <- annotation$SYMBOL[match(V(combined.sub.graph)$name,annotation$TAIR)]
+  if(!is.null(annotation)) V(combined.sub.graph)$gene <- "blah" #annotation$At_symbol[match(V(combined.sub.graph)$name,annotation$AGI)]
   list(cutoff=mr.cutoff,graph=combined.sub.graph)
   }
+```
+
+## get data
+
+```{r}
+load("~/Box Sync/BrapaNetworks/MR_CR_UN.Rdata")
+annotation <- read.csv("Brapa_V1.5_annotated.csv",row.names=1,as.is = TRUE)
 ```
 
 ## Get blup networks at different MR thresholds
 Use different MR thresholds of 10 to 210 (absolute values) to build the network (genes with a correlation higher than the threshold were considered connected).  I then subset the network to take all genes "directly" connected to LFY.
 
 ```{r lfy_sub, echo=FALSE, eval=FALSE}
-cutoffs <- c(10,20,30,50,80,100,130,210)
-blup.mr.graphs.CR <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr.CR, annotation= NA, neighborhood = colnames(blups.CR)[-1])
+cutoffs <- c(10,20,30,50,80)
+blup.mr.graphs.CR <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr.CR, annotation= annotation, neighborhood = colnames(blups.CR)[-1])
 names(blup.mr.graphs.CR) <- sapply(blup.mr.graphs.CR, function(x) paste("blup.mr.graph.CR",x$cutoff,sep="."))
 
-blup.mr.graphs.UN <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr.UN, annotation= NA, neighborhood = colnames(blups.UN)[-1])
+blup.mr.graphs.UN <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr.UN, annotation= annotation, neighborhood = colnames(blups.UN)[-1])
 names(blup.mr.graphs.UN) <- sapply(blup.mr.graphs.UN, function(x) paste("blup.mr.graph.UN",x$cutoff,sep="."))
 ```
 
