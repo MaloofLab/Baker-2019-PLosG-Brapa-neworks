@@ -15,6 +15,7 @@ library(magrittr)
 box_auth()
 box_setwd(24503987860)
 box_ls()
+library(rio)
 ```
 
 ### Get data
@@ -26,6 +27,8 @@ counts[is.na(counts)] <- 0
 head(counts[,1:10])
 summary(counts[,1:10])
 ```
+
+## Combined analysis of CR and UN samples
 
 ### set up descriptive data frame
 ```{r}
@@ -59,8 +62,9 @@ Normalize
 ```{r}
 counts.dge <- calcNormFactors(counts.dge)
 counts.dge$samples
-counts.log.cpm <- cpm(counts,log=TRUE)
-box_write(counts.log.cpm,"RIL_TMM_CPM.csv.gz")
+counts.log.cpm <- cpm(counts.dge,log=TRUE)
+#box_write(counts.log.cpm,"RIL_TMM_CPM.csv.gz")
+export(counts.log.cpm,"~/Box Sync/BrapaNetworks/RIL_TMM_CPM.csv.gz")
 ```
 
 estimate dispersions
@@ -121,11 +125,107 @@ save(counts.voom.int, voom.int.fit, voom.int.topTable, file="voom.int.Rdata")
 ```
 
 
+## Separate analyses of CR and UN reads
+
+### set up descriptive data frame
 
 ```{r}
+counts.CR <- counts[,pdata$trt=="CR",]
+counts.UN <- counts[,pdata$trt=="UN",]
+
+pdata.CR <- pdata %>% subset(trt=="CR")
+pdata.UN <- pdata %>% subset(trt=="UN")
 ```
 
 ```{r}
+counts.dge.CR <- DGEList(counts=counts.CR,group = pdata.CR$group)
+counts.dge.CR$samples
 
+counts.dge.UN <- DGEList(counts=counts.UN,group = pdata.UN$group)
+counts.dge.UN$samples
 ```
+
+Filter CR
+```{r}
+nrow(counts.dge.CR)
+counts.dge.CR <- counts.dge.CR[rowSums(cpm(counts.dge.CR)>2) >= 44,,keep.lib.sizes=FALSE]
+counts.dge.CR$samples
+nrow(counts.dge.CR)
+```
+Kept 28,857 genes of 43,150
+
+Filter UN
+```{r}
+nrow(counts.dge.UN)
+counts.dge.UN <- counts.dge.UN[rowSums(cpm(counts.dge.UN)>2) >= 44,,keep.lib.sizes=FALSE]
+counts.dge.UN$samples
+nrow(counts.dge.UN)
+```
+Kept 28,668 genes of 43,150
+
+Normalize
+```{r}
+counts.dge.CR <- calcNormFactors(counts.dge.CR)
+counts.dge.CR$samples
+counts.log.cpm.CR <- cpm(counts.dge.CR,log=TRUE)
+#box_write(counts.log.cpm.CR,"RIL_CR_TMM_CPM.csv.gz")
+export(counts.log.cpm.CR,"~/Box Sync/BrapaNetworks/RIL_CR_TMM_CPM.csv.gz")
+```
+
+```{r}
+counts.dge.UN <- calcNormFactors(counts.dge.UN)
+counts.dge.UN$samples
+counts.log.cpm.UN <- cpm(counts.dge.UN,log=TRUE)
+#box_write(counts.log.cpm.UN,"RIL_UN_TMM_CPM.csv.gz")
+export(counts.log.cpm.UN,"~/Box Sync/BrapaNetworks/RIL_UN_TMM_CPM.csv.gz")
+```
+
+estimate dispersions
+```{r}
+design.CR <- model.matrix(~pdata.CR$RIL)
+design.UN <- model.matrix(~pdata.UN$RIL)
+
+# #estimate Dispersion hangs...
+#counts.dge.CR <- estimateDisp(counts.dge.CR,design = design.CR)
+
+#counts.dge.UN <- estimateDisp(counts.dge.UN,design = design.UN)
+```
+
+```{r}
+#box_auth()
+#box_save(counts,counts.dge,file_name = "NormalizedCounts.RData")
+#save(counts.dge.CR,counts.dge.UN,file="~/Box Sync/BrapaNetworks/Normalized_CR_UN_Counts.Rdata")
+```
+
+```{r}
+counts.voom.CR <- voom(counts.dge.CR,design = design.CR)
+
+counts.voom.UN <- voom(counts.dge.UN,design = design.UN)
+
+save(counts.voom.CR, counts.voom.UN, file = "~/Box Sync/BrapaNetworks/CountsVoom_CR_UN.Rdata")
+
+#box_save(counts.voom,file_name = "CountsVoom.Rdata")
+```
+
+```{r}
+voom.df.CR <- as.data.frame(counts.voom.CR)
+write.csv(voom.df.CR,file="~/Box Sync/BrapaNetworks/voom.CR.csv",row.names = TRUE)
+
+voom.df.UN <- as.data.frame(counts.voom.UN)
+write.csv(voom.df.UN,file="~/Box Sync/BrapaNetworks/voom.UN.csv",row.names = TRUE)
+#box_write(voom.df,filename = "voom.csv.gz")
+```
+
+Fitted values additiive
+```{r}
+voom.fit.CR <- lmFit(counts.voom.CR,design=design.CR)
+voom.fit.CR <- eBayes(voom.fit.CR)
+voom.topTable.CR <- topTableF(voom.fit.CR,number=Inf)
+
+voom.fit.UN <- lmFit(counts.voom.UN,design=design.UN)
+voom.fit.UN <- eBayes(voom.fit.UN)
+voom.topTable.UN <- topTableF(voom.fit.UN,number=Inf)
+save(counts.voom.CR, counts.voom.UN, voom.fit.CR, voom.fit.UN, voom.topTable.CR, voom.topTable.UN, file="voom_CR_UN.Rdata")
+```
+
 
