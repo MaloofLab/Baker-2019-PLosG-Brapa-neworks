@@ -128,7 +128,7 @@ sfStop()
 
 
 ```{r}
-save(blups.CR,blups.UN,expr.blup.CR, expr.blup.UN, expr.blup.mr.CR, expr.blup.mr.UN,file = "~/Box Sync/BrapaNetworks/MR_CR_UN.Rdata")
+save(blups.CR,blups.UN,expr.blup.CR, expr.blup.UN, expr.blup.mr.CR, expr.blup.mr.UN,expr.data.CR,expr.data.UN,file = "~/Box Sync/BrapaNetworks/MR_CR_UN.Rdata")
 ```
 
 Get graphs at different MR
@@ -162,7 +162,7 @@ get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NULL,neighborhood,ord
   
   #get combined list of vertices...
   
-  sub.vertices <- unique(names(unlist(sapply(sub.graphs, V))))
+  sub.vertices <- unique(names(unlist(lapply(sub.graphs, V))))
   
   combined.sub.graph <- induced_subgraph(gene.graph,sub.vertices)
   
@@ -258,3 +258,57 @@ write.csv(UN.annotation,file="~/Box Sync/BrapaNetworks/MR_UN_graphs_annotation.c
 
 ```
 
+## Permutations
+
+What is a reasonable threshold?  To find out, permute blups relative to gene expression, make graphs at different thresholds, and return number of genes in network
+
+```{r}
+permute.graphs <- function(blups,expression,cutoffs=cutoffs,permute=TRUE) {
+  if(permute) blups$Line <- sample(blups$Line,replace = FALSE) # permute!
+  expr.blup <- merge(blups,t(expression),by.x="Line",by.y=0)
+  expr.blup.mr <- expr.blup[,-1] %>% 
+    cor %>%  
+    apply(2,function(x) rank(-abs(x))) %>%
+    multiply_by(t(.)) %>%
+    sqrt()
+  blup.mr.graphs <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr, neighborhood = colnames(blups)[-1])
+  sapply(blup.mr.graphs,function(graph) sum(grepl("^Bra",graph$nodes)))
+}
+
+test <- permute.graphs(blups.CR,expr.data.CR,cutoffs=c(10,20,30,50),permute=FALSE)
+test
+# should be the same as the first 4 of
+sapply(blup.mr.graphs.CR,function(graph) sum(grepl("^Bra",graph$nodes)))
+
+```
+
+
+```{r}
+permutations <- 100
+
+sfInit(parallel=TRUE,cpus = 4)
+
+sfLibrary(igraph)
+sfLibrary(magrittr)
+sfExport("blups.CR","blups.UN","expr.data.CR","expr.data.UN","permute.graphs","get.mr.subgraph","cutoffs")
+system.time(perm.results.CR.100 <- sfSapply(1:permutations, function(p) {
+  permute.graphs(blups.CR,expr.data.CR,cutoffs=cutoffs)
+}))
+
+save(perm.results.CR.100, file="permutation_results.Rdata")
+
+perm.results.UN.100 <- sfSapply(permutations, function(p) {
+  permute.graphs(blups.UN,expr.data.UN,cutoffs=cutoffs)
+})
+
+sfStop()
+
+save(perm.results.UN.100, perm.results.CR.100, file="permutation_results.Rdata")
+```
+
+```{r}
+apply(perm.results.CR.100,1,quantile,.95)
+apply(perm.results.UN.100,1,quantile,.95)
+```
+
+Our networks are significant, but this is not helping set a threshold.  Try correlation with scale-free?
