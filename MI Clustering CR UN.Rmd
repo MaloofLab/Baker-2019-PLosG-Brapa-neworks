@@ -12,6 +12,7 @@ library(knitr)
 library(limma)
 library(snowfall)
 library(igraph)
+library(dplyr)
 box_auth()
 box_setwd(24503987860)
 box_ls()
@@ -169,7 +170,7 @@ get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NULL,neighborhood,ord
   V(combined.sub.graph)[neighborhood]$color <- "red"
   if(!is.null(annotation)) V(combined.sub.graph)$gene <- 
     annotation$At_symbol[match(V(combined.sub.graph)$name,annotation$name)]
-  list(cutoff=mr.cutoff,graph=combined.sub.graph)
+  list(cutoff=mr.cutoff,graph=combined.sub.graph,nodes=V(combined.sub.graph)$name)
 }
 ```
 
@@ -189,7 +190,7 @@ names(blup.mr.graphs.UN) <- sapply(blup.mr.graphs.UN, function(x) paste("blup.mr
 
 ```{r plot, echo=FALSE, cache=TRUE}
 cutoff=200
-pdf("blup.mr.plots.CR.pdf",height=12,width=12)
+pdf("~/Box Sync/BrapaNetworks/blup.mr.plots.CR.pdf",height=12,width=12)
 result <- sapply(blup.mr.graphs.CR,function (blup.graph) {
   if(blup.graph$cutoff <= cutoff) {
     E(blup.graph$graph)$weight <- rank(E(blup.graph$graph)$mr)^(1/4)
@@ -206,7 +207,7 @@ result <- sapply(blup.mr.graphs.CR,function (blup.graph) {
 dev.off()
 
 cutoff=200
-pdf("blup.mr.plots.UN.pdf",height=12,width=12)
+pdf("~/Box Sync/BrapaNetworks/blup.mr.plots.UN.pdf",height=12,width=12)
 result <- sapply(blup.mr.graphs.UN,function (blup.graph) {
   if(blup.graph$cutoff <= cutoff) {
     E(blup.graph$graph)$weight <- rank(E(blup.graph$graph)$mr)^(1/4)
@@ -222,3 +223,38 @@ result <- sapply(blup.mr.graphs.UN,function (blup.graph) {
 })
 dev.off()
 ```
+
+make annotation tables for plots
+
+```{r}
+CR.annotation <- lapply(blup.mr.graphs.CR, function (blup.graph) {
+    if(blup.graph$cutoff <= cutoff) {
+      data.frame(
+        MR_Cutoff=blup.graph$cutoff,
+        trt="CR",
+        annotation[annotation$name %in% blup.graph$nodes,]
+      )
+    }
+}
+)
+CR.annotation <- ldply(CR.annotation)
+
+write.csv(CR.annotation,file="~/Box Sync/BrapaNetworks/MR_CR_graphs_annotation.csv")
+
+UN.annotation <- lapply(blup.mr.graphs.UN, function (blup.graph) {
+    if(blup.graph$cutoff <= cutoff) {
+      data.frame(
+        MR_Cutoff=blup.graph$cutoff,
+        trt="UN",
+        annotation[annotation$name %in% blup.graph$nodes,]
+      )
+    }
+}
+)
+
+UN.annotation <- ldply(UN.annotation)
+
+write.csv(UN.annotation,file="~/Box Sync/BrapaNetworks/MR_UN_graphs_annotation.csv")
+
+```
+
