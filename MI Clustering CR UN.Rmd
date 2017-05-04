@@ -132,8 +132,15 @@ save(blups.CR,blups.UN,expr.blup.CR, expr.blup.UN, expr.blup.mr.CR, expr.blup.mr
 
 Get graphs at different MR
 
-First: define some functions
- 
+## get data
+
+```{r}
+load("~/Box Sync/BrapaNetworks/MR_CR_UN.Rdata")
+annotation <- read.csv("Brapa_V1.5_annotated.csv",row.names=1,as.is = TRUE)
+```
+
+## define some functions
+
 ```{r mr_subgraphs, echo=FALSE, cache.lazy=FALSE, warning=FALSE, eval=TRUE }
 get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NULL,neighborhood,order=1) {
   #function to extract LFY graph at a specificed correlation cutoff
@@ -152,7 +159,7 @@ get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NULL,neighborhood,ord
   #V(gene.graph)$color <- colbar[clust.membership+1]             #assign colors to nodes
   sub.graphs <- graph.neighborhood(gene.graph,order=order,nodes=neighborhood) #for each ndoe of interest get all other nodes within order of 1
   
-  #get combnined list of vertices...
+  #get combined list of vertices...
   
   sub.vertices <- unique(names(unlist(sapply(sub.graphs, V))))
   
@@ -160,16 +167,10 @@ get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NULL,neighborhood,ord
   
   V(combined.sub.graph)$color <- "lightblue"
   V(combined.sub.graph)[neighborhood]$color <- "red"
-  if(!is.null(annotation)) V(combined.sub.graph)$gene <- "blah" #annotation$At_symbol[match(V(combined.sub.graph)$name,annotation$AGI)]
+  if(!is.null(annotation)) V(combined.sub.graph)$gene <- 
+    annotation$At_symbol[match(V(combined.sub.graph)$name,annotation$name)]
   list(cutoff=mr.cutoff,graph=combined.sub.graph)
-  }
-```
-
-## get data
-
-```{r}
-load("~/Box Sync/BrapaNetworks/MR_CR_UN.Rdata")
-annotation <- read.csv("Brapa_V1.5_annotated.csv",row.names=1,as.is = TRUE)
+}
 ```
 
 ## Get blup networks at different MR thresholds
@@ -194,14 +195,14 @@ result <- sapply(blup.mr.graphs.CR,function (blup.graph) {
     E(blup.graph$graph)$weight <- rank(E(blup.graph$graph)$mr)^(1/4)
     plot(blup.graph$graph,
          layout = layout_with_kk, 
-         vertex.label = #ifelse(is.na(V(blup.graph$graph)$gene)|V(blup.graph$graph)$gene=="",
-                               V(blup.graph$graph)$name ,
-                            #   V(blup.graph$graph)$gene),
+         vertex.label = ifelse(is.na(V(blup.graph$graph)$gene)|V(blup.graph$graph)$gene=="",
+                               V(blup.graph$graph)$name,
+                          paste(V(blup.graph$graph)$gene,V(blup.graph$graph)$name,sep="\n")),
          vertex.label.cex=1,
          main=paste("MR cutoff =",sub("blup.mr.graph.","",blup.graph$cutoff,fixed=T)))
     rm(blup.graph)
-    }
-  })
+  }
+})
 dev.off()
 
 cutoff=200
@@ -211,13 +212,13 @@ result <- sapply(blup.mr.graphs.UN,function (blup.graph) {
     E(blup.graph$graph)$weight <- rank(E(blup.graph$graph)$mr)^(1/4)
     plot(blup.graph$graph,
          layout = layout_with_kk, 
-         vertex.label = #ifelse(is.na(V(blup.graph$graph)$gene)|V(blup.graph$graph)$gene=="",
-                               V(blup.graph$graph)$name ,
-                            #   V(blup.graph$graph)$gene),
+         vertex.label = ifelse(is.na(V(blup.graph$graph)$gene)|V(blup.graph$graph)$gene=="",
+                               V(blup.graph$graph)$name,
+                          paste(V(blup.graph$graph)$gene,V(blup.graph$graph)$name,sep="\n")),
          vertex.label.cex=1,
          main=paste("MR cutoff =",sub("blup.mr.graph.","",blup.graph$cutoff,fixed=T)))
     rm(blup.graph)
-    }
-  })
+  }
+})
 dev.off()
 ```
