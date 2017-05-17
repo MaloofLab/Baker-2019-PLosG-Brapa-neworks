@@ -1,0 +1,194 @@
+---
+title: "B. rapa Gene Networks"
+author: "Julin N Maloof"
+date: "5/17/2017"
+output:
+  revealjs::revealjs_presentation:
+    incremental: true
+    theme: sky
+    width: 1600
+    height: 900
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, cache = TRUE, autodep = TRUE)
+```
+
+```{r getdata, include=FALSE}
+library(magrittr)
+library(knitr)
+library(limma)
+library(snowfall)
+library(igraph)
+library(dplyr)
+load("~/Box Sync/BrapaNetworks/MR_CR_UN.Rdata")
+annotation <- read.csv("Brapa_V1.5_annotated.csv",row.names=1,as.is = TRUE)
+```
+
+```{r mr_subgraphs, include=FALSE, cache.lazy=FALSE, warning=FALSE, eval=TRUE }
+get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NULL,neighborhood,order=1) {
+  #function to extract LFY graph at a specificed correlation cutoff
+  gene.mr.tmp <- mr.matrix
+  gene.mr.tmp[abs(gene.mr.tmp) > mr.cutoff] <- 0
+  gene.mr.tmp[is.na(gene.mr.tmp)] <- 0 #important! otherwise vertices with NA edges are connected
+  
+  gene.graph <- graph.adjacency(adjmatrix = gene.mr.tmp,
+                                mode="undirected",
+                                weighted="mr",
+                                diag=FALSE)
+  
+  #clust.membership <- clusters(gene.graph)$membership
+  
+  #colbar <- rainbow(max(clust.membership)+1)                 #define colors
+  #V(gene.graph)$color <- colbar[clust.membership+1]             #assign colors to nodes
+  sub.graphs <- graph.neighborhood(gene.graph,order=order,nodes=neighborhood) #for each ndoe of interest get all other nodes within order of 1
+  
+  #get combined list of vertices...
+  
+  sub.vertices <- unique(names(unlist(lapply(sub.graphs, V))))
+  
+  combined.sub.graph <- induced_subgraph(gene.graph,sub.vertices)
+  
+  V(combined.sub.graph)$color <- "lightblue"
+  V(combined.sub.graph)[neighborhood]$color <- "red"
+  if(!is.null(annotation)) V(combined.sub.graph)$gene <- 
+    annotation$At_symbol[match(V(combined.sub.graph)$name,annotation$name)]
+  list(cutoff=mr.cutoff,graph=combined.sub.graph,nodes=V(combined.sub.graph)$name)
+}
+```
+
+```{r lfy_sub, echo=FALSE, eval=TRUE}
+cutoffs <- c(10,20,30,50,80)
+blup.mr.graphs.CR <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr.CR, annotation= annotation, neighborhood = colnames(blups.CR)[-1])
+names(blup.mr.graphs.CR) <- sapply(blup.mr.graphs.CR, function(x) paste("blup.mr.graph.CR",x$cutoff,sep="."))
+
+blup.mr.graphs.UN <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr.UN, annotation= annotation, neighborhood = colnames(blups.UN)[-1])
+names(blup.mr.graphs.UN) <- sapply(blup.mr.graphs.UN, function(x) paste("blup.mr.graph.UN",x$cutoff,sep="."))
+```
+
+```{r make_plots, include=FALSE}
+make_plot <- function(blup.graph) {
+    E(blup.graph$graph)$weight <- rank(E(blup.graph$graph)$mr)^(1/4)
+    plot(blup.graph$graph,
+         layout = layout_with_kk, 
+         vertex.label = ifelse(is.na(V(blup.graph$graph)$gene)|V(blup.graph$graph)$gene=="",
+                               V(blup.graph$graph)$name,
+                          paste(V(blup.graph$graph)$gene,V(blup.graph$graph)$name,sep="\n")),
+         vertex.label.cex=1,
+         main=paste("MR cutoff =",sub("blup.mr.graph.","",blup.graph$cutoff,fixed=T)))
+}
+```
+
+## Typical Julin Week
+
+![julin.week](julin.week.png)
+
+## Intro
+
+* Goal: find genes & networks connected to _B. rapa_ growth
+* Rob Baker, Cynthia Weinig, Steve Welch, etc collected growth data on _B. rapa_ RIL set in field setting.
+* Growth functions were fitted for each line.
+* We have gene expression for the same lines.
+* Are there genes whose expression is associated with growth?
+
+## Approach
+
+* Use gene co-expression networks:
+* For each growth trait, build a network of genes that have a similar pattern across the RILs
+* In this case, look for association by mutual rank (MR)
+
+## Mutual Rank
+
+1. Build a correlation matrix of gene expression and trait values
+2. For each gene or trait, rank its correlations with the other genes and traits.  The gene with the highest correlation gets rank 1, etc.
+3. For each gene x gene, gene x trait, or trait x trait pair, calculate the geometric average.  This is the mutual rank.
+4. Look at the network of genes (and traits) around each trait.
+5. Determine significance by permutation.
+
+## Starting data
+
+```{r}
+knitr::kable(expr.blup.CR[1:10,1:10],digits=1)
+```
+
+
+## Build correlation matrix
+
+```{r}
+knitr::kable(cor(expr.blup.CR[,2:10]),digits=2)
+```
+
+## Calculate mutual ranks
+
+```{r, eval=FALSE}
+expr.blup.rank.CR <- sfApply(expr.blup.cor.CR,2,function(x) rank(-abs(x)))
+
+expr.blup.mr.CR <- sqrt(expr.blup.rank.CR*t(expr.blup.rank.CR))
+```
+
+```{r}
+knitr::kable(expr.blup.mr.CR[1:10,1:10],digits=0)
+```
+
+
+## What do we get?
+
+## MR < 20
+
+```{r}
+make_plot(blup.graph = blup.mr.graphs.CR[[2]])
+```
+
+## MR < 30
+
+```{r}
+make_plot(blup.graph = blup.mr.graphs.CR[[3]])
+```
+
+## MR < 50
+
+```{r}
+make_plot(blup.graph = blup.mr.graphs.CR[[4]])
+```
+
+
+## Significance thresholds
+
+* Randomize traits relative to gene expression
+* Make a graph, count # of connections
+* Repeat 100 times
+* Calculate 95th percentile # of connections
+* You would expect fewer than this number 95% of the time in random data
+
+## Significance thresholds
+
+```{r, eval=FALSE, echo=FALSE}
+sapply(blup.mr.graphs.CR,function(graph) sum(grepl("^Bra",graph$nodes)))
+```
+
+
+|*MR Threshold*|*95th percentile expectation (CR)*|*Observed (CR)*]
+|---------|----------|----------|
+| 20 | 1 | 6 |
+| 30 | 3 | 13 |
+| 50 | 9 | 33 |
+| 80 | 24 | 73 |
+
+So the networks are enriched for "real" connections
+
+## Candidates from CR condition
+
+* NACA3: Nascent polypeptide-associated complex gene (MR10+)
+* SMXL8: Involved in strigolactone-regulated growth (MR20+)
+* CIPK9: CBL interacting protein kinase 9.  K+ homeostasis (MR30+)
+* ATEXPB2: Beta Expansin.  (MR50+)
+* (And in UN: MES10, Methyl Jasmonate Esterase at MR10+)
+
+## Next Steps
+
+* Are any of these under QTL peaks for growth traits?
+* Compare with WGCNA
+
+
+
