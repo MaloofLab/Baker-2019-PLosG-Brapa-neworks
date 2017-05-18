@@ -1,0 +1,79 @@
+---
+title: "QTL Candidate Annotation"
+output: html_notebook
+---
+
+Goal: annotate candidate QTL genes with:
+
+1. Are any network genes under the QTL peaks?  I have used Mutual Rank to define gene networks around the plant growth traits.  I am curious as to whether or not any of the genes in these networks underlie QTLs for these traits.
+
+2. The degree of differential expression among the lines.
+
+```{r}
+library(tidyverse)
+library(magrittr)
+library(limma)
+```
+
+## Annotation with MR network membership
+
+```{r}
+QTLgenes <- read_csv("~/Box Sync/BrapaNetworks/Heigh2012_uniquegenes.csv")[,-1]
+summary(QTLgenes)
+QTLgenes
+```
+
+```{r}
+MR_UN_genes <- read_csv("~/Box Sync/BrapaNetworks/MR_UN_graphs_annotation.csv")
+summary(MR_UN_genes)
+MR_UN_genes
+```
+
+```{r}
+MR_CR_genes <- read_csv("~/Box Sync/BrapaNetworks/MR_CR_graphs_annotation.csv")
+summary(MR_CR_genes)
+MR_CR_genes
+```
+
+```{r}
+QTLgenes$UN_network <- MR_UN_genes$.id[match(QTLgenes$name, MR_UN_genes$name)]
+QTLgenes$CR_network <- MR_CR_genes$.id[match(QTLgenes$name, MR_CR_genes$name)]
+```
+
+```{r}
+QTLgenes %>% filter(!(is.na(UN_network) & is.na(CR_network)))
+```
+
+## Annotation with DE information
+
+```{r}
+load("~/Box Sync/BrapaNetworks/Voom_CR_UN.Rdata")
+```
+
+```{r}
+RIL.coefs.CR <- grep("RIL",colnames(coef(voom.fit.CR)))
+RIL.pvals.CR <- topTable(voom.fit.CR,coef = RIL.coefs.CR,number = Inf)
+RIL.coefs.UN <- grep("RIL",colnames(coef(voom.fit.UN)))
+RIL.pvals.UN <- topTable(voom.fit.UN,coef = RIL.coefs.UN,number = Inf)
+```
+
+```{r}
+RIL.pvals.CR$rank_F <- rank(RIL.pvals.CR$F)
+RIL.pvals.UN$rank_F <- rank(RIL.pvals.UN$F)
+
+RIL.pvals.CR %<>% select(-starts_with("pdata")) 
+colnames(RIL.pvals.CR) %<>% paste(".CR",sep="")
+
+RIL.pvals.UN %<>% select(-starts_with("pdata"))
+colnames(RIL.pvals.UN) %<>% paste(".UN",sep="")
+```
+
+```{r}
+QTLgenes <- merge(QTLgenes, RIL.pvals.UN, by.x="name", by.y=0,all.x = TRUE, all.y = FALSE)
+QTLgenes <- merge(QTLgenes, RIL.pvals.CR, by.x="name", by.y=0,all.x = TRUE, all.y = FALSE)
+```
+
+```{r}
+write_csv(QTLgenes,"~/Box Sync/BrapaNetworks/Heigh2012_uniquegenes_DE_MR.csv")
+```
+
