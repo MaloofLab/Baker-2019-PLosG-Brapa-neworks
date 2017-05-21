@@ -12,6 +12,7 @@ library(knitr)
 library(limma)
 library(snowfall)
 library(igraph)
+library(plyr)
 library(dplyr)
 box_auth()
 box_setwd(24503987860)
@@ -177,7 +178,7 @@ get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NULL,neighborhood,ord
 ## Get blup networks at different MR thresholds
 Use different MR thresholds of 10 to 210 (absolute values) to build the network (genes with a correlation higher than the threshold were considered connected).  I then subset the network to take all genes "directly" connected to LFY.
 
-```{r lfy_sub, echo=FALSE, eval=FALSE}
+```{r lfy_sub, echo=FALSE, eval=TRUE}
 cutoffs <- c(10,20,30,50,80)
 blup.mr.graphs.CR <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr.CR, annotation= annotation, neighborhood = colnames(blups.CR)[-1])
 names(blup.mr.graphs.CR) <- sapply(blup.mr.graphs.CR, function(x) paste("blup.mr.graph.CR",x$cutoff,sep="."))
@@ -283,7 +284,7 @@ sapply(blup.mr.graphs.CR,function(graph) sum(grepl("^Bra",graph$nodes)))
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 permutations <- 100
 
 sfInit(parallel=TRUE,cpus = 4)
@@ -297,7 +298,7 @@ system.time(perm.results.CR.100 <- sfSapply(1:permutations, function(p) {
 
 save(perm.results.CR.100, file="permutation_results.Rdata")
 
-perm.results.UN.100 <- sfSapply(permutations, function(p) {
+perm.results.UN.100 <- sfSapply(1:permutations, function(p) {
   permute.graphs(blups.UN,expr.data.UN,cutoffs=cutoffs)
 })
 
@@ -307,8 +308,22 @@ save(perm.results.UN.100, perm.results.CR.100, file="permutation_results.Rdata")
 ```
 
 ```{r}
+load("permutation_results.Rdata")
 apply(perm.results.CR.100,1,quantile,.95)
 apply(perm.results.UN.100,1,quantile,.95)
 ```
 
-Our networks are significant, but this is not helping set a threshold.  Try correlation with scale-free?
+```{r}
+kable(cbind(threshold=cutoffs,
+            "0.95 expectation"=apply(perm.results.CR.100,1,quantile,.95),
+            observed=sapply(blup.mr.graphs.CR,function(graph) sum(grepl("^Bra",graph$nodes)))
+), caption="Permutation analysis: CR network",digits=0)
+```
+```{r}
+kable(cbind(threshold=cutoffs,
+            "0.95 expectation"=apply(perm.results.UN.100,1,quantile,.95),
+            observed=sapply(blup.mr.graphs.UN,function(graph) sum(grepl("^Bra",graph$nodes)))
+), caption="Permutation analysis: UN network",digits=0)
+```
+
+Our networks are significant, but nor sure that this is not helping set a threshold.  Try correlation with scale-free?
