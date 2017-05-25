@@ -85,13 +85,13 @@ head(blups2011)
 head(blups2012)
 ```
 
-Merge Rob Data and then separate back to CR and UN
+Have decided to use 2012 only...
 ```{r}
-blups.all <- merge(blups2011,blups2012,by="Line",suffixes = c(".2011",".2012"))
-head(blups.all)
-blups.CR <- blups.all %>% subset(select=grep("Line|CR",colnames(.)))
+#blups.all <- merge(blups2011,blups2012,by="Line",suffixes = c(".2011",".2012"))
+#head(blups.all)
+blups.CR <- blups2012 %>% subset(select=grep("Line|CR",colnames(.)))
 head(blups.CR)
-blups.UN <- blups.all %>% subset(select=grep("Line|UN",colnames(.)))
+blups.UN <- blups2012 %>% subset(select=grep("Line|UN",colnames(.)))
 head(blups.UN)
 ```
 
@@ -284,7 +284,7 @@ sapply(blup.mr.graphs.CR,function(graph) sum(grepl("^Bra",graph$nodes)))
 ```
 
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 permutations <- 100
 
 sfInit(parallel=TRUE,cpus = 4)
@@ -326,4 +326,4 @@ kable(cbind(threshold=cutoffs,
 ), caption="Permutation analysis: UN network",digits=0)
 ```
 
-Our networks are significant, but nor sure that this is not helping set a threshold.  Try correlation with scale-free?
+Our networks are significant, but not sure that this is not helping set a threshold.  Try correlation with scale-free?
