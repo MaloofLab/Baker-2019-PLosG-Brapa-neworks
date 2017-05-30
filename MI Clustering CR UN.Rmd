@@ -265,16 +265,18 @@ write.csv(UN.annotation,file="~/Box Sync/BrapaNetworks/MR_UN_graphs_annotation.c
 overlaps <- t(sapply(1:length(blup.mr.graphs.CR), function(i) {
   CR.nodes <- blup.mr.graphs.CR[[i]]$nodes %>% grep("Bra",.,value=TRUE)
   UN.nodes <- blup.mr.graphs.UN[[i]]$nodes %>% grep("Bra",.,value=TRUE)
+  intersection <- intersect(CR.nodes,UN.nodes)
+  write.csv(intersection,file=paste("~/Box Sync/BrapaNetworks/OverlappingGenes_CR_UN_MR",cutoffs[i],".csv",sep=""))
   data.frame(
     cutoff=cutoffs[i],
     total_CR=length(CR.nodes),
     total_UN=length(UN.nodes),
-    common_genes=length(intersect(CR.nodes,UN.nodes))
+    common_genes=length(intersection)
   )
 }
 ))
 overlaps
-write.csv(overlaps,file="~/Box Sync/BrapaNetworks/network_overlaps") 
+write.csv(overlaps,file="~/Box Sync/BrapaNetworks/network_overlaps.csv") 
 ```
 
 
