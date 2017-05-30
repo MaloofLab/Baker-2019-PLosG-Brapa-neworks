@@ -89,9 +89,9 @@ Have decided to use 2012 only...
 ```{r}
 #blups.all <- merge(blups2011,blups2012,by="Line",suffixes = c(".2011",".2012"))
 #head(blups.all)
-blups.CR <- blups2012 %>% subset(select=grep("Line|CR",colnames(.)))
+blups.CR <- blups2012 %>% select(starts_with("Line"),starts_with("CR"),-matches("Inflection_size"))
 head(blups.CR)
-blups.UN <- blups2012 %>% subset(select=grep("Line|UN",colnames(.)))
+blups.UN <- blups2012 %>% select(starts_with("Line"),starts_with("UN"),-matches("Inflection_size"))
 head(blups.UN)
 ```
 
@@ -258,6 +258,25 @@ UN.annotation <- ldply(UN.annotation)
 write.csv(UN.annotation,file="~/Box Sync/BrapaNetworks/MR_UN_graphs_annotation.csv")
 
 ```
+
+## network overlaps
+
+```{r}
+overlaps <- t(sapply(1:length(blup.mr.graphs.CR), function(i) {
+  CR.nodes <- blup.mr.graphs.CR[[i]]$nodes %>% grep("Bra",.,value=TRUE)
+  UN.nodes <- blup.mr.graphs.UN[[i]]$nodes %>% grep("Bra",.,value=TRUE)
+  data.frame(
+    cutoff=cutoffs[i],
+    total_CR=length(CR.nodes),
+    total_UN=length(UN.nodes),
+    common_genes=length(intersect(CR.nodes,UN.nodes))
+  )
+}
+))
+overlaps
+write.csv(overlaps,file="~/Box Sync/BrapaNetworks/network_overlaps") 
+```
+
 
 ## Permutations
 

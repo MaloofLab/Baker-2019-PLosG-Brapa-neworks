@@ -320,7 +320,7 @@ head(counts[,1:10])</code></pre>
 <h3>set up descriptive data frame</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGRhdGEgPC0gY29sbmFtZXMoY291bnRzKSAlPiUgZGF0YS5mcmFtZShmaWxlPS4sXG4gICAgICAgICAgICAgICAgICAgIFJJTD1yZWdtYXRjaGVzKC4scmVnZXhwcihcIlJJTF9bMC05XSpcIiwuKSksXG4gICAgICAgICAgICAgICAgICAgIHRydD1yZWdtYXRjaGVzKC4scmVnZXhwcihcIkNSfFVOXCIsLikpLFxuICAgICAgICAgICAgICAgICAgICByZXA9cmVnbWF0Y2hlcyguLHJlZ2V4cHIoXCJSZXBbMC05XSpcIiwuKSksXG4gICAgICAgICAgICAgICAgICAgIHN0cmluZ3NBc0ZhY3RvcnMgPSBGQUxTRVxuKVxucGRhdGEkZ3JvdXAgPC0gcGFzdGUocGRhdGEkUklMLHBkYXRhJHRydCxzZXA9XCJfXCIpXG5oZWFkKHBkYXRhKVxudGFpbChwZGF0YSlcbnNvcnQodW5pcXVlKHBkYXRhJFJJTCkpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGRhdGEgPC0gY29sbmFtZXMoY291bnRzKSAlPiUgZGF0YS5mcmFtZShmaWxlPS4sXG4gICAgICAgICAgICAgICAgICAgIFJJTD1yZWdtYXRjaGVzKC4scmVnZXhwcihcIlJJTF9bMC05XSpcIiwuKSksXG4gICAgICAgICAgICAgICAgICAgIHRydD1yZWdtYXRjaGVzKC4scmVnZXhwcihcIkNSfFVOXCIsLikpLFxuICAgICAgICAgICAgICAgICAgICByZXA9cmVnbWF0Y2hlcyguLHJlZ2V4cHIoXCJSZXBbMC05XSpcIiwuKSksXG4gICAgICAgICAgICAgICAgICAgIHN0cmluZ3NBc0ZhY3RvcnMgPSBGQUxTRVxuKVxucGRhdGEkZ3JvdXAgPC0gcGFzdGUocGRhdGEkUklMLHBkYXRhJHRydCxzZXA9XCJfXCIpXG5oZWFkKHBkYXRhKVxuYGBgIn0= -->
 <pre class="r"><code>pdata &lt;- colnames(counts) %&gt;% data.frame(file=.,
                     RIL=regmatches(.,regexpr(&quot;RIL_[0-9]*&quot;,.)),
                     trt=regmatches(.,regexpr(&quot;CR|UN&quot;,.)),
@@ -328,10 +328,42 @@ head(counts[,1:10])</code></pre>
                     stringsAsFactors = FALSE
 )
 pdata$group &lt;- paste(pdata$RIL,pdata$trt,sep=&quot;_&quot;)
-head(pdata)
-tail(pdata)
-sort(unique(pdata$RIL))</code></pre>
+head(pdata)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NSwibnJvdyI6Nn0sInJkZiI6Ikg0c0lBQUFBQUFBQUE2MVQzV3FETUJqTmpGb2E2RGJZMVI2aVlmYm5DYnFid2VpRlVPaWRwRmFkekNZdVJqWjJ0U2Z2bGxqVHhkQmFHQk0rYzNKeXZsOU4rTGllb0RVQ0FEZ0FRZ2djS0tIcnlOY1ZjTUZRclI4QXdEc0pQR20zMHZ6MjRENThlbzZDaDJtMENLTXdLU2M0ZmNQWko5NlEzV25CN0pKZ2ZsNndXaXBCY0VuUVU4TkJNRFVFM1c0R3JmQS90OTBNemlMc1E2dmxTZFNONGFvbURUd3o4TnpBd1JtOVhSUDYvUUovWVk2VjlqUGRIOHFqWkpkVWJTR2VMaTdOaTZURlVMcHFLTGpRa0NlbGpwQnhWcGRXMkNGbjcxaUhIcW5wZllIbThlMzhjVUVxblYrVGFFc0V3U21YL25LM3Qxd0dyQlE1bzlMSk1XL0M4WXB3aTdpcHFhcGtPNDVmYXZvNkRsU0M1dmhnbzNiMURld2RVanJmMW1EOGhHWTUxYVB4Q3JKSmluWnpMVHR1R3NZbHo2bWVFNUpzaFFVVFJPdFF6QXJOTkwyQi9ROTdIN3J4OXdNQUFBPT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["file"],"name":[1],"type":["chr"],"align":["left"]},{"label":["RIL"],"name":[2],"type":["chr"],"align":["left"]},{"label":["trt"],"name":[3],"type":["chr"],"align":["left"]},{"label":["rep"],"name":[4],"type":["chr"],"align":["left"]},{"label":["group"],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"RIL_103_CR_Rep2.fq.gz.bam","2":"RIL_103","3":"CR","4":"Rep2","5":"RIL_103_CR","_rn_":"1"},{"1":"RIL_103_CR_Rep4.fq.gz.bam","2":"RIL_103","3":"CR","4":"Rep4","5":"RIL_103_CR","_rn_":"2"},{"1":"RIL_103_CR_Rep5.fq.gz.bam","2":"RIL_103","3":"CR","4":"Rep5","5":"RIL_103_CR","_rn_":"3"},{"1":"RIL_103_UN_Rep1.fq.gz.bam","2":"RIL_103","3":"UN","4":"Rep1","5":"RIL_103_UN","_rn_":"4"},{"1":"RIL_103_UN_Rep2.fq.gz.bam","2":"RIL_103","3":"UN","4":"Rep2","5":"RIL_103_UN","_rn_":"5"},{"1":"RIL_103_UN_Rep3.fq.gz.bam","2":"RIL_103","3":"UN","4":"Rep3","5":"RIL_103_UN","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFpbChwZGF0YSlcbmBgYCJ9 -->
+<pre class="r"><code>tail(pdata)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NSwibnJvdyI6Nn0sInJkZiI6Ikg0c0lBQUFBQUFBQUE2VlRXMCtETUJpdExVeEhNalh4d1YreEp1SjQ4SG5lWnN3ZVNKYnNqWFFNa01nS0ZvakdIei85dUhRcHpTQXhQaHg2dnA3MmZKY1U5MzV0VzJzTElZUVJJUVJoQXRUQThEbEJCaHBYNnhkQzVBcUlDYmdFakZyaDJsMjhlbmZlM1BYY0lMdWw0UWVOdnVtRzdZN0pzMkhaNlpOWHkwcTJoK1hlM0kyc21uYzdNT3RqL3crNnJuanVEckhWOGlqcmVoaFZXd3FmS2R4UnVOMXozdEg4enVTMC94WWZLdXlQdTQvRjVHd1g1RzF5VXhZVXhrblFjZ0lYSlMxRUlha0lNdWtRaWJUTU5OdXhTRCtwdEo3VWZTSHlBSGdFUEFHZUFRdkFpMTZQbjdCYzFpTTNyUzByR0EwRitFRzAxNjZjcGxrUnB4d3VZZlhWSDM0SG9XMWNsTHlxYkR2MTMwcitQcjJwRXRSeWcwbTdqaFJ1TmlueGp6YW9VY0NqbU10Um1RbmJCRWtibk1NRTZnSFFUTVJjenMyQzNad1dhY0hrT2N0UEU3bFQ5NGIydjJnZ2N3cmpBd0FBIn0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["file"],"name":[1],"type":["chr"],"align":["left"]},{"label":["RIL"],"name":[2],"type":["chr"],"align":["left"]},{"label":["trt"],"name":[3],"type":["chr"],"align":["left"]},{"label":["rep"],"name":[4],"type":["chr"],"align":["left"]},{"label":["group"],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"RIL_9_CR_Rep3.fq.gz.bam","2":"RIL_9","3":"CR","4":"Rep3","5":"RIL_9_CR","_rn_":"837"},{"1":"RIL_9_CR_Rep4.fq.gz.bam","2":"RIL_9","3":"CR","4":"Rep4","5":"RIL_9_CR","_rn_":"838"},{"1":"RIL_9_CR_Rep5.fq.gz.bam","2":"RIL_9","3":"CR","4":"Rep5","5":"RIL_9_CR","_rn_":"839"},{"1":"RIL_9_UN_Rep2.fq.gz.bam","2":"RIL_9","3":"UN","4":"Rep2","5":"RIL_9_UN","_rn_":"840"},{"1":"RIL_9_UN_Rep3.fq.gz.bam","2":"RIL_9","3":"UN","4":"Rep3","5":"RIL_9_UN","_rn_":"841"},{"1":"RIL_9_UN_Rep5.fq.gz.bam","2":"RIL_9","3":"UN","4":"Rep5","5":"RIL_9_UN","_rn_":"842"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc29ydCh1bmlxdWUocGRhdGEkUklMKSlcbmBgYCJ9 -->
+<pre class="r"><code>sort(unique(pdata$RIL))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICBbMV0gXCJSSUxfMVwiICAgXCJSSUxfMTAzXCIgXCJSSUxfMTA0XCIgXCJSSUxfMTEzXCIgXCJSSUxfMTE1XCIgXCJSSUxfMTJcIiAgXCJSSUxfMTIzXCIgXCJSSUxfMTI0XCIgXCJSSUxfMTMxXCIgXCJSSUxfMTM2XCIgXCJSSUxfMTQzXCJcbiBbMTJdIFwiUklMXzE0NlwiIFwiUklMXzE0N1wiIFwiUklMXzE1XCIgIFwiUklMXzE1MFwiIFwiUklMXzE1NFwiIFwiUklMXzE1NVwiIFwiUklMXzE2XCIgIFwiUklMXzE2NFwiIFwiUklMXzE2NlwiIFwiUklMXzE3MVwiIFwiUklMXzE3NFwiXG4gWzIzXSBcIlJJTF8xNzVcIiBcIlJJTF8xNzZcIiBcIlJJTF8xODJcIiBcIlJJTF8xODNcIiBcIlJJTF8xODRcIiBcIlJJTF8xODdcIiBcIlJJTF8xOTBcIiBcIlJJTF8xOTNcIiBcIlJJTF8xOThcIiBcIlJJTF8xOTlcIiBcIlJJTF8yXCIgIFxuIFszNF0gXCJSSUxfMjAxXCIgXCJSSUxfMjA0XCIgXCJSSUxfMjA1XCIgXCJSSUxfMjA2XCIgXCJSSUxfMjA3XCIgXCJSSUxfMjA4XCIgXCJSSUxfMjFcIiAgXCJSSUxfMjExXCIgXCJSSUxfMjEyXCIgXCJSSUxfMjEzXCIgXCJSSUxfMjE1XCJcbiBbNDVdIFwiUklMXzIyMlwiIFwiUklMXzIyM1wiIFwiUklMXzIyNVwiIFwiUklMXzIyOFwiIFwiUklMXzIyOVwiIFwiUklMXzIzXCIgIFwiUklMXzIzMlwiIFwiUklMXzIzNFwiIFwiUklMXzIzNVwiIFwiUklMXzI0MFwiIFwiUklMXzI0MlwiXG4gWzU2XSBcIlJJTF8yNDNcIiBcIlJJTF8yNDhcIiBcIlJJTF8yNVwiICBcIlJJTF8yNTBcIiBcIlJJTF8yNTFcIiBcIlJJTF8yNTNcIiBcIlJJTF8yNTVcIiBcIlJJTF8yNTZcIiBcIlJJTF8yNTlcIiBcIlJJTF8yNjRcIiBcIlJJTF8yNjVcIlxuIFs2N10gXCJSSUxfMjY3XCIgXCJSSUxfMjY4XCIgXCJSSUxfMjcwXCIgXCJSSUxfMjc3XCIgXCJSSUxfMjgxXCIgXCJSSUxfMjgyXCIgXCJSSUxfMjg0XCIgXCJSSUxfMjg1XCIgXCJSSUxfMjg4XCIgXCJSSUxfMjg5XCIgXCJSSUxfMjkwXCJcbiBbNzhdIFwiUklMXzI5NFwiIFwiUklMXzMwXCIgIFwiUklMXzMwMFwiIFwiUklMXzMwMVwiIFwiUklMXzMwM1wiIFwiUklMXzMwOFwiIFwiUklMXzMxXCIgIFwiUklMXzMxMVwiIFwiUklMXzMxOFwiIFwiUklMXzMyNVwiIFwiUklMXzMyOVwiXG4gWzg5XSBcIlJJTF8zMzJcIiBcIlJJTF8zMzdcIiBcIlJJTF8zMzlcIiBcIlJJTF8zNDBcIiBcIlJJTF8zNDFcIiBcIlJJTF8zNDRcIiBcIlJJTF8zNDZcIiBcIlJJTF8zNDdcIiBcIlJJTF8zNTNcIiBcIlJJTF8zNTRcIiBcIlJJTF8zNTVcIlxuWzEwMF0gXCJSSUxfMzU3XCIgXCJSSUxfMzU5XCIgXCJSSUxfMzZcIiAgXCJSSUxfMzYwXCIgXCJSSUxfMzYzXCIgXCJSSUxfMzczXCIgXCJSSUxfMzc2XCIgXCJSSUxfMzgwXCIgXCJSSUxfMzlcIiAgXCJSSUxfNDJcIiAgXCJSSUxfNDZcIiBcblsxMTFdIFwiUklMXzUzXCIgIFwiUklMXzYwXCIgIFwiUklMXzYzXCIgIFwiUklMXzY1XCIgIFwiUklMXzY2XCIgIFwiUklMXzY5XCIgIFwiUklMXzdcIiAgIFwiUklMXzcwXCIgIFwiUklMXzczXCIgIFwiUklMXzc2XCIgIFwiUklMXzgwXCIgXG5bMTIyXSBcIlJJTF84OVwiICBcIlJJTF85XCIgICBcIlJJTF85M1wiIFxuIn0= -->
+<pre><code>  [1] &quot;RIL_1&quot;   &quot;RIL_103&quot; &quot;RIL_104&quot; &quot;RIL_113&quot; &quot;RIL_115&quot; &quot;RIL_12&quot;  &quot;RIL_123&quot; &quot;RIL_124&quot; &quot;RIL_131&quot; &quot;RIL_136&quot; &quot;RIL_143&quot;
+ [12] &quot;RIL_146&quot; &quot;RIL_147&quot; &quot;RIL_15&quot;  &quot;RIL_150&quot; &quot;RIL_154&quot; &quot;RIL_155&quot; &quot;RIL_16&quot;  &quot;RIL_164&quot; &quot;RIL_166&quot; &quot;RIL_171&quot; &quot;RIL_174&quot;
+ [23] &quot;RIL_175&quot; &quot;RIL_176&quot; &quot;RIL_182&quot; &quot;RIL_183&quot; &quot;RIL_184&quot; &quot;RIL_187&quot; &quot;RIL_190&quot; &quot;RIL_193&quot; &quot;RIL_198&quot; &quot;RIL_199&quot; &quot;RIL_2&quot;  
+ [34] &quot;RIL_201&quot; &quot;RIL_204&quot; &quot;RIL_205&quot; &quot;RIL_206&quot; &quot;RIL_207&quot; &quot;RIL_208&quot; &quot;RIL_21&quot;  &quot;RIL_211&quot; &quot;RIL_212&quot; &quot;RIL_213&quot; &quot;RIL_215&quot;
+ [45] &quot;RIL_222&quot; &quot;RIL_223&quot; &quot;RIL_225&quot; &quot;RIL_228&quot; &quot;RIL_229&quot; &quot;RIL_23&quot;  &quot;RIL_232&quot; &quot;RIL_234&quot; &quot;RIL_235&quot; &quot;RIL_240&quot; &quot;RIL_242&quot;
+ [56] &quot;RIL_243&quot; &quot;RIL_248&quot; &quot;RIL_25&quot;  &quot;RIL_250&quot; &quot;RIL_251&quot; &quot;RIL_253&quot; &quot;RIL_255&quot; &quot;RIL_256&quot; &quot;RIL_259&quot; &quot;RIL_264&quot; &quot;RIL_265&quot;
+ [67] &quot;RIL_267&quot; &quot;RIL_268&quot; &quot;RIL_270&quot; &quot;RIL_277&quot; &quot;RIL_281&quot; &quot;RIL_282&quot; &quot;RIL_284&quot; &quot;RIL_285&quot; &quot;RIL_288&quot; &quot;RIL_289&quot; &quot;RIL_290&quot;
+ [78] &quot;RIL_294&quot; &quot;RIL_30&quot;  &quot;RIL_300&quot; &quot;RIL_301&quot; &quot;RIL_303&quot; &quot;RIL_308&quot; &quot;RIL_31&quot;  &quot;RIL_311&quot; &quot;RIL_318&quot; &quot;RIL_325&quot; &quot;RIL_329&quot;
+ [89] &quot;RIL_332&quot; &quot;RIL_337&quot; &quot;RIL_339&quot; &quot;RIL_340&quot; &quot;RIL_341&quot; &quot;RIL_344&quot; &quot;RIL_346&quot; &quot;RIL_347&quot; &quot;RIL_353&quot; &quot;RIL_354&quot; &quot;RIL_355&quot;
+[100] &quot;RIL_357&quot; &quot;RIL_359&quot; &quot;RIL_36&quot;  &quot;RIL_360&quot; &quot;RIL_363&quot; &quot;RIL_373&quot; &quot;RIL_376&quot; &quot;RIL_380&quot; &quot;RIL_39&quot;  &quot;RIL_42&quot;  &quot;RIL_46&quot; 
+[111] &quot;RIL_53&quot;  &quot;RIL_60&quot;  &quot;RIL_63&quot;  &quot;RIL_65&quot;  &quot;RIL_66&quot;  &quot;RIL_69&quot;  &quot;RIL_7&quot;   &quot;RIL_70&quot;  &quot;RIL_73&quot;  &quot;RIL_76&quot;  &quot;RIL_80&quot; 
+[122] &quot;RIL_89&quot;  &quot;RIL_9&quot;   &quot;RIL_93&quot; </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
