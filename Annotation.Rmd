@@ -101,7 +101,7 @@ summary(Br.bed)
 ```
 
 ```{r}
-Brapa.annotated <- merge(Br.bed[,1:4],brapa.blast,by.x="name",by.y="query")
+Brapa.annotated <- merge(Br.bed[,1:4],brapa.blast,by.x="name",by.y="query",all.x=TRUE)
 Brapa.annotated <- Brapa.annotated[,unlist(strsplit("name chrom start end subject AGI At_symbol At_description perc_ID aln_length mismatch gap_open qstart qend sstart send eval score",split = " "))] # reorder columns 
 Brapa.annotated <- Brapa.annotated[order(Brapa.annotated$chrom, Brapa.annotated$start),] 
 head(Brapa.annotated)

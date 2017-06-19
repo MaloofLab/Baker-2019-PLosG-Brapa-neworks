@@ -1,0 +1,47 @@
+---
+title: "Get_Gene_Expression"
+author: "Julin N Maloof"
+date: "5/29/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Get gene expression values for genes at the MR30 threshold
+
+```{r}
+library(tidyverse)
+```
+
+Get data
+```{r}
+CR.genes <- read_csv("~/Box Sync/BrapaNetworks/MR_CR_graphs_annotation.csv") %>%
+  select(-X1) %>% 
+  filter(MR_Cutoff==30)
+UN.genes <- read_csv("~/Box Sync/BrapaNetworks/MR_UN_graphs_annotation.csv") %>%
+  select(-X1) %>% 
+  filter(MR_Cutoff==30)
+load("~/Box Sync/BrapaNetworks/MR_CR_UN.Rdata")
+```
+
+Are all CR.genes in expr.data?
+```{r}
+CR.genes$name
+setdiff(CR.genes$name,row.names(expr.data.CR))
+UN.genes$name
+setdiff(UN.genes$name,row.names(expr.data.UN))
+```
+
+
+```{r}
+expr.data.CR.30 <- merge(CR.genes, expr.data.CR, by.x="name", by.y=0)
+expr.data.UN.30 <- merge(UN.genes, expr.data.UN, by.x="name", by.y=0)
+```
+
+```{r}
+write.csv(expr.data.CR.30,"~/Box Sync/BrapaNetworks/MR30_CR_Gene_Expression.csv")
+write.csv(expr.data.UN.30,"~/Box Sync/BrapaNetworks/MR30_UN_Gene_Expression.csv")
+```
+
