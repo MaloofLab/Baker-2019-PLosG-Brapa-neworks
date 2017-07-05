@@ -1,0 +1,255 @@
+---
+title: "WGCNA"
+output: html_notebook
+---
+
+WGCNA analysis of sun and shade expression in B. rapa RILs.
+
+```{r}
+library(tidyverse)
+library(WGCNA)
+library(ggplot2)
+library(edgeR)
+library(magrittr)
+library(gplots)
+options(stringsAsFactors = FALSE)
+```
+
+Get data
+```{r}
+#box_load(162362592785)
+load("~/Box Sync/BrapaNetworks/Voom_CR_UN.Rdata")
+annotation  <- read.csv("~/Box Sync/BrapaNetworks/Brapa_V1.5_annotated.csv.gz")
+```
+
+
+```{r}
+RIL.coefs.CR <- grep("RIL",colnames(coef(voom.fit.CR)))
+RIL.pvals.CR <- topTable(voom.fit.CR,coef = RIL.coefs.CR,number = Inf)
+sum(RIL.pvals.CR$adj.P.Val<0.01)
+sum(RIL.pvals.CR$adj.P.Val<10e-05) 
+```
+
+```{r}
+RIL.coefs.UN <- grep("RIL",colnames(coef(voom.fit.UN)))
+RIL.pvals.UN <- topTable(voom.fit.UN,coef = RIL.coefs.UN,number = Inf)
+sum(RIL.pvals.UN$adj.P.Val<0.01)
+sum(RIL.pvals.UN$adj.P.Val<10e-05) 
+```
+So lots of genes are highly significant, especially in UN
+
+Start by taking the top 10000
+
+```{r}
+genes.of.interest.CR <- row.names(RIL.pvals.CR)[1:10000]
+expr.data.CR <- voom.fit.CR$coefficients[genes.of.interest.CR,]
+dim(expr.data.CR)
+head(expr.data.CR[,1:6])
+
+genes.of.interest.UN <- row.names(RIL.pvals.UN)[1:10000]
+expr.data.UN <- voom.fit.UN$coefficients[genes.of.interest.UN,]
+dim(expr.data.UN)
+head(expr.data.UN[,1:6])
+```
+
+
+```{r}
+expr.data.CR[,-1] <- expr.data.CR[,-1] + expr.data.CR[,1] # add the intercept to the coefficients
+colnames(expr.data.CR) <- sub("pdata.CR$RIL","",colnames(expr.data.CR),fixed=TRUE)
+head(expr.data.CR[,1:6])
+
+expr.data.UN[,-1] <- expr.data.UN[,-1] + expr.data.UN[,1] # add the intercept to the coefficients
+colnames(expr.data.UN) <- sub("pdata.UN$RIL","",colnames(expr.data.UN),fixed=TRUE)
+head(expr.data.UN[,1:6])
+```
+
+Get Rob's Data
+```{r}
+blups2011 <- read.csv("~/Box Sync/BrapaNetworks/Brapa2011BayesHeight_blups.csv",row.names = 1)
+blups2012 <- read.csv("~/Box Sync/BrapaNetworks/Brapa2012BayesHeight_blups.csv", row.names = 1)
+blups2011$Line %<>% paste("RIL",.,sep="_")
+blups2012$Line %<>% paste("RIL",.,sep="_")
+blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
+blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
+head(blups2011)
+head(blups2012)
+```
+
+Have decided to use 2012 only...
+```{r}
+#blups.all <- merge(blups2011,blups2012,by="Line",suffixes = c(".2011",".2012"))
+#head(blups.all)
+blups.CR <- blups2012 %>% select(starts_with("Line"),starts_with("CR"),-matches("Inflection_size"))
+head(blups.CR)
+blups.UN <- blups2012 %>% select(starts_with("Line"),starts_with("UN"),-matches("Inflection_size"))
+head(blups.UN)
+```
+
+## WGCNA 
+
+### UN
+
+transform
+```{r}
+head(expr.data.UN[,1:6])
+expr.data.UN.t <- t(expr.data.UN)
+head(expr.data.UN.t[,1:6])
+```
+
+check sample quality
+
+```{r}
+gag.UN <- goodSamplesGenes(expr.data.UN.t, verbose = 3)
+gag.UN$allOK
+```
+
+cluster samples to look for outliers
+
+```{r,fig.width=12}
+sampleTREE.UN <- hclust(dist(expr.data.UN.t), method = "average")
+plot(sampleTREE.UN,cex=.6)
+heatmap.2(expr.data.UN.t,Rowv=as.dendrogram(sampleTREE.UN), scale="col", trace="none")
+```
+So a few samples are different but they don't seem crazy different; leave them in for now.
+
+Soft thresholding
+```{r}
+powers <- c(c(1:10), seq(from = 12, to=20, by=2))
+sft <- pickSoftThreshold(expr.data.UN.t, powerVector = powers, verbose = 5)
+```
+
+```{r}
+sizeGrWindow(9, 5)
+par(mfrow = c(1,2))
+cex1 <- 0.9
+# Scale-free topology fit index as a function of the soft-thresholding power
+plot(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2],
+     xlab="Soft Threshold (power)",ylab="Scale Free Topology Model Fit,signed R^2",type="n",
+     main = paste("Scale independence"))
+text(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2],
+     labels=powers,cex=cex1,col="red")
+# this line corresponds to using an R^2 cut-off of h
+abline(h=0.90,col="red")
+# Mean connectivity as a function of the soft-thresholding power
+plot(sft$fitIndices[,1], sft$fitIndices[,5],
+     xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n",
+     main = paste("Mean connectivity"))
+text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
+```
+
+choose 5
+
+```{r}
+softPower <- 6
+adjacency <- adjacency(expr.data.UN.t, power = softPower)
+# Turn adjacency into topological overlap
+TOM <- TOMsimilarity(adjacency);
+dissTOM <- 1-TOM
+```
+
+```{r}
+# Call the hierarchical clustering function
+geneTree <- hclust(as.dist(dissTOM), method = "average")
+# Plot the resulting clustering tree (dendrogram)
+sizeGrWindow(12,9)
+plot(geneTree, xlab="", sub="", main = "Gene clustering on TOM-based dissimilarity",
+     labels = FALSE, hang = 0.04)
+```
+
+define modules
+
+```{r}
+# We like large modules, so we set the minimum module size relatively high:
+minModuleSize <- 30;
+# Module identification using dynamic tree cut:
+dynamicMods <- cutreeDynamic(dendro = geneTree, distM = dissTOM,
+                             deepSplit <- 2, pamRespectsDendro = FALSE,
+                             minClusterSize = minModuleSize);
+table(dynamicMods)
+```
+
+```{r}
+# Convert numeric lables into colors
+dynamicColors = labels2colors(dynamicMods)
+table(dynamicColors)
+# Plot the dendrogram and colors underneath
+sizeGrWindow(8,6)
+plotDendroAndColors(geneTree, dynamicColors, "Dynamic Tree Cut",
+                    dendroLabels = FALSE, hang = 0.03,
+                    addGuide = TRUE, guideHang = 0.05,
+                    main = "Gene dendrogram and module colors")
+```
+
+merge similar modules
+
+```{r}
+# Calculate eigengenes
+MEList <- moduleEigengenes(expr.data.UN.t, colors = dynamicColors)
+MEs <- MEList$eigengenes
+# Calculate dissimilarity of module eigengenes
+MEDiss <- 1-cor(MEs);
+# Cluster module eigengenes
+METree <- hclust(as.dist(MEDiss), method = "average");
+# Plot the result
+sizeGrWindow(7, 6)
+plot(METree, main = "Clustering of module eigengenes",
+     xlab = "", sub = "")
+```
+
+merge with correlation > 0.8
+```{r}
+MEDissThres = 0.2
+# Plot the cut line into the dendrogram
+plot(METree, main = "Clustering of module eigengenes",
+     xlab = "", sub = "")
+abline(h=MEDissThres, col = "red")
+# Call an automatic merging function
+merge = mergeCloseModules(expr.data.UN.t, dynamicColors, cutHeight = MEDissThres, verbose = 3)
+# The merged module colors
+mergedColors = merge$colors
+# Eigengenes of the new merged modules:
+mergedMEs = merge$newMEs
+```
+
+compare pre and post merge
+```{r}
+sizeGrWindow(12, 9)
+#pdf(file = "Plots/geneDendro-3.pdf", wi = 9, he = 6)
+plotDendroAndColors(geneTree, cbind(dynamicColors, mergedColors),
+c("Dynamic Tree Cut", "Merged dynamic"),
+dendroLabels = FALSE, hang = 0.03,
+addGuide = TRUE, guideHang = 0.05)
+#dev.off()
+```
+
+```{r}
+# Rename to moduleColors
+moduleColors = mergedColors
+# Construct numerical labels corresponding to the colors
+colorOrder = c("grey", standardColors(50));
+moduleLabels = match(moduleColors, colorOrder)-1;
+MEs = mergedMEs
+```
+
+```{r}
+head(MEs)
+dim(MEs)
+dim(blups.UN)
+rownames(expr.data.UN.t)
+rownames(MEs)
+rownames(MEs) <- rownames(expr.data.UN.t)
+head(blups.UN)
+```
+
+```{r}
+ME.blups <- merge(blups.UN,MEs,by.x=1.,by.y=0)
+head(ME.blups)
+```
+
+```{r}
+blups.cor <- cor(ME.blups[,2:6],ME.blups[,7:72])
+max(blups.cor)
+blups.cor[blups.cor<.5] <- NA
+blups.cor
+```
+
