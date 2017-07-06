@@ -30,14 +30,6 @@ sum(RIL.pvals.CR$adj.P.Val<0.01)
 sum(RIL.pvals.CR$adj.P.Val<10e-05) 
 ```
 
-```{r}
-RIL.coefs.UN <- grep("RIL",colnames(coef(voom.fit.UN)))
-RIL.pvals.UN <- topTable(voom.fit.UN,coef = RIL.coefs.UN,number = Inf)
-sum(RIL.pvals.UN$adj.P.Val<0.01)
-sum(RIL.pvals.UN$adj.P.Val<10e-05) 
-```
-So lots of genes are highly significant, especially in UN
-
 Start by taking the top 10000
 
 ```{r}
@@ -45,44 +37,27 @@ genes.of.interest.CR <- row.names(RIL.pvals.CR)[1:10000]
 expr.data.CR <- voom.fit.CR$coefficients[genes.of.interest.CR,]
 dim(expr.data.CR)
 head(expr.data.CR[,1:6])
-
-genes.of.interest.UN <- row.names(RIL.pvals.UN)[1:10000]
-expr.data.UN <- voom.fit.UN$coefficients[genes.of.interest.UN,]
-dim(expr.data.UN)
-head(expr.data.UN[,1:6])
 ```
 
 
 ```{r}
 expr.data.CR[,-1] <- expr.data.CR[,-1] + expr.data.CR[,1] # add the intercept to the coefficients
 colnames(expr.data.CR) <- sub("pdata.CR$RIL","",colnames(expr.data.CR),fixed=TRUE)
+colnames(expr.data.CR)[1] <- "RIL_1"
 head(expr.data.CR[,1:6])
-
-expr.data.UN[,-1] <- expr.data.UN[,-1] + expr.data.UN[,1] # add the intercept to the coefficients
-colnames(expr.data.UN) <- sub("pdata.UN$RIL","",colnames(expr.data.UN),fixed=TRUE)
-head(expr.data.UN[,1:6])
 ```
 
 Get Rob's Data
 ```{r}
-blups2011 <- read.csv("~/Box Sync/BrapaNetworks/Brapa2011BayesHeight_blups.csv",row.names = 1)
 blups2012 <- read.csv("~/Box Sync/BrapaNetworks/Brapa2012BayesHeight_blups.csv", row.names = 1)
-blups2011$Line %<>% paste("RIL",.,sep="_")
 blups2012$Line %<>% paste("RIL",.,sep="_")
-blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
 blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
-head(blups2011)
 head(blups2012)
 ```
 
-Have decided to use 2012 only...
 ```{r}
-#blups.all <- merge(blups2011,blups2012,by="Line",suffixes = c(".2011",".2012"))
-#head(blups.all)
 blups.CR <- blups2012 %>% select(starts_with("Line"),starts_with("CR"),-matches("Inflection_size"))
 head(blups.CR)
-blups.UN <- blups2012 %>% select(starts_with("Line"),starts_with("UN"),-matches("Inflection_size"))
-head(blups.UN)
 ```
 
 ## WGCNA 
@@ -248,8 +223,71 @@ head(ME.blups)
 
 ```{r}
 blups.cor <- cor(ME.blups[,2:6],ME.blups[,7:60])
-max(blups.cor)
-blups.cor[blups.cor<.5] <- NA
-blups.cor
 ```
+
+```{r}
+blups.cor.P <- corPvalueStudent(blups.cor,nrow(expr.data.CR.t))
+blups.cor.sig <- blups.cor
+blups.cor.sig[blups.cor.P>0.05] <- NA
+blups.cor.sig
+```
+
+plot it
+```{r,fig.width=12}
+# Will display correlations and their p-values
+par(mar = c(8, 5, 3, 3));
+# Display the correlation values within a heatmap plot
+labeledHeatmap(Matrix = blups.cor,
+               yLabels = names(blups.CR),
+               xLabels = names(MEs),
+               xSymbols = names(MEs),
+               colorLabels = FALSE,
+               colors = blueWhiteRed(50),
+               #textMatrix = signif(blups.cor.P,2),
+               setStdMargins = FALSE,
+               cex.text = 0.5,
+               zlim = c(-1,1),
+               main = paste("CR Module-trait relationships"))
+
+pdf("Module-trait_heatmap_CR.pdf",height = 8,width = 12)
+par(mar = c(8, 5, 3, 3));
+# Display the correlation values within a heatmap plot
+labeledHeatmap(Matrix = blups.cor,
+               yLabels = names(blups.CR),
+               xLabels = names(MEs),
+               xSymbols = names(MEs),
+               colorLabels = FALSE,
+               colors = blueWhiteRed(50),
+              # textMatrix = textMatrix,
+               setStdMargins = FALSE,
+               cex.text = 0.5,
+               zlim = c(-1,1),
+               main = paste("CR Module-trait relationships"))
+dev.off()
+```
+
+Arbitrary, but let's take the max and min for each trait (so long as they are significant)
+```{r}
+blups.cor.5 <- blups.cor.sig
+
+cor.top <- t(apply(blups.cor.5,1,function(x) {
+  maxx = max(x,na.rm=TRUE)
+  minx = min(x,na.rm=TRUE)
+  ifelse(x == maxx | x == minx, x, NA)
+}
+))
+
+
+cor.top <- cor.top[,apply(cor.top,2,function(x) !all(is.na(x)))]
+cor.top
+write.csv(cor.top,"Eigen_trait_cor_CR_.5_threshold.csv")
+```
+
+write the Eigen genes
+```{r}
+head(MEs[,colnames(cor.top)])
+write.csv(MEs[,colnames(cor.top)],"Top_Eigen_genes_CR.csv")
+```
+
+
 
