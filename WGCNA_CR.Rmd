@@ -3,7 +3,16 @@ title: "WGCNA"
 output: html_notebook
 ---
 
-WGCNA analysis of sun and shade expression in B. rapa RILs.
+WGCNA analysis of CR gene expression in B. rapa RILs.  See separate notebook for UN gene expression.
+
+Lets start with some notes on what WGCNA is doing.  (For more details, see [Zhang and Horvath, 2005](http://www.degruyter.com/view/j/sagmb.2005.4.1/sagmb.2005.4.1.1128/sagmb.2005.4.1.1128.xml;jsessionid=9F14E37B32BBAEB8DD0286D168168E7F) )
+
+1. A correlation coefficient is calculated between all gene pairs.
+2. This is converted to an adjacency matrix.  Unlike typical adjacency matrices (which have values of 0, meaning not connected, or 1, meaning connected, based on some hard threshold) here the adjacency matrix can take any value from 0 to 1.  Thus there is a soft threshold and the connectivity in the adjacency matrix is weighted by the correlations.  Zhang and Horvath discuss different ways to relate the correlation matrix to the adjacency matrix, the default in WGCNA, and what I use, is a power function where the adjacency represent the correlation coefficient raised to some power $\beta$.
+3. The power, $\beta$, is chosen such that the (weighted) connectivity shows a power law topology i.e. R2 of log10(p(k)) ~ log10(k) is > 0.9
+4. Once an adjacency matrix is calculated the the similarity of nodes in the matrix is calculated using a topological overlap matrix (TOM).  See Zhang and Horvath, 2005, for details.  But basically a two nodes have a high TOM if they are connected to each other and to a similar set of other nodes.
+5. To define modules genes are hiearchicaly clustered based on their distance (1-TOM) and a dynamic method is used to define cutoffs from this tree and the dissimilarity matrix.  For more info see [here](https://labs.genetics.ucla.edu/horvath/htdocs/CoexpressionNetwork/BranchCutting/)
+6.  I tshould be noted that Zhang and Horvath provide formula to generalize most network calcualtions (i.e. connectivity, etc) from a 0,1 adjacency matrix to a 0-1 adjacency matrix.
 
 ```{r}
 library(tidyverse)

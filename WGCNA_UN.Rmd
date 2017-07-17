@@ -3,7 +3,9 @@ title: "WGCNA"
 output: html_notebook
 ---
 
-WGCNA analysis of sun and shade expression in B. rapa RILs.
+WGCNA analysis of UN gene expression in B. rapa RILs.
+
+Please see the CR notebook or RMD document for a brief description of what WGCNA is doing along with links where you can learn more.
 
 ```{r}
 library(tidyverse)
