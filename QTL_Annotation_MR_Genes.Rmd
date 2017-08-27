@@ -1,5 +1,5 @@
 ---
-title: "QTL Candidate Annotation"
+title: "QTL Candidate Annotation for MR network"
 output: html_notebook
 ---
 
