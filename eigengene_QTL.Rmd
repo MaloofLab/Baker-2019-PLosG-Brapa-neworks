@@ -1,0 +1,54 @@
+---
+title: "Eigen gene QTL"
+output: html_notebook
+---
+
+What are the QTL for eigen genes?
+
+Eigen genes were computed from WGCNA clusters. I am taking the top eigen genes that were correlated with growth model traits and determining eQTL for these
+
+```{r}
+library(tidyverse)
+library(qtl)
+library(stringr)
+```
+
+## get cross ingo
+
+### get eigen genes and format for qtl
+
+```{r}
+eigen.CR <- read_csv("Top_Eigen_genes_CR.csv")
+colnames(eigen.CR)[-1] <- str_c("CR_",colnames(eigen.CR)[-1])
+  
+eigen.UN <- read_csv("Top_Eigen_genes_UN.csv")
+colnames(eigen.UN)[-1] <- str_c("UN_",colnames(eigen.UN)[-1])
+
+eigen.all <- full_join(eigen.CR, eigen.UN)
+
+eigen.all.t <- eigen.all %>%
+  select(-X1) %>%
+  t() %>%
+  as_tibble %>%
+  mutate(id=colnames(eigen.all)[-1]) %>%
+  select(id,everything())
+
+colnames(eigen.all.t)[-1] <- eigen.all$X1
+
+eigen.all.t
+```
+
+```{r}
+write_csv(eigen.all.t,"Top_Eigen_genes_qtl_input.csv")
+```
+
+
+### 
+
+```{r}
+cross.CR <- read.cross("csvsr", 
+                       genfile="../brassica_genetic_map_paper/output/snp_map_rqtl_Mbp_ref1.5.2_cross_output_gen.csv" , 
+	                       phefile="Top_Eigen_genes_qtl_input.csv", 
+	                       genotypes=c("AA","BB"), na.strings = "-")
+```
+
