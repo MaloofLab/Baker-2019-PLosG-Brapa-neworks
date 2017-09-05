@@ -3,11 +3,17 @@ title: "QTL Candidate Annotation for MR network"
 output: html_notebook
 ---
 
-Goal: annotate candidate QTL genes with:
+## Background
+
+Rob Baker et al fit growth parameters to B. rapa growth data and then used those to do function-value-trait QTL mapping and to find genes under those peaks
+
+I used that same function-value-trait data to query a mutual rank (MR) gene expression network that I had built.  This returned genes that were in a networks associated with the growth paramters.  This was done separeately for the CR and UN environments.
+
+Here I want to annotate candidate QTL genes with:
 
 1. Are any network genes under the QTL peaks?  I have used Mutual Rank to define gene networks around the plant growth traits.  I am curious as to whether or not any of the genes in these networks underlie QTLs for these traits.
 
-2. The degree of differential expression among the lines.
+2. The degree of differential expression among the lines for the growth QTL genes.
 
 ```{r}
 library(tidyverse)
@@ -76,4 +82,3 @@ QTLgenes <- merge(QTLgenes, RIL.pvals.CR, by.x="name", by.y=0,all.x = TRUE, all.
 ```{r}
 write_csv(QTLgenes,"~/Box Sync/BrapaNetworks/Heigh2012_uniquegenes_DE_MR.csv")
 ```
-
