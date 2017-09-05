@@ -40,6 +40,7 @@ pl.CR <- scanone.gather %>% filter(condition=="CR") %>%
   theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
   ggtitle("CR Eigen Gene QTL")
 pl.CR
+ggsave("eigen gene eQTL CR.pdf",width=12,height=8)
 ```
 
 ```{r}
@@ -51,6 +52,7 @@ pl.CR
   theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
   ggtitle("UN Eigen Gene QTL")
 pl.UN
+ggsave("eigen gene eQTL UN.pdf",width=12,height=8)
 ```
 
 All together

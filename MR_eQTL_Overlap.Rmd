@@ -81,6 +81,7 @@ pl.CR <- scanone_CR_gather %>%
   theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
   ggtitle("MR gene eQTL")
 pl.CR
+ggsave("MR gene eQTL CR.pdf",width=12,height=8)
 ```
 
 
@@ -145,6 +146,7 @@ pl.UN <- scanone_UN_gather %>%
   theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
   ggtitle("MR gene eQTL")
 pl.UN
+ggsave("MR gene eQTL UN.pdf",width=12,height=8)
 ```
 
 
