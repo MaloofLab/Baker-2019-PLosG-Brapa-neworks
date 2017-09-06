@@ -298,5 +298,9 @@ head(MEs[,colnames(cor.top)])
 write.csv(MEs[,colnames(cor.top)],"Top_Eigen_genes_CR.csv")
 ```
 
+write all Eigen genes
+```{r}
+write.csv(MEs,"All_Eigen_genes_CR.csv")
+```
 
 
