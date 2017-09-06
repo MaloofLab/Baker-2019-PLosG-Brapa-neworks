@@ -6,6 +6,7 @@ I have taken two approaches: using mutual ranks and using WGCNA.
 
 The main scripts are the .RMD files. 
 
+* `Process Counts.Rmd` starts from RNAseq counts, normalizes and voom transforms in preparation for network building.
 * `MR Clustering CR UN.Rmd` Builds mutual rank networks centered on traits of interest
 * `WGCNA_CR.Rmd` and `WGCNA_UN.Rmd` build WGCNA networks (CR is for data in the CRowded treatment and UN is for data from the UNcrowded treatment)
 * `QTL_Annotation_MR_Genes.Rmd` looks for overlaps betweeen network genes and QTL
