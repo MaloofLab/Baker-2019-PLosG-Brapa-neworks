@@ -145,7 +145,7 @@ annotation <- read.csv("Brapa_V1.5_annotated.csv",row.names=1,as.is = TRUE)
 
 ```{r mr_subgraphs, echo=FALSE, cache.lazy=FALSE, warning=FALSE, eval=TRUE }
 get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NULL,neighborhood,order=1) {
-  #function to extract LFY graph at a specificed correlation cutoff
+  #function to extract graph at a specificed correlation cutoff
   gene.mr.tmp <- mr.matrix
   gene.mr.tmp[abs(gene.mr.tmp) > mr.cutoff] <- 0
   gene.mr.tmp[is.na(gene.mr.tmp)] <- 0 #important! otherwise vertices with NA edges are connected
@@ -176,7 +176,7 @@ get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NULL,neighborhood,ord
 ```
 
 ## Get blup networks at different MR thresholds
-Use different MR thresholds of 10 to 210 (absolute values) to build the network (genes with a correlation higher than the threshold were considered connected).  I then subset the network to take all genes "directly" connected to LFY.
+Use different MR thresholds of 10 to 210 (absolute values) to build the network (genes with a correlation higher than the threshold were considered connected).  Then subset the network to take all genes "directly" connected to a FVT
 
 ```{r lfy_sub, echo=FALSE, eval=TRUE}
 cutoffs <- c(10,20,30,50,80)
