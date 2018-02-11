@@ -85,7 +85,7 @@ head(blups2011)
 head(blups2012)
 ```
 
-Have decided to use 2012 only...
+Have decided to use 2012 BLUPs only...
 ```{r}
 #blups.all <- merge(blups2011,blups2012,by="Line",suffixes = c(".2011",".2012"))
 #head(blups.all)
@@ -176,7 +176,7 @@ get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NULL,neighborhood,ord
 ```
 
 ## Get blup networks at different MR thresholds
-Use different MR thresholds of 10 to 210 (absolute values) to build the network (genes with a correlation higher than the threshold were considered connected).  Then subset the network to take all genes "directly" connected to a FVT
+Use different MR thresholds of 10 to 80 (absolute values) to build the network (genes with a correlation higher than the threshold were considered connected).  Then subset the network to take all genes "directly" connected to a FVT
 
 ```{r lfy_sub, echo=FALSE, eval=TRUE}
 cutoffs <- c(10,20,30,50,80)

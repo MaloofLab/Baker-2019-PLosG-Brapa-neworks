@@ -205,7 +205,11 @@ moduleColors = mergedColors
 # Construct numerical labels corresponding to the colors
 colorOrder = c("grey", standardColors(50));
 moduleLabels = match(moduleColors, colorOrder)-1;
-MEs = mergedMEs
+MEs = mergedMEs 
+table(merge$colors)
+length(table(merge$colors))
+median(table(merge$colors))
+
 ```
 
 ```{r}

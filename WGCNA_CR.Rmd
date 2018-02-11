@@ -193,6 +193,9 @@ merge = mergeCloseModules(expr.data.CR.t, dynamicColors, cutHeight = MEDissThres
 mergedColors = merge$colors
 # Eigengenes of the new merged modules:
 mergedMEs = merge$newMEs
+table(merge$colors)
+length(table(merge$colors))
+median(table(merge$colors))
 ```
 
 compare pre and post merge
