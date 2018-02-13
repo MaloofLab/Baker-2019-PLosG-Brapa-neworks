@@ -1,6 +1,8 @@
 ---
 title: "WGCNA"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 WGCNA analysis of CR gene expression in B. rapa RILs.  See separate notebook for UN gene expression.

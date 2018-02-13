@@ -33,6 +33,7 @@ annotation  <- read.csv("~/Box Sync/BrapaNetworks/Brapa_V1.5_annotated.csv.gz")
 ```{r}
 RIL.coefs.CR <- grep("RIL",colnames(coef(voom.fit.CR)))
 RIL.pvals.CR <- topTable(voom.fit.CR,coef = RIL.coefs.CR,number = Inf)
+nrow(RIL.pvals.CR)
 sum(RIL.pvals.CR$adj.P.Val<0.01)
 sum(RIL.pvals.CR$adj.P.Val<10e-05) 
 ```
@@ -40,10 +41,22 @@ sum(RIL.pvals.CR$adj.P.Val<10e-05)
 ```{r}
 RIL.coefs.UN <- grep("RIL",colnames(coef(voom.fit.UN)))
 RIL.pvals.UN <- topTable(voom.fit.UN,coef = RIL.coefs.UN,number = Inf)
+nrow(RIL.pvals.UN)
 sum(RIL.pvals.UN$adj.P.Val<0.01)
 sum(RIL.pvals.UN$adj.P.Val<10e-05) 
 ```
-So lots of genes are highly significant, especially in UN
+
+Intersection of all FDR < 0.01 genes:
+
+```{r}
+length(intersect(rownames(topTable(voom.fit.UN,coef = RIL.coefs.UN,number = Inf,p.value = 0.01)),
+                 rownames(topTable(voom.fit.CR,coef = RIL.coefs.CR,number = Inf,p.value = 0.01))
+))
+                 
+```
+
+
+In any case, lots of genes are highly significant, especially in UN
 
 Start by taking the top 10000
 
