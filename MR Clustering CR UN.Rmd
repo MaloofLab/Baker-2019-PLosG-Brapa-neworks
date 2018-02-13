@@ -1,6 +1,8 @@
 ---
 title: "Cr and UN Mutual Rank Clustering"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 Notebook for generating mutual rank (MR) clusters from the CR and UN data separately.
@@ -305,7 +307,7 @@ sapply(blup.mr.graphs.CR,function(graph) sum(grepl("^Bra",graph$nodes)))
 ```
 
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 permutations <- 100
 
 sfInit(parallel=TRUE,cpus = 4)
