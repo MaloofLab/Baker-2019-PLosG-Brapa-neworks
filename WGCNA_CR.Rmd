@@ -1,8 +1,6 @@
 ---
-title: "WGCNA"
-output:
-  html_document:
-    df_print: paged
+title: "WGCNA CR"
+output: html_notebook
 ---
 
 WGCNA analysis of CR gene expression in B. rapa RILs.  See separate notebook for UN gene expression.
@@ -318,5 +316,106 @@ write.csv(MEs,"All_Eigen_genes_CR.csv")
 save WGCNA info
 
 ```{r}
-save(annotation,blups.cor,blups.cor.5,blups.cor.P,blups.cor.sig,moduleColors,MEs,file="~/Box Sync/BrapaNetworks/WGCNA_CR.Rdata")
+save(annotation,blups.cor,blups.cor.5,blups.cor.P,blups.cor.sig,moduleColors,MEs,merge,expr.data.CR.t,
+     file="~/Box Sync/BrapaNetworks/WGCNA_CR.Rdata")
 ```
+
+## GO enrichment for each signficant cluster
+
+```{r}
+load("~/Box Sync/BrapaNetworks/WGCNA_CR.Rdata")
+module_genes <- tibble(GeneID=colnames(expr.data.CR.t), module=moduleColors)
+module_genes
+```
+
+Get GO list and gene lengths
+```{r, engine='bash', eval=FALSE}
+wget http://www.g3journal.org/content/suppl/2014/08/12/g3.114.012526.DC1/FileS11.txt
+wget http://jnmaloof.github.io/BIS180L_web/data/Brapa_CDS_lengths.txt
+```
+
+
+```{r}
+library(goseq)
+library(tidyverse)
+library(stringr)
+```
+
+Format data for GOseq
+```{r}
+go.terms <- read.delim("FileS11.txt",header=FALSE,as.is=TRUE)
+head(go.terms)
+names(go.terms) <- c("GeneID","GO")
+summary(go.terms)
+
+gene.lengths <- read.table("Brapa_CDS_lengths.txt",as.is=TRUE)
+head(gene.lengths)
+summary(gene.lengths)
+
+#For this analysis the "Universe" will be all 10000 genes used as input to WGCNA, and the test set will be each module that showed a significant correlation with a FVT blup.
+
+#we need to reduce the gene.length data to only contain entries for those genes in our universe.  We also need this as a vector
+gene.lengths.module <- gene.lengths %>% 
+  semi_join(module_genes,by="GeneID")
+
+gene.lengths.vector <- as.vector(gene.lengths.module$Length)
+names(gene.lengths.vector) <- gene.lengths.module$GeneID
+
+#Do the reverse to make sure everything matches up (it seems that we don't have length info for some genes?)
+
+module_genes <- semi_join(module_genes,gene.lengths.module)
+```
+
+Format go.terms for goseq. We want them in list format, and we need to separate the terms into separate elements.
+```{r}
+go.list <- strsplit(go.terms$GO,split=",")
+names(go.list) <- go.terms$GeneID
+head(go.list)
+```
+
+Now we will loop through each significant module
+
+First, get the sig modules
+```{r}
+sig.modules <- colnames(blups.cor.P) %>%
+  magrittr::extract(apply(blups.cor.P,2,function(x) any(x < 0.05))) %>%
+  str_replace("ME","")
+sig.modules
+```
+
+
+Format module data for goseq. We need a vector for each gene with 1 indicating module membership and 0 indicating not in module 
+```{r}
+file.remove("~/Box Sync/BrapaNetworks/_Figures_Tables_For_Paper/SupTable_JM4_WGCNA_CR_GO.csv")
+
+GO.results <- lapply(sig.modules, function(module) {
+  module01 <- module_genes$module %>% str_detect(module) %>% as.numeric()
+  names(module01) <- module_genes$GeneID 
+  
+  #determines if there is bias due to gene length.
+  nullp.result.tmp <- nullp(DEgenes = module01,bias.data = gene.lengths.vector,plot.fit = FALSE)
+  
+  #calculate p-values for each GO term
+  GO.out.tmp <- goseq(pwf = nullp.result.tmp,gene2cat = go.list,test.cats=("GO:BP"))
+  
+  #Keep CC and BP
+  GO.out.tmp <- GO.out.tmp[GO.out.tmp$ontology=="BP" | GO.out.tmp$ontology=="CC",]
+  
+  #Calculate FDR
+  GO.out.tmp <- GO.out.tmp %>% as.tibble() %>%
+    mutate(FDR=p.adjust(over_represented_pvalue, method = "fdr"),module=module) %>%
+    filter(FDR < 0.05) %>%
+    select(module,term,ontology,FDR,over_represented_pvalue,everything()) 
+  
+  write_csv(GO.out.tmp,path = "~/Box Sync/BrapaNetworks/_Figures_Tables_For_Paper/SupTable_JM5_WGCNA__CR_GO.csv",append = TRUE)
+  
+  GO.out.tmp
+})
+names(GO.results) <- sig.modules
+```
+
+```{r}
+GO.results
+```
+
+
