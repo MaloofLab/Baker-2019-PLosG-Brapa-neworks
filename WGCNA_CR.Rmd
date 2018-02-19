@@ -240,10 +240,18 @@ blups.cor <- cor(ME.blups[,2:6],ME.blups[,7:60])
 ```
 
 ```{r}
-blups.cor.P <- corPvalueStudent(blups.cor,nrow(expr.data.CR.t))
+blups.cor.P <- corPvalueStudent(blups.cor,nrow(expr.data.CR.t)) %>%
+  p.adjust() %>% #using "holm" method.  For relaxed stringency could use "fdr"
+  matrix(nrow=nrow(blups.cor),
+         dimnames = dimnames(blups.cor))
+
+sum(blups.cor.P < 0.05)
+
 blups.cor.sig <- blups.cor
 blups.cor.sig[blups.cor.P>0.05] <- NA
 blups.cor.sig
+
+p.asterisk <- ifelse(blups.cor.P < 0.05, "*","")
 ```
 
 plot it
@@ -257,9 +265,8 @@ labeledHeatmap(Matrix = blups.cor,
                xSymbols = names(MEs),
                colorLabels = FALSE,
                colors = blueWhiteRed(50),
-               #textMatrix = signif(blups.cor.P,2),
+               textMatrix = p.asterisk,
                setStdMargins = FALSE,
-               cex.text = 0.5,
                zlim = c(-1,1),
                main = paste("CR Module-trait relationships"))
 
@@ -272,9 +279,8 @@ labeledHeatmap(Matrix = blups.cor,
                xSymbols = names(MEs),
                colorLabels = FALSE,
                colors = blueWhiteRed(50),
-              # textMatrix = textMatrix,
+               textMatrix = p.asterisk,
                setStdMargins = FALSE,
-               cex.text = 0.5,
                zlim = c(-1,1),
                main = paste("CR Module-trait relationships"))
 dev.off()
@@ -309,3 +315,8 @@ write.csv(MEs,"All_Eigen_genes_CR.csv")
 ```
 
 
+save WGCNA info
+
+```{r}
+save(annotation,blups.cor,blups.cor.5,blups.cor.P,blups.cor.sig,moduleColors,MEs,file="~/Box Sync/BrapaNetworks/WGCNA_CR.Rdata")
+```
