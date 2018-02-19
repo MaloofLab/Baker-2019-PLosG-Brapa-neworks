@@ -258,7 +258,7 @@ plot it
 par(mar = c(8, 5, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
-               yLabels = names(blups.CR),
+               yLabels = names(blups.CR[-1]),
                xLabels = names(MEs),
                xSymbols = names(MEs),
                colorLabels = FALSE,
@@ -272,7 +272,7 @@ pdf("Module-trait_heatmap_CR.pdf",height = 8,width = 12)
 par(mar = c(8, 5, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
-               yLabels = names(blups.CR),
+               yLabels = names(blups.CR)[-1],
                xLabels = names(MEs),
                xSymbols = names(MEs),
                colorLabels = FALSE,
@@ -407,7 +407,7 @@ GO.results <- lapply(sig.modules, function(module) {
     filter(FDR < 0.05) %>%
     select(module,term,ontology,FDR,over_represented_pvalue,everything()) 
   
-  write_csv(GO.out.tmp,path = "~/Box Sync/BrapaNetworks/_Figures_Tables_For_Paper/SupTable_JM5_WGCNA__CR_GO.csv",append = TRUE)
+  write_csv(GO.out.tmp,path = "~/Box Sync/BrapaNetworks/_Figures_Tables_For_Paper/SupTable_JM4_WGCNA_CR_GO.csv",append = TRUE)
   
   GO.out.tmp
 })

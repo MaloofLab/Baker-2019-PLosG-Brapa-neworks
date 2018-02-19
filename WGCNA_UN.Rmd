@@ -255,7 +255,7 @@ plot it
 par(mar = c(8, 5, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
-               yLabels = names(blups.UN),
+               yLabels = names(blups.UN)[-1],
                xLabels = names(MEs),
                xSymbols = names(MEs),
                colorLabels = FALSE,
@@ -270,7 +270,7 @@ pdf("Module-trait_heatmap_UN.pdf",height = 8,width = 12)
 par(mar = c(8, 5, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
-               yLabels = names(blups.UN),
+               yLabels = names(blups.UN)[-1],
                xLabels = names(MEs),
                xSymbols = names(MEs),
                colorLabels = FALSE,
