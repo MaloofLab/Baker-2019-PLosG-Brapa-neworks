@@ -21,6 +21,7 @@ library(ggplot2)
 library(edgeR)
 library(magrittr)
 library(gplots)
+library(stringr)
 options(stringsAsFactors = FALSE)
 ```
 
@@ -416,6 +417,54 @@ names(GO.results) <- sig.modules
 
 ```{r}
 GO.results
+```
+
+## Eigen genes vs gene expression
+
+Eigen genes are the first PC.  Do these always positively track gene expression in the cluster?
+
+Want to make plots that show gene expression and eigen genes for each "significant" cluster.
+
+```{r}
+pdf("eigenplots.pdf",width = 12, height = 8)
+for (this.module in sig.modules) {
+this.ME <- MEs %>% 
+  select(paste0("ME",this.module)) %>% 
+  scale() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("RIL") %>% 
+  rename_at(2,str_replace,"ME","")
+genes.this.module <- module_genes %>% filter(module==this.module)
+expression.this.module <- expr.data.CR.t[,genes.this.module$GeneID] %>% 
+  scale() %>%
+  as.data.frame() %>% 
+  rownames_to_column("RIL") %>% 
+  as_tibble() %>%
+  inner_join(this.ME) %>%
+  arrange(.data[[this.module]]) %>% 
+  mutate(index=row_number()) %>%
+  gather(key="gene",value = "expression",-RIL, - index) %>%
+  mutate(eigen=gene==this.module)
+
+expression.this.module
+
+low.alpha <- 7/nrow(genes.this.module)
+
+pl <- expression.this.module %>%
+  ggplot(aes(x=index,y=expression,group=gene)) +
+  geom_line(aes(alpha=eigen,color=eigen)) +
+  scale_alpha_discrete(range = c(low.alpha,1)) +
+  xlab("RIL") +
+  ggtitle(this.module)
+
+print(pl)
+
+}
+dev.off()
+```
+
+```{r}
+pl <- expression.this.module
 ```
 
 
