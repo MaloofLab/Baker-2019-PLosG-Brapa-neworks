@@ -99,8 +99,8 @@ So a few samples are different but they don't seem crazy different; leave them i
 
 Soft thresholding
 ```{r}
-powers <- c(c(1:10), seq(from = 12, to=20, by=2))
-sft <- pickSoftThreshold(expr.data.CR.t, powerVector = powers, verbose = 5)
+powers <- c(c(1:11), seq(from = 12, to=20, by=2))
+sft <- pickSoftThreshold(expr.data.CR.t, powerVector = powers, verbose = 5, networkType = "signed hybrid", moreNetworkConcepts = FALSE)
 ```
 
 ```{r}
@@ -122,11 +122,11 @@ plot(sft$fitIndices[,1], sft$fitIndices[,5],
 text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
 ```
 
-choose 7
+choose 7.  This gives the best correlations with growth parameters
 
 ```{r}
 softPower <- 7
-adjacency <- adjacency(expr.data.CR.t, power = softPower)
+adjacency <- adjacency(expr.data.CR.t, power = softPower, type= "signed hybrid")
 # Turn adjacency into topological overlap
 TOM <- TOMsimilarity(adjacency);
 dissTOM <- 1-TOM
@@ -235,7 +235,7 @@ head(ME.blups)
 ```
 
 ```{r}
-blups.cor <- cor(ME.blups[,2:6],ME.blups[,7:60])
+blups.cor <- cor(ME.blups[,2:6],ME.blups[,7:ncol(ME.blups)])
 ```
 
 ```{r}
@@ -426,7 +426,7 @@ Eigen genes are the first PC.  Do these always positively track gene expression 
 Want to make plots that show gene expression and eigen genes for each "significant" cluster.
 
 ```{r}
-pdf("eigenplots.pdf",width = 12, height = 8)
+pdf("eigenplots_CR.pdf",width = 12, height = 8)
 for (this.module in sig.modules) {
 this.ME <- MEs %>% 
   select(paste0("ME",this.module)) %>% 
@@ -454,6 +454,7 @@ pl <- expression.this.module %>%
   ggplot(aes(x=index,y=expression,group=gene)) +
   geom_line(aes(alpha=eigen,color=eigen)) +
   scale_alpha_discrete(range = c(low.alpha,1)) +
+  scale_color_manual(values=c("red","blue")) +
   xlab("RIL") +
   ggtitle(this.module)
 
@@ -463,8 +464,5 @@ print(pl)
 dev.off()
 ```
 
-```{r}
-pl <- expression.this.module
-```
 
 

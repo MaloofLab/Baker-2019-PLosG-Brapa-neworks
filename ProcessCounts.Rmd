@@ -81,7 +81,7 @@ box_save(counts,counts.dge,file_name = "NormalizedCounts.RData")
 ```{r}
 counts.voom <- voom(counts.dge,design = design)
 save(counts.voom, file = "CountsVoom.Rdata")
-box_save(counts.voom,file_name = "CountsVoom.Rdata")
+#box_save(counts.voom,file_name = "CountsVoom.Rdata")
 ```
 
 ```{r}
@@ -109,8 +109,27 @@ Fitted values additiive
 voom.fit <- lmFit(counts.voom,design=design)
 voom.fit <- eBayes(voom.fit)
 voom.topTable <- topTableF(voom.fit,number=Inf)
-save(counts.voom, voom.fit, voom.topTable, file="voom.Rdata")
+save(counts.voom, voom.fit, voom.topTable, counts.dge, design, file="~/Box Sync/BrapaNetworks/voom.Rdata")
 ```
+
+
+## Alternate, don't do additive model, do group model.  
+The additive model ignores any gt x trt effect.  the interactive model won't fit.  So lets just get per group estimates for downstream use in WGCNA
+
+```{r}
+design.gr <- model.matrix(~ 0 + pdata$group)
+counts.dge.gr <- estimateDisp(counts.dge,design = design.gr)
+```
+
+```{r}
+counts.voom.gr <- voom(counts.dge.gr,design = design.gr)
+voom.fit.gr <- lmFit(counts.voom.gr,design=design.gr)
+voom.fit.gr <- eBayes(voom.fit.gr)
+voom.topTable.gr <- topTableF(voom.fit.gr,number=Inf)
+save(counts.voom.gr, voom.fit.gr, voom.topTable.gr, counts.dge.gr, design.gr, file="~/Box Sync/BrapaNetworks/voom.gr.Rdata")
+```
+
+
 
 Fitted values interaction
 

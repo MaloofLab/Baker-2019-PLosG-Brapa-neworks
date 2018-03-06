@@ -92,7 +92,7 @@ So a few samples are different but they don't seem crazy different; leave them i
 Soft thresholding
 ```{r}
 powers <- c(c(1:10), seq(from = 12, to=20, by=2))
-sft <- pickSoftThreshold(expr.data.UN.t, powerVector = powers, verbose = 5)
+sft <- pickSoftThreshold(expr.data.UN.t, powerVector = powers, verbose = 5,networkType = "signed hybrid")
 ```
 
 ```{r}
@@ -118,7 +118,7 @@ choose 5
 
 ```{r}
 softPower <- 5
-adjacency <- adjacency(expr.data.UN.t, power = softPower)
+adjacency <- adjacency(expr.data.UN.t, power = softPower, type = "signed hybrid")
 # Turn adjacency into topological overlap
 TOM <- TOMsimilarity(adjacency);
 dissTOM <- 1-TOM

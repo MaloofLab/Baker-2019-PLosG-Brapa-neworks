@@ -1,0 +1,539 @@
+---
+title: "WGCNA All"
+output: html_notebook
+---
+
+WGCNA analysis of combined UN and CR gene expression in B. rapa RILs.
+
+Lets start with some notes on what WGCNA is doing.  (For more details, see [Zhang and Horvath, 2005](http://www.degruyter.com/view/j/sagmb.2005.4.1/sagmb.2005.4.1.1128/sagmb.2005.4.1.1128.xml;jsessionid=9F14E37B32BBAEB8DD0286D168168E7F) )
+
+1. A correlation coefficient is calculated between all gene pairs.
+2. This is converted to an adjacency matrix.  Unlike typical adjacency matrices (which have values of 0, meaning not connected, or 1, meaning connected, based on some hard threshold) here the adjacency matrix can take any value from 0 to 1.  Thus there is a soft threshold and the connectivity in the adjacency matrix is weighted by the correlations.  Zhang and Horvath discuss different ways to relate the correlation matrix to the adjacency matrix, the default in WGCNA, and what I use, is a power function where the adjacency represent the correlation coefficient raised to some power $\beta$.
+3. The power, $\beta$, is chosen such that the (weighted) connectivity shows a power law topology i.e. R2 of log10(p(k)) ~ log10(k) is > 0.9
+4. Once an adjacency matrix is calculated the the similarity of nodes in the matrix is calculated using a topological overlap matrix (TOM).  See Zhang and Horvath, 2005, for details.  But basically a two nodes have a high TOM if they are connected to each other and to a similar set of other nodes.
+5. To define modules genes are hiearchicaly clustered based on their distance (1-TOM) and a dynamic method is used to define cutoffs from this tree and the dissimilarity matrix.  For more info see [here](https://labs.genetics.ucla.edu/horvath/htdocs/CoexpressionNetwork/BranchCutting/)
+6.  I tshould be noted that Zhang and Horvath provide formula to generalize most network calcualtions (i.e. connectivity, etc) from a 0,1 adjacency matrix to a 0-1 adjacency matrix.
+
+```{r}
+library(tidyverse)
+library(WGCNA)
+library(ggplot2)
+library(edgeR)
+library(magrittr)
+library(gplots)
+library(stringr)
+options(stringsAsFactors = FALSE)
+```
+
+Get data
+```{r}
+#box_load(162362592785)
+load("~/Box Sync/BrapaNetworks/voom.gr.Rdata")
+annotation  <- read.csv("~/Box Sync/BrapaNetworks/Brapa_V1.5_annotated.csv.gz")
+```
+
+Since I fit without an intercept the p-values are meaningless.  Instead, let's calculate the coefficient of variation and take the top 10,000.
+```{r}
+expr.data <- voom.fit.gr$coefficients
+dim(expr.data)
+head(expr.data[,1:6])
+colnames(expr.data) <- colnames(expr.data) %>% str_replace("pdata\\$group","")
+colnames(expr.data)
+summary(t(expr.data[1:6,]))
+cv <- apply(expr.data,1,function(x) {
+  x <- x - min(x) # scale to get above 0
+  (sd(x)/abs(mean(x)))*100
+})
+summary(cv)
+hist((cv))
+cutoff <- sort(cv,decreasing = TRUE)[10000]
+expr.data <- expr.data[cv >= cutoff,]
+dim(expr.data)
+```
+
+Get Rob's Data
+```{r}
+blups2012 <- read.csv("~/Box Sync/BrapaNetworks/Brapa2012BayesHeight_blups.csv", row.names = 1)
+blups2012$Line %<>% paste("RIL",.,sep="_")
+blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
+head(blups2012)
+```
+
+```{r}
+blups.CR <- blups2012 %>% select(starts_with("Line"),starts_with("CR"),-matches("Inflection_size"))  %>%
+  mutate(Line=str_c(Line,"_CR"))
+head(blups.CR)
+
+blups.UN <- blups2012 %>% select(starts_with("Line"),starts_with("UN"),-matches("Inflection_size"))  %>%
+  mutate(Line=str_c(Line,"_UN"))
+head(blups.CR)
+```
+
+## WGCNA 
+
+transform
+```{r}
+head(expr.data[,1:6])
+expr.data.t <- t(expr.data)
+head(expr.data.t[,1:6])
+```
+
+check sample quality
+
+```{r}
+gag <- goodSamplesGenes(expr.data.t, verbose = 3)
+gag$allOK
+```
+
+cluster samples to look for outliers
+
+```{r,fig.width=12}
+sampleTREE <- hclust(dist(expr.data.t), method = "average")
+plot(sampleTREE,cex=.6)
+heatmap.2(expr.data.t,Rowv=as.dendrogram(sampleTREE), scale="col", trace="none")
+```
+
+The first 6 are really different, remove
+```{r}
+bad.samples <- sampleTREE$labels[sampleTREE$order[1:6]]
+bad.samples
+expr.data.t <- expr.data.t[-sampleTREE$order[1:6],]
+```
+
+redo clustering
+```{r,fig.width=12}
+sampleTREE <- hclust(dist(expr.data.t), method = "average")
+plot(sampleTREE,cex=.6)
+heatmap.2(expr.data.t,Rowv=as.dendrogram(sampleTREE), scale="col", trace="none")
+```
+
+Soft thresholding
+```{r}
+powers <- c(c(1:11), seq(from = 12, to=20, by=2))
+sft <- pickSoftThreshold(expr.data.t, powerVector = powers, verbose = 5, networkType = "signed hybrid", moreNetworkConcepts = FALSE)
+```
+
+```{r}
+sizeGrWindow(9, 5)
+par(mfrow = c(1,2))
+cex1 <- 0.9
+# Scale-free topology fit index as a fCRction of the soft-thresholding power
+plot(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2],
+     xlab="Soft Threshold (power)",ylab="Scale Free Topology Model Fit,signed R^2",type="n",
+     main = paste("Scale independence"))
+text(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2],
+     labels=powers,cex=cex1,col="red")
+# this line corresponds to using an R^2 cut-off of h
+abline(h=0.90,col="red")
+# Mean connectivity as a function of the soft-thresholding power
+plot(sft$fitIndices[,1], sft$fitIndices[,5],
+     xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n",
+     main = paste("Mean connectivity"))
+text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
+```
+
+
+
+
+
+choose 2  This gives the best correlations with growth parameters
+
+```{r}
+softPower <- 2
+adjacency <- adjacency(expr.data.t, power = softPower, type= "signed hybrid")
+# Turn adjacency into topological overlap
+TOM <- TOMsimilarity(adjacency);
+dissTOM <- 1-TOM
+```
+
+```{r}
+# Call the hierarchical clustering function
+geneTree <- hclust(as.dist(dissTOM), method = "average")
+# Plot the resulting clustering tree (dendrogram)
+sizeGrWindow(12,9)
+plot(geneTree, xlab="", sub="", main = "Gene clustering on TOM-based dissimilarity",
+     labels = FALSE, hang = 0.04)
+```
+
+define modules
+
+```{r}
+# We like large modules, so we set the minimum module size relatively high:
+minModuleSize <- 30;
+# Module identification using dynamic tree cut:
+dynamicMods <- cutreeDynamic(dendro = geneTree, distM = dissTOM,
+                             deepSplit <- 2, pamRespectsDendro = FALSE,
+                             minClusterSize = minModuleSize);
+table(dynamicMods)
+```
+
+```{r}
+# Convert numeric lables into colors
+dynamicColors = labels2colors(dynamicMods)
+table(dynamicColors)
+# Plot the dendrogram and colors CRderneath
+sizeGrWindow(8,6)
+plotDendroAndColors(geneTree, dynamicColors, "Dynamic Tree Cut",
+                    dendroLabels = FALSE, hang = 0.03,
+                    addGuide = TRUE, guideHang = 0.05,
+                    main = "Gene dendrogram and module colors")
+```
+
+merge similar modules
+
+```{r}
+# Calculate eigengenes
+MEList <- moduleEigengenes(expr.data.t, colors = dynamicColors)
+MEs <- MEList$eigengenes
+# Calculate dissimilarity of module eigengenes
+MEDiss <- 1-cor(MEs);
+# Cluster module eigengenes
+METree <- hclust(as.dist(MEDiss), method = "average");
+# Plot the result
+sizeGrWindow(7, 6)
+plot(METree, main = "Clustering of module eigengenes",
+     xlab = "", sub = "")
+```
+
+merge with correlation > 0.8
+```{r}
+MEDissThres = 0.2
+# Plot the cut line into the dendrogram
+plot(METree, main = "Clustering of module eigengenes",
+     xlab = "", sub = "")
+abline(h=MEDissThres, col = "red")
+# Call an automatic merging fCRction
+merge = mergeCloseModules(expr.data.t, dynamicColors, cutHeight = MEDissThres, verbose = 3)
+# The merged module colors
+mergedColors = merge$colors
+# Eigengenes of the new merged modules:
+mergedMEs = merge$newMEs
+table(merge$colors)
+length(table(merge$colors))
+median(table(merge$colors))
+mean(table(merge$colors))
+```
+
+compare pre and post merge
+```{r}
+sizeGrWindow(12, 9)
+#pdf(file = "Plots/geneDendro-3.pdf", wi = 9, he = 6)
+plotDendroAndColors(geneTree, cbind(dynamicColors, mergedColors),
+c("Dynamic Tree Cut", "Merged dynamic"),
+dendroLabels = FALSE, hang = 0.03,
+addGuide = TRUE, guideHang = 0.05)
+#dev.off()
+```
+
+```{r}
+# Rename to moduleColors
+moduleColors = mergedColors
+# Construct numerical labels corresponding to the colors
+colorOrder = c("grey", standardColors(50));
+moduleLabels = match(moduleColors, colorOrder)-1;
+MEs = mergedMEs
+```
+
+correlate Eigen genes with blups
+```{r}
+rownames(MEs) <- rownames(expr.data.t)
+
+ME.blups.UN <- merge(blups.UN,MEs,by.x=1.,by.y=0)
+ME.blups.CR <- merge(blups.CR,MEs,by.x=1.,by.y=0)
+
+
+blups.cor.UN <- cor(ME.blups.UN[,2:6],ME.blups.UN[,7:ncol(ME.blups.UN)])
+blups.cor.CR <- cor(ME.blups.CR[,2:6],ME.blups.CR[,7:ncol(ME.blups.CR)])
+
+blups.cor.P.UN <- corPvalueStudent(blups.cor.UN,nrow(expr.data.t)) %>%
+  p.adjust() %>% #using "holm" method.  For relaxed stringency could use "fdr"
+  matrix(nrow=nrow(blups.cor.UN),
+         dimnames = dimnames(blups.cor.UN))
+
+blups.cor.P.CR <- corPvalueStudent(blups.cor.CR,nrow(expr.data.t)) %>%
+  p.adjust() %>% #using "holm" method.  For relaxed stringency could use "fdr"
+  matrix(nrow=nrow(blups.cor.CR),
+         dimnames = dimnames(blups.cor.CR))
+
+blups.cor.sig.UN <- blups.cor.UN
+blups.cor.sig.UN[blups.cor.P.UN>0.05] <- NA
+
+blups.cor.sig.UN
+
+blups.cor.sig.CR <- blups.cor.CR
+blups.cor.sig.CR[blups.cor.P.CR>0.05] <- NA
+
+blups.cor.sig.CR
+
+#Arbitrary, but let's take the max and min for each trait (so long as they are significant)
+blups.cor.5.UN <- blups.cor.sig.UN
+blups.cor.5.CR <- blups.cor.sig.CR
+
+
+cor.top.UN <- t(apply(blups.cor.5.UN,1,function(x) {
+  maxx = max(x,na.rm=TRUE)
+  minx = min(x,na.rm=TRUE)
+  ifelse(x == maxx | x == minx, x, NA)
+}
+))
+
+cor.top.CR <- t(apply(blups.cor.5.CR,1,function(x) {
+  maxx = max(x,na.rm=TRUE)
+  minx = min(x,na.rm=TRUE)
+  ifelse(x == maxx | x == minx, x, NA)
+}
+))
+
+
+cor.top.UN <- cor.top.UN[,apply(cor.top.UN,2,function(x) !all(is.na(x)))]
+cor.top.CR <- cor.top.CR[,apply(cor.top.CR,2,function(x) !all(is.na(x)))]
+
+p.asterisk.UN <- ifelse(blups.cor.P.UN < 0.05, "*","")
+p.asterisk.CR <- ifelse(blups.cor.P.CR < 0.05, "*","")
+```
+
+plot UN
+```{r,fig.width=12}
+# Will display correlations and their p-values
+par(mar = c(8, 5, 3, 3));
+# Display the correlation values within a heatmap plot
+labeledHeatmap(Matrix = blups.cor.UN,
+               yLabels = names(blups.UN[-1]),
+               xLabels = names(MEs),
+               xSymbols = names(MEs),
+               colorLabels = FALSE,
+               colors = blueWhiteRed(50),
+               textMatrix = p.asterisk.UN,
+               setStdMargins = FALSE,
+               zlim = c(-1,1),
+               cex.text = 2,
+               main = paste("UN Module-trait relationships"))
+
+pdf("Module-trait_heatmap_UN.pdf",height = 8,width = 12)
+par(mar = c(8, 5, 3, 3));
+# Display the correlation values within a heatmap plot
+labeledHeatmap(Matrix = blups.cor.UN,
+               yLabels = names(blups.UN[-1]),
+               xLabels = names(MEs),
+               xSymbols = names(MEs),
+               colorLabels = FALSE,
+               colors = blueWhiteRed(50),
+               textMatrix = p.asterisk.UN,
+               setStdMargins = FALSE,
+               zlim = c(-1,1),
+               main = paste("UN Module-trait relationships"))
+dev.off()
+```
+
+plot CR
+```{r,fig.width=12}
+# Will display correlations and their p-values
+par(mar = c(8, 5, 3, 3));
+# Display the correlation values within a heatmap plot
+labeledHeatmap(Matrix = blups.cor.CR,
+               yLabels = names(blups.CR[-1]),
+               xLabels = names(MEs),
+               xSymbols = names(MEs),
+               colorLabels = FALSE,
+               colors = blueWhiteRed(50),
+               textMatrix = p.asterisk.CR,
+               cex.text = 2,
+               setStdMargins = FALSE,
+               zlim = c(-1,1),
+               main = paste("CR Module-trait relationships"))
+
+pdf("Module-trait_heatmap_CR.pdf",height = 8,width = 12)
+par(mar = c(8, 5, 3, 3));
+# Display the correlation values within a heatmap plot
+labeledHeatmap(Matrix = blups.cor.CR,
+               yLabels = names(blups.CR[-1]),
+               xLabels = names(MEs),
+               xSymbols = names(MEs),
+               colorLabels = FALSE,
+               colors = blueWhiteRed(50),
+               textMatrix = p.asterisk.CR,
+               setStdMargins = FALSE,
+               zlim = c(-1,1),
+               main = paste("CR Module-trait relationships"))
+dev.off()
+```
+
+Arbitrary, but let's take the max and min for each trait (so long as they are significant)
+```{r}
+cor.top.CR
+cor.top.UN
+write.csv(cor.top.CR,"Eigen_trait_cor_CR_.5_threshold.csv")
+write.csv(cor.top.UN,"Eigen_trait_cor_UN_.5_threshold.csv")
+```
+
+write the Eigen genes
+```{r}
+head(MEs[,colnames(cor.top.CR)])
+write.csv(MEs[,colnames(cor.top.CR)],"Top_Eigen_genes_CR.csv")
+head(MEs[,colnames(cor.top.UN)])
+write.csv(MEs[,colnames(cor.top.UN)],"Top_Eigen_genes_UN.csv")
+```
+
+write all Eigen genes
+```{r}
+write.csv(MEs,"All_Eigen_genes_combined.csv")
+```
+
+
+save WGCNA info
+
+```{r}
+save(annotation,blups.cor.UN, blups.cor.CR, blups.cor.5.CR, blups.cor.5.UN, blups.cor.P.UN,blups.cor.P.CR,blups.cor.sig.UN,blups.cor.sig.CR,moduleColors,MEs,merge,expr.data.t,
+     file="~/Box Sync/BrapaNetworks/WGCNA_combined.Rdata")
+```
+
+## GO enrichment for each signficant cluster
+
+```{r}
+load("~/Box Sync/BrapaNetworks/WGCNA_combined.Rdata")
+module_genes <- tibble(GeneID=colnames(expr.data.t), module=moduleColors)
+module_genes
+```
+
+Get GO list and gene lengths
+```{r, engine='bash', eval=FALSE}
+wget http://www.g3journal.org/content/suppl/2014/08/12/g3.114.012526.DC1/FileS11.txt
+wget http://jnmaloof.github.io/BIS180L_web/data/Brapa_CDS_lengths.txt
+```
+
+
+```{r}
+library(goseq)
+library(tidyverse)
+library(stringr)
+```
+
+Format data for GOseq
+```{r}
+go.terms <- read.delim("FileS11.txt",header=FALSE,as.is=TRUE)
+head(go.terms)
+names(go.terms) <- c("GeneID","GO")
+summary(go.terms)
+
+gene.lengths <- read.table("Brapa_CDS_lengths.txt",as.is=TRUE)
+head(gene.lengths)
+summary(gene.lengths)
+
+#For this analysis the "Universe" will be all 10000 genes used as input to WGCNA, and the test set will be each module that showed a significant correlation with a FVT blup.
+
+#we need to reduce the gene.length data to only contain entries for those genes in our universe.  We also need this as a vector
+gene.lengths.module <- gene.lengths %>% 
+  semi_join(module_genes,by="GeneID")
+
+gene.lengths.vector <- as.vector(gene.lengths.module$Length)
+names(gene.lengths.vector) <- gene.lengths.module$GeneID
+
+#Do the reverse to make sure everything matches up (it seems that we don't have length info for some genes?)
+
+module_genes <- semi_join(module_genes,gene.lengths.module)
+```
+
+Format go.terms for goseq. We want them in list format, and we need to separate the terms into separate elements.
+```{r}
+go.list <- strsplit(go.terms$GO,split=",")
+names(go.list) <- go.terms$GeneID
+head(go.list)
+```
+
+Now we will loop through each significant module
+
+First, get the sig modules
+```{r}
+sig.modules.UN <- colnames(blups.cor.P.UN) %>%
+  magrittr::extract(apply(blups.cor.P.UN,2,function(x) any(x < 0.05))) %>%
+  str_replace("ME","")
+
+sig.modules.CR <- colnames(blups.cor.P.CR) %>%
+  magrittr::extract(apply(blups.cor.P.CR,2,function(x) any(x < 0.05))) %>%
+  str_replace("ME","")
+
+sig.modules <- union(sig.modules.UN,sig.modules.CR)
+```
+
+
+Format module data for goseq. We need a vector for each gene with 1 indicating module membership and 0 indicating not in module 
+```{r}
+file.remove("~/Box Sync/BrapaNetworks/_Figures_Tables_For_Paper/SupTable_JM4_WGCNA_combined_GO.csv")
+
+GO.results <- lapply(sig.modules, function(module) {
+  module01 <- module_genes$module %>% str_detect(module) %>% as.numeric()
+  names(module01) <- module_genes$GeneID 
+  
+  #determines if there is bias due to gene length.
+  nullp.result.tmp <- nullp(DEgenes = module01,bias.data = gene.lengths.vector,plot.fit = FALSE)
+  
+  #calculate p-values for each GO term
+  GO.out.tmp <- goseq(pwf = nullp.result.tmp,gene2cat = go.list,test.cats=("GO:BP"))
+  
+  #Keep CC and BP
+  GO.out.tmp <- GO.out.tmp[GO.out.tmp$ontology=="BP" | GO.out.tmp$ontology=="CC",]
+  
+  #Calculate FDR
+  GO.out.tmp <- GO.out.tmp %>% as.tibble() %>%
+    mutate(FDR=p.adjust(over_represented_pvalue, method = "fdr"),module=module) %>%
+    filter(FDR < 0.05) %>%
+    select(module,term,ontology,FDR,over_represented_pvalue,everything()) 
+  
+  write_csv(GO.out.tmp,path = "~/Box Sync/BrapaNetworks/_Figures_Tables_For_Paper/SupTable_JM4_WGCNA_combined_GO.csv",append = TRUE)
+  
+  GO.out.tmp
+})
+names(GO.results) <- sig.modules
+```
+
+```{r}
+GO.results
+```
+
+## Eigen genes vs gene expression
+
+Eigen genes are the first PC.  Do these always positively track gene expression in the cluster?
+
+Want to make plots that show gene expression and eigen genes for each "significant" cluster.
+
+```{r}
+pdf("eigenplots_combined.pdf",width = 12, height = 8)
+for (this.module in sig.modules) {
+this.ME <- MEs %>% 
+  select(paste0("ME",this.module)) %>% 
+  scale() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("RIL") %>% 
+  rename_at(2,str_replace,"ME","")
+genes.this.module <- module_genes %>% filter(module==this.module)
+expression.this.module <- expr.data.t[,genes.this.module$GeneID] %>% 
+  scale() %>%
+  as.data.frame() %>% 
+  rownames_to_column("RIL") %>% 
+  as_tibble() %>%
+  inner_join(this.ME) %>%
+  arrange(.data[[this.module]]) %>% 
+  mutate(index=row_number()) %>%
+  gather(key="gene",value = "expression",-RIL, - index) %>%
+  mutate(eigen=gene==this.module)
+
+expression.this.module
+
+low.alpha <- 7/nrow(genes.this.module)
+
+pl <- expression.this.module %>%
+  ggplot(aes(x=index,y=expression,group=gene)) +
+  geom_line(aes(alpha=eigen,color=eigen)) +
+  scale_alpha_discrete(range = c(low.alpha,1)) +
+  scale_color_manual(values=c("red","blue")) +
+  xlab("RIL") +
+  ggtitle(this.module)
+
+print(pl)
+
+}
+dev.off()
+```
+
+
+

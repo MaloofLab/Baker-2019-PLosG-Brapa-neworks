@@ -1,0 +1,271 @@
+---
+title: "WGCNA UN"
+output: html_notebook
+---
+
+WGCNA analysis of combined gene expression in B. rapa RILs. 
+
+Examine different thresholds for most meaningful networks (based on correlation with BLUPS and GO terms
+
+```{r}
+library(tidyverse)
+library(WGCNA)
+library(ggplot2)
+library(edgeR)
+library(magrittr)
+library(gplots)
+library(stringr)
+library(goseq)
+options(stringsAsFactors = FALSE)
+```
+
+Get GO
+```{r}
+go.terms <- read.delim("FileS11.txt",header=FALSE,as.is=TRUE)
+head(go.terms)
+names(go.terms) <- c("GeneID","GO")
+summary(go.terms)
+
+gene.lengths <- read.table("Brapa_CDS_lengths.txt",as.is=TRUE)
+head(gene.lengths)
+summary(gene.lengths)
+
+go.list <- strsplit(go.terms$GO,split=",")
+names(go.list) <- go.terms$GeneID
+head(go.list)
+```
+
+
+Get data
+```{r}
+load("~/Box Sync/BrapaNetworks/voom.gr.Rdata")
+annotation  <- read.csv("~/Box Sync/BrapaNetworks/Brapa_V1.5_annotated.csv.gz")
+expr.data <- voom.fit.gr$coefficients
+dim(expr.data)
+head(expr.data[,1:6])
+colnames(expr.data) <- colnames(expr.data) %>% str_replace("pdata\\$group","")
+colnames(expr.data)
+summary(t(expr.data[1:6,]))
+cv <- apply(expr.data,1,function(x) {
+  x <- x - min(x) # scale to get above 0
+  (sd(x)/abs(mean(x)))*100
+})
+summary(cv)
+hist((cv))
+cutoff <- sort(cv,decreasing = TRUE)[10000]
+expr.data <- expr.data[cv >= cutoff,]
+dim(expr.data)
+```
+
+Get Rob's Data
+```{r}
+blups2012 <- read.csv("~/Box Sync/BrapaNetworks/Brapa2012BayesHeight_blups.csv", row.names = 1)
+blups2012$Line %<>% paste("RIL",.,sep="_")
+blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
+head(blups2012)
+```
+
+```{r}
+blups.UN <- blups2012 %>% select(starts_with("Line"),starts_with("UN"),-matches("Inflection_size")) %>%
+  mutate(Line=str_c(Line,"_UN"))
+head(blups.UN)
+
+blups.CR <- blups2012 %>% select(starts_with("Line"),starts_with("CR"),-matches("Inflection_size")) %>%
+  mutate(Line=str_c(Line,"_CR"))
+head(blups.CR)
+```
+
+## WGCNA 
+
+remove bad samples and transform
+```{r}
+bad.samples <- c("RIL_294_CR", "RIL_235_UN", "RIL_23_UN", "RIL_93_UN", "RIL_174_CR", "RIL_337_CR")
+keep <- !colnames(expr.data) %in% bad.samples
+expr.data.t <- t(expr.data[,keep])
+```
+
+```{r}
+makeModules <- function(softPower,type,exp.data) {
+adjacency <- adjacency(exp.data, power = softPower, type= type)
+# Turn adjacency into topological overlap
+TOM <- TOMsimilarity(adjacency);
+dissTOM <- 1-TOM
+# Call the hierarchical clustering fUNction
+geneTree <- hclust(as.dist(dissTOM), method = "average")
+minModuleSize <- 30;
+# Module identification using dynamic tree cut:
+dynamicMods <- cutreeDynamic(dendro = geneTree, distM = dissTOM,
+                             deepSplit <- 2, pamRespectsDendro = FALSE,
+                             minClusterSize = minModuleSize);
+
+# Convert numeric lables into colors
+dynamicColors = labels2colors(dynamicMods)
+
+# Calculate eigengenes
+MEList <- moduleEigengenes(exp.data, colors = dynamicColors)
+MEs <- MEList$eigengenes
+# Calculate dissimilarity of module eigengenes
+MEDiss <- 1-cor(MEs);
+# Cluster module eigengenes
+METree <- hclust(as.dist(MEDiss), method = "average");
+MEDissThres = 0.2
+
+# Call an automatic merging function
+merge = mergeCloseModules(exp.data, dynamicColors, cutHeight = MEDissThres, verbose = 3)
+# The merged module colors
+mergedColors = merge$colors
+# Eigengenes of the new merged modules:
+mergedMEs = merge$newMEs
+
+# Rename to moduleColors
+moduleColors = mergedColors
+# Construct numerical labels corresponding to the colors
+colorOrder = c("grey", standardColors(50));
+moduleLabels = match(moduleColors, colorOrder)-1;
+MEs = mergedMEs
+
+rownames(MEs) <- rownames(exp.data)
+
+ME.blups.UN <- merge(blups.UN,MEs,by.x=1.,by.y=0)
+ME.blups.CR <- merge(blups.CR,MEs,by.x=1.,by.y=0)
+
+
+blups.cor.UN <- cor(ME.blups.UN[,2:6],ME.blups.UN[,7:ncol(ME.blups.UN)])
+blups.cor.CR <- cor(ME.blups.CR[,2:6],ME.blups.CR[,7:ncol(ME.blups.CR)])
+
+blups.cor.P.UN <- corPvalueStudent(blups.cor.UN,nrow(exp.data)) %>%
+  p.adjust() %>% #using "holm" method.  For relaxed stringency could use "fdr"
+  matrix(nrow=nrow(blups.cor.UN),
+         dimnames = dimnames(blups.cor.UN))
+
+blups.cor.P.CR <- corPvalueStudent(blups.cor.CR,nrow(exp.data)) %>%
+  p.adjust() %>% #using "holm" method.  For relaxed stringency could use "fdr"
+  matrix(nrow=nrow(blups.cor.CR),
+         dimnames = dimnames(blups.cor.CR))
+
+blups.cor.sig.UN <- blups.cor.UN
+blups.cor.sig.UN[blups.cor.P.UN>0.05] <- NA
+
+blups.cor.sig.CR <- blups.cor.CR
+blups.cor.sig.CR[blups.cor.P.CR>0.05] <- NA
+
+#Arbitrary, but let's take the max and min for each trait (so long as they are significant)
+blups.cor.5.UN <- blups.cor.sig.UN
+blups.cor.5.CR <- blups.cor.sig.CR
+
+
+cor.top.UN <- t(apply(blups.cor.5.UN,1,function(x) {
+  maxx = max(x,na.rm=TRUE)
+  minx = min(x,na.rm=TRUE)
+  ifelse(x == maxx | x == minx, x, NA)
+}
+))
+
+cor.top.CR <- t(apply(blups.cor.5.CR,1,function(x) {
+  maxx = max(x,na.rm=TRUE)
+  minx = min(x,na.rm=TRUE)
+  ifelse(x == maxx | x == minx, x, NA)
+}
+))
+
+
+cor.top.UN <- cor.top.UN[,apply(cor.top.UN,2,function(x) !all(is.na(x)))]
+cor.top.CR <- cor.top.CR[,apply(cor.top.CR,2,function(x) !all(is.na(x)))]
+
+
+## GO enrichment for each signficant cluster
+
+module_genes <- tibble(GeneID=colnames(exp.data), module=moduleColors)
+
+#Format data for GOseq
+
+gene.lengths.module <- gene.lengths %>% 
+  semi_join(module_genes,by="GeneID")
+
+gene.lengths.vector <- as.vector(gene.lengths.module$Length)
+names(gene.lengths.vector) <- gene.lengths.module$GeneID
+
+#Do the reverse to make sure everything matches up (it seems that we don't have length info for some genes?)
+
+module_genes <- semi_join(module_genes,gene.lengths.module)
+
+## Now we will loop through each significant module
+
+sig.modules.UN <- colnames(blups.cor.P.UN) %>%
+  magrittr::extract(apply(blups.cor.P.UN,2,function(x) any(x < 0.05))) %>%
+  str_replace("ME","")
+
+sig.modules.CR <- colnames(blups.cor.P.CR) %>%
+  magrittr::extract(apply(blups.cor.P.CR,2,function(x) any(x < 0.05))) %>%
+  str_replace("ME","")
+
+sig.modules <- union(sig.modules.UN,sig.modules.CR)
+
+#Format module data for goseq. We need a vector for each gene with 1 indicating module membership and 0 indicating not in module 
+
+GO.results <- lapply(sig.modules, function(module) {
+  module01 <- module_genes$module %>% str_detect(module) %>% as.numeric()
+  names(module01) <- module_genes$GeneID 
+  
+  #determines if there is bias due to gene length.
+  nullp.result.tmp <- nullp(DEgenes = module01,bias.data = gene.lengths.vector,plot.fit = FALSE)
+  
+  #calculate p-values for each GO term
+  GO.out.tmp <- goseq(pwf = nullp.result.tmp,gene2cat = go.list,test.cats=("GO:BP"))
+  
+  #Keep CC and BP
+  GO.out.tmp <- GO.out.tmp[GO.out.tmp$ontology=="BP" | GO.out.tmp$ontology=="CC",]
+  
+  #Calculate FDR
+  GO.out.tmp <- GO.out.tmp %>% as.tibble() %>%
+    mutate(FDR=p.adjust(over_represented_pvalue, method = "fdr"),module=module) %>%
+    filter(FDR < 0.05) %>%
+    select(module,term,ontology,FDR,over_represented_pvalue,everything()) 
+  
+  GO.out.tmp
+})
+
+GO.results <- bind_rows(GO.results)
+
+return(list(module.count=table(mergedColors),
+            sig.modules.UN=sig.modules.UN, 
+            sig.modules.CR=sig.modules.CR, 
+            top.cor.UN=cor.top.UN,
+            top.cor.CR=cor.top.CR,
+            sig.cor.UN=blups.cor.sig.UN, 
+            sig.cor.CR=blups.cor.sig.CR, 
+            GO=GO.results))
+}
+```
+
+```{r}
+#signed <- lapply(c(10,10,10,11,11,11),makeModules,type="signed",exp.data=expr.data.UN.t)
+#signedhybrid <- lapply(c(5,5,5,6,6,6,7,7,7),makeModules,"signed hybrid",expr.data.UN.t)
+
+#results are always the same for  given soft power and network type.
+
+#signed <- lapply(c(10,11,12),makeModules,type="signed",exp.data=expr.data.UN.t)
+signedhybrid <- lapply(c(2:7),makeModules,"signed hybrid",expr.data.t)
+```
+
+```{r}
+#sapply(signed, function(x) length(x[["sig.modules"]]))
+sapply(signedhybrid, function(x) length(x[["sig.modules.UN"]]))
+sapply(signedhybrid, function(x) length(x[["sig.modules.CR"]]))
+```
+
+
+```{r}
+#sapply(signed, function(x) x[["module.count"]])
+sapply(signedhybrid, function(x) x[["module.count"]])
+```
+
+```{r}
+#lapply(signed, function(x) x[["top.cor"]])
+lapply(signedhybrid, function(x) list(UN=x[["top.cor.UN"]],CR=x[["top.cor.CR"]]))
+```
+
+```{r}
+#lapply(signed, function(x) x[["GO"]])
+lapply(signedhybrid, function(x) x[["GO"]])
+```
