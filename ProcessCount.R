@@ -2,19 +2,19 @@
 
 ## Goal is fit GxE model for gene expression, which is too slow to do on my computer
 
-library(tidyverse)
+library(readr)
 library(edgeR)
-library(boxr)
+#library(boxr)
 library(magrittr)
-box_auth()
-box_setwd(24503987860)
-box_ls()
-library(rio)
+#box_auth()
+#box_setwd(24503987860)
+#box_ls()
+#library(rio)
 
 
 ## get counts data
 #counts <- box_read_tsv(162218089685)
-counts <- read_tsv("~/Box Sync/BrapaNetworks/RIL_v1.5_mapping.tsv")
+counts <- read_tsv("RIL_v1.5_mapping.tsv")
 row.names(counts) <- counts$gene
 counts <- counts [-1,-1] #remove first row (umapped reads) and first column (gene IDs)
 counts[is.na(counts)] <- 0
@@ -70,11 +70,11 @@ system.time(counts.voom.gr <- voom(counts.dge.gr,design = design.gr))
 
 limma.design.int <- model.matrix(~ pdata$RIL*pdata$trt)
 
-fit.int <- lmFit(counts.voom.gr,design=limma.design.int)
+system.time(fit.int <- lmFit(counts.voom.gr,design=limma.design.int))
 
-fit.int <- eBayes(voom.fit.gr)
+fit.int <- eBayes(fit.int)
 
-topTable.int <- topTableF(voom.fit.gr,number=Inf)
+topTable.int <- topTableF(fit.int,number=Inf)
 
 
-box_save(counts.voom.gr, limma.design.int, fit.int, topTable.int, file_name="voom.int.Rdata")
+save(counts.voom.gr, limma.design.int, fit.int, topTable.int, file="voom.int.Rdata")
