@@ -74,7 +74,7 @@ system.time(fit.int <- lmFit(counts.voom.gr,design=limma.design.int))
 
 fit.int <- eBayes(fit.int)
 
-topTable.int <- topTableF(fit.int,number=Inf)
+#topTable.int <- topTableF(fit.int,number=Inf)
 
 
-save(counts.voom.gr, limma.design.int, fit.int, topTable.int, file="voom.int.Rdata")
+save(counts.voom.gr, limma.design.int, fit.int, file="voom.int.Rdata")
