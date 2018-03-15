@@ -65,22 +65,24 @@ getPvals <- function(fit) {
 fitVCA <- function(df) {
   tmpvca <- anovaVCA(expression ~ gt*env,Data=as.data.frame(df))
   tmpvca$aov.tab[,"%Total"]
-  }
-  
+}
+
 cl <- create_cluster(cores=4)
-counts.long.test <- partition(counts.long[1:100,],geneIndex,cluster = cl)
+counts.long <- partition(counts.long,geneIndex,cluster = cl)
 cluster_library(cl,c("purrr","broom","VCA","stringr"))
 cluster_copy(cl,fitAnova)
 cluster_copy(cl,getPvals)
 cluster_copy(cl,fitVCA)
 
 system.time(
-  counts.long.test <- counts.long.test %>% mutate(aov = map(data,fitAnova), 
-                                                  glance = map(aov,glance),
-                                                  pvals = map(aov,getPvals),
-                                                  varcomp = map(data,fitVCA))
+  counts.long <- counts.long %>% mutate(aov = map(data,fitAnova), 
+                                        glance = map(aov,glance),
+                                        pvals = map(aov,getPvals),
+                                        varcomp = map(data,fitVCA)) %>%
+    select(-data)
 )
 
+save(count.long,file="GxE_models.Rdata")
 ```
 
 ```{r}
