@@ -1,0 +1,90 @@
+---
+title: "G x E expression"
+output: html_notebook
+---
+
+The question is how much G x E we see in the RNAseq data.  
+
+To get started on this I ran the file "ProcessCount.R".  For this the data was TMM normalized, voom transformed, and then a gtXenvironment model was fit in limma.  
+
+```{r}
+library(limma)
+library(tidyverse)
+library(stringr)
+library(modelr)
+library(broom)
+library(multidplyr)
+library(VCA)
+```
+
+Get the limma objects
+```{r}
+load("voom.int.Rdata")
+```
+
+How many genes show GxE?
+
+generate vector of interaction coefficients and then topTable
+```{r, eval=FALSE}
+colnames(fit.int$coefficients)
+int.coef.n <- colnames(fit.int$coefficients) %>% str_which(":") 
+topTable(fit.int,coef = int.coef.n)
+```
+
+Not working
+
+let's just do an ANOVA for each gene
+
+```{r}
+counts <- as.tibble(counts.voom.gr$E) %>% 
+  mutate(geneIndex=1:n())
+counts[1:10,1:10]
+```
+
+```{r}
+counts.long <- counts %>% gather(key="name",value="expression", -geneIndex) %>%
+  mutate(gt=factor(str_extract(name,"RIL_[0-9]*")), 
+         env=factor(str_extract(name,"CR|UN")), 
+         rep = factor(str_extract(name,"Rep[0-9]"))) %>%
+  select(-name) %>%
+  group_by(geneIndex) %>% nest()
+counts.long
+counts.long$data[[1]]
+```
+
+Now fit an anova and do a VCA for each gene in parallel
+```{r}
+fitAnova <- function(df) aov(expression ~ gt*env,data=df)
+
+getPvals <- function(fit) {
+  pvals <- summary(fit)[[1]]$`Pr(>F)`
+  names(pvals) <- dimnames(summary(fit)[[1]])[[1]] %>% str_trim()
+  data.frame(t(pvals))
+}
+
+fitVCA <- function(df) {
+  tmpvca <- anovaVCA(expression ~ gt*env,Data=as.data.frame(df))
+  tmpvca$aov.tab[,"%Total"]
+  }
+  
+cl <- create_cluster(cores=4)
+counts.long.test <- partition(counts.long[1:100,],geneIndex,cluster = cl)
+cluster_library(cl,c("purrr","broom","VCA","stringr"))
+cluster_copy(cl,fitAnova)
+cluster_copy(cl,getPvals)
+cluster_copy(cl,fitVCA)
+
+system.time(
+  counts.long.test <- counts.long.test %>% mutate(aov = map(data,fitAnova), 
+                                                  glance = map(aov,glance),
+                                                  pvals = map(aov,getPvals),
+                                                  varcomp = map(data,fitVCA))
+)
+
+```
+
+```{r}
+
+```
+
+
