@@ -48,7 +48,6 @@ counts.long <- counts %>% gather(key="name",value="expression", -geneIndex) %>%
          rep = factor(str_extract(name,"Rep[0-9]"))) %>%
   select(-name) %>%
   group_by(geneIndex) %>% nest()
-counts.long
 counts.long$data[[1]] 
 #test.df <- counts.long$data[[1]] 
 ```
@@ -93,10 +92,13 @@ save(counts.results,file="GxE_models.Rdata")
 ```
 
 ```{r}
-if (! exists(counts.results)) load("GxE_models.Rdata")
-(aovsummary <- counts.results %>% unnest(glance,.drop = TRUE))
-(pvals <- counts.results %>% unnest(pvals,.drop = TRUE))
-(varcomp <- counts.results %>% unnest(varcomp,.drop = TRUE))
+if (! exists("counts.results")) load("GxE_models.Rdata")
+aovsummary <- counts.results %>% unnest(glance,.drop = TRUE)
+pvals <- counts.results %>% unnest(pvals,.drop = TRUE)
+varcomp <- counts.results %>% unnest(varcomp,.drop = TRUE)
+head(aovsummary)
+head(pvals)
+head(varcomp)
 ```
 
 ## PVals
