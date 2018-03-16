@@ -49,11 +49,12 @@ counts.long <- counts %>% gather(key="name",value="expression", -geneIndex) %>%
   select(-name) %>%
   group_by(geneIndex) %>% nest()
 counts.long
-counts.long$data[[1]]
+counts.long$data[[1]] 
+#test.df <- counts.long$data[[1]] 
 ```
 
 Now fit an anova and do a VCA for each gene in parallel
-```{r}
+```{r, eval=FALSE}
 fitAnova <- function(df) aov(expression ~ gt*env,data=df)
 
 getPvals <- function(fit) {
@@ -64,7 +65,7 @@ getPvals <- function(fit) {
 
 fitVCA <- function(df) {
   tmpvca <- anovaVCA(expression ~ gt*env,Data=as.data.frame(df))
-  tmpvca$aov.tab[,"%Total"]
+  data.frame(t(tmpvca$aov.tab[,"%Total"]))
 }
 
 cl <- create_cluster(cores=4)
@@ -75,18 +76,66 @@ cluster_copy(cl,getPvals)
 cluster_copy(cl,fitVCA)
 
 system.time(
-  counts.long <- counts.long %>% mutate(aov = map(data,fitAnova), 
+  counts.results <- counts.long %>% mutate(aov = map(data,fitAnova), 
                                         glance = map(aov,glance),
                                         pvals = map(aov,getPvals),
                                         varcomp = map(data,fitVCA)) %>%
-    select(-data)
+    select(-data, -aov)
 )
+system.time(cluster_rm(cl,"counts.long"))
+rm(counts.long)
 
-save(count.long,file="GxE_models.Rdata")
+```
+
+```{r, eval=FALSE}
+system.time(counts.results <- collect(counts.results))
+save(counts.results,file="GxE_models.Rdata")
 ```
 
 ```{r}
-
+if (! exists(counts.results)) load("GxE_models.Rdata")
+(aovsummary <- counts.results %>% unnest(glance,.drop = TRUE))
+(pvals <- counts.results %>% unnest(pvals,.drop = TRUE))
+(varcomp <- counts.results %>% unnest(varcomp,.drop = TRUE))
 ```
 
+## PVals
+Number of genes (out of 24619) that have a FDR adjusted pvalue of less than 0.05:
+```{r}
+pvals %>% ungroup() %>%
+  summarise(gt=sum(p.adjust(gt,method="fdr") < 0.05),
+            env=sum(p.adjust(env) < 0.05),
+            gt.env=sum(p.adjust(gt.env,method="fdr") < 0.05))
+```
+
+## Variance components
+
+### Histograms of % variance explained
+
+```{r}
+pl <- varcomp %>%
+  ungroup() %>%
+  select(-total) %>%
+  gather(key = "component", value = "percent.variance",-geneIndex) %>%
+  ggplot(aes(x=percent.variance)) +
+  facet_wrap(~ component, scale="free_y") +
+  geom_histogram()
+pl
+```
+
+focus in on gt x env histogram, non-zeros
+```{r}
+pl <- varcomp %>%
+  ungroup %>%
+  filter(gt.env > 0) %>%
+  ggplot(aes(x=gt.env)) +
+  geom_histogram(binwidth = 5)
+pl
+```
+
+Number of genes with gt.env explaining X % variance:
+```{r}
+varcomp$gt.env %>%
+  cut(breaks=seq(0,35,5),right = FALSE) %>% table
+```
 
