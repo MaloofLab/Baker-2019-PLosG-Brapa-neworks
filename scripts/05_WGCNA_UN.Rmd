@@ -28,7 +28,7 @@ Get data
 ```{r}
 #box_load(162362592785)
 load("../output/Voom_UN.Rdata")
-annotation  <- read.csv("../input/Brapa_V1.5_annotated.csv.gz")
+annotation  <- read.csv("../input/Brapa_V1.5_annotated.csv")
 ```
 
 ```{r}
@@ -37,7 +37,7 @@ RIL.pvals.UN <- topTable(voom.fit.UN,coef = RIL.coefs.UN,number = Inf)
 sum(RIL.pvals.UN$adj.P.Val<0.01)
 sum(RIL.pvals.UN$adj.P.Val<10e-05) 
 ```
-So lots of genes are highly significant, especially in UN
+So lots of genes are highly significant
 
 Start by taking the top 10000
 
@@ -62,7 +62,8 @@ blups2011 <- read.csv("../input/Brapa2011BayesHeight_blups.csv",row.names = 1)
 blups2012 <- read.csv("../input/Brapa2012BayesHeight_blups.csv", row.names = 1)
 blups2011$Line %<>% paste("RIL",.,sep="_")
 blups2012$Line %<>% paste("RIL",.,sep="_")
-blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
+blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.))) %>%
+  rename(UNInflection_DD=UNInflect_DD)
 blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
 head(blups2011)
 head(blups2012)

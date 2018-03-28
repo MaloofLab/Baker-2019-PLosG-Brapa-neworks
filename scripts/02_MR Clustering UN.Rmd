@@ -1,8 +1,6 @@
 ---
-title: "Cr and UN Mutual Rank Clustering"
-output:
-  html_document:
-    df_print: paged
+title: "UN Mutual Rank Clustering"
+output: html_notebook
 ---
 
 Notebook for generating mutual rank (MR) clusters from the UN data.
@@ -61,7 +59,8 @@ blups2011 <- read.csv("../input/Brapa2011BayesHeight_blups.csv",row.names = 1)
 blups2012 <- read.csv("../input/Brapa2012BayesHeight_blups.csv", row.names = 1)
 blups2011$Line %<>% paste("RIL",.,sep="_")
 blups2012$Line %<>% paste("RIL",.,sep="_")
-blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
+blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.))) %>%
+  rename(UNInflection_DD=UNInflect_DD)
 blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
 head(blups2011)
 head(blups2012)

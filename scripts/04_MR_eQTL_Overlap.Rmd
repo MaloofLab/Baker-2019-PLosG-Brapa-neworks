@@ -29,7 +29,7 @@ library(qtl)
 
 Growth QTL
 ```{r}
-QTLgenes <- read_csv("../output/BrapaNetworks/Heigh2012_uniquegenes.csv")[,-1]
+QTLgenes <- read_csv("../input/BrapaNetworks/Heigh2012_uniquegenes.csv")[,-1]
 summary(QTLgenes)
 QTLgenes
 ```
