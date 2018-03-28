@@ -25,18 +25,10 @@ box_ls()
 Get data
 ```{r}
 #box_load(162362592785)
-load("~/Box Sync/BrapaNetworks/Voom_CR_UN.Rdata")
+load("~/Box Sync/BrapaNetworks/Voom_UN.Rdata")
 annotation  <- read.csv("~/Box Sync/BrapaNetworks/Brapa_V1.5_annotated.csv.gz")
 ```
 
-
-```{r}
-RIL.coefs.CR <- grep("RIL",colnames(coef(voom.fit.CR)))
-RIL.pvals.CR <- topTable(voom.fit.CR,coef = RIL.coefs.CR,number = Inf)
-nrow(RIL.pvals.CR)
-sum(RIL.pvals.CR$adj.P.Val<0.01)
-sum(RIL.pvals.CR$adj.P.Val<10e-05) 
-```
 
 ```{r}
 RIL.coefs.UN <- grep("RIL",colnames(coef(voom.fit.UN)))
@@ -46,43 +38,17 @@ sum(RIL.pvals.UN$adj.P.Val<0.01)
 sum(RIL.pvals.UN$adj.P.Val<10e-05) 
 ```
 
-Intersection of all FDR < 0.01 genes:
-
-```{r}
-length(intersect(rownames(topTable(voom.fit.UN,coef = RIL.coefs.UN,number = Inf,p.value = 0.01)),
-                 rownames(topTable(voom.fit.CR,coef = RIL.coefs.CR,number = Inf,p.value = 0.01))
-))
-                 
-```
-
-
-In any case, lots of genes are highly significant, especially in UN
-
 Start by taking the top 10000
 
 ```{r}
-genes.of.interest.CR <- row.names(RIL.pvals.CR)[1:10000]
-expr.data.CR <- voom.fit.CR$coefficients[genes.of.interest.CR,]
-dim(expr.data.CR)
-head(expr.data.CR[,1:6])
-
 genes.of.interest.UN <- row.names(RIL.pvals.UN)[1:10000]
 expr.data.UN <- voom.fit.UN$coefficients[genes.of.interest.UN,]
 dim(expr.data.UN)
 head(expr.data.UN[,1:6])
 ```
 
-How many of these genes are in common in the two sets?
 
 ```{r}
-sum(genes.of.interest.CR %in% genes.of.interest.UN)
-```
-
-```{r}
-expr.data.CR[,-1] <- expr.data.CR[,-1] + expr.data.CR[,1] # add the intercept to the coefficients
-colnames(expr.data.CR) <- sub("pdata.CR$RIL","",colnames(expr.data.CR),fixed=TRUE)
-head(expr.data.CR[,1:6])
-
 expr.data.UN[,-1] <- expr.data.UN[,-1] + expr.data.UN[,1] # add the intercept to the coefficients
 colnames(expr.data.UN) <- sub("pdata.UN$RIL","",colnames(expr.data.UN),fixed=TRUE)
 head(expr.data.UN[,1:6])
@@ -100,39 +66,28 @@ head(blups2011)
 head(blups2012)
 ```
 
-Have decided to use 2012 BLUPs only...
+Have decided to use 2011 and 2012 BLUPs but UN only...
 ```{r}
-#blups.all <- merge(blups2011,blups2012,by="Line",suffixes = c(".2011",".2012"))
-#head(blups.all)
-blups.CR <- blups2012 %>% select(starts_with("Line"),starts_with("CR"),-matches("Inflection_size"))
-head(blups.CR)
-blups.UN <- blups2012 %>% select(starts_with("Line"),starts_with("UN"),-matches("Inflection_size"))
+blups.UN <- merge(blups2011,blups2012,by="Line",suffixes = c(".2011",".2012")) %>%
+  select(starts_with("Line"),starts_with("UN"),-matches("Inflection_size"))
 head(blups.UN)
 ```
 
 
 Merge blups with expression
 ```{r}
-expr.blup.CR <- merge(blups.CR,t(expr.data.CR),by.x="Line",by.y=0)
 expr.blup.UN <- merge(blups.UN,t(expr.data.UN),by.x="Line",by.y=0)
-head(expr.blup.CR[,1:6])
 head(expr.blup.UN[,1:6])
 ```
 
 Correlation
 ```{r}
-expr.blup.cor.CR <- cor(expr.blup.CR[,-1])
 expr.blup.cor.UN <- cor(expr.blup.UN[,-1])
 ```
 
 Mutual Rank
 ```{r}
 sfInit(parallel = TRUE, cpus=4)
-
-expr.blup.rank.CR <- sfApply(expr.blup.cor.CR,2,function(x) rank(-abs(x)))
-expr.blup.rank.CR[1:10,1:10]
-expr.blup.mr.CR <- sqrt(expr.blup.rank.CR*t(expr.blup.rank.CR))
-expr.blup.mr.CR[1:10,1:10]
 
 expr.blup.rank.UN <- sfApply(expr.blup.cor.UN,2,function(x) rank(-abs(x)))
 expr.blup.rank.UN[1:10,1:10]
@@ -144,7 +99,7 @@ sfStop()
 
 
 ```{r}
-save(blups.CR,blups.UN,expr.blup.CR, expr.blup.UN, expr.blup.mr.CR, expr.blup.mr.UN,expr.data.CR,expr.data.UN,file = "~/Box Sync/BrapaNetworks/MR_CR_UN.Rdata")
+save(blups.UN, expr.blup.UN, expr.blup.mr.UN,expr.data.UN,file = "~/Box Sync/BrapaNetworks/MR_UN.Rdata")
 ```
 
 Get graphs at different MR
@@ -152,8 +107,8 @@ Get graphs at different MR
 ## get data
 
 ```{r}
-load("~/Box Sync/BrapaNetworks/MR_CR_UN.Rdata")
-annotation <- read.csv("Brapa_V1.5_annotated.csv",row.names=1,as.is = TRUE)
+load("~/Box Sync/BrapaNetworks/MR_UN.Rdata")
+annotation <- read.csv("../input/Brapa_V1.5_annotated.csv",row.names=1,as.is = TRUE)
 ```
 
 ## define some functions

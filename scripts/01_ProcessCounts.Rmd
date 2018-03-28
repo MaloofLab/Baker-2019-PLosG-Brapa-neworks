@@ -18,7 +18,7 @@ box_ls()
 library(rio)
 ```
 
-### Get data
+## Get data
 ```{r}
 counts <- box_read_tsv(162218089685)
 row.names(counts) <- counts$gene
@@ -28,7 +28,6 @@ head(counts[,1:10])
 summary(counts[,1:10])
 ```
 
-## Combined analysis of CR and UN samples
 
 ### set up descriptive data frame
 ```{r}
@@ -44,134 +43,21 @@ tail(pdata)
 sort(unique(pdata$RIL))
 ```
 
-```{r}
-counts.dge <- DGEList(counts=counts,group = pdata$group)
-counts.dge$samples
-```
 
-Filter
-```{r}
-nrow(counts.dge)
-counts.dge <- counts.dge[rowSums(cpm(counts.dge)>2) >= 84,,keep.lib.sizes=FALSE]
-counts.dge$samples
-nrow(counts.dge)
-```
-Kept 28,863 genes of 43,150
-
-Normalize
-```{r}
-counts.dge <- calcNormFactors(counts.dge)
-counts.dge$samples
-counts.log.cpm <- cpm(counts.dge,log=TRUE)
-#box_write(counts.log.cpm,"RIL_TMM_CPM.csv.gz")
-export(counts.log.cpm,"~/Box Sync/BrapaNetworks/RIL_TMM_CPM.csv.gz")
-```
-
-estimate dispersions
-```{r}
-design <- model.matrix(~pdata$RIL + pdata$trt)
-counts.dge <- estimateDisp(counts.dge,design = design)
-```
-
-```{r}
-box_auth()
-box_save(counts,counts.dge,file_name = "NormalizedCounts.RData")
-```
-
-```{r}
-counts.voom <- voom(counts.dge,design = design)
-save(counts.voom, file = "CountsVoom.Rdata")
-#box_save(counts.voom,file_name = "CountsVoom.Rdata")
-```
-
-```{r}
-voom.df <- as.data.frame(counts.voom)
-write.csv(voom.df,file="voom.csv",row.names = TRUE)
-box_write(voom.df,filename = "voom.csv.gz")
-```
-
-
-```{r}
-design.int <- model.matrix(~pdata$RIL*pdata$trt)
-counts.voom.int <- voom(counts.dge,design = design)
-save(counts.voom.int,file = "CountsVoomInt.Rdata")
-box_save(counts.voom.int,file_name = "CountsVoomInt.Rdata")
-```
-
-```{r}
-box_auth()
-counts.dge.int <- estimateDisp(counts.dge,design=design.int)
-box_save(counts.dge.int,file_name = "NormalizedCountsInt.RData")
-```
-
-Fitted values additiive
-```{r}
-voom.fit <- lmFit(counts.voom,design=design)
-voom.fit <- eBayes(voom.fit)
-voom.topTable <- topTableF(voom.fit,number=Inf)
-save(counts.voom, voom.fit, voom.topTable, counts.dge, design, file="~/Box Sync/BrapaNetworks/voom.Rdata")
-```
-
-
-## Alternate, don't do additive model, do group model.  
-The additive model ignores any gt x trt effect.  the interactive model won't fit.  So lets just get per group estimates for downstream use in WGCNA
-
-```{r}
-design.gr <- model.matrix(~ 0 + pdata$group)
-counts.dge.gr <- estimateDisp(counts.dge,design = design.gr)
-```
-
-```{r}
-counts.voom.gr <- voom(counts.dge.gr,design = design.gr)
-voom.fit.gr <- lmFit(counts.voom.gr,design=design.gr)
-voom.fit.gr <- eBayes(voom.fit.gr)
-voom.topTable.gr <- topTableF(voom.fit.gr,number=Inf)
-save(counts.voom.gr, voom.fit.gr, voom.topTable.gr, counts.dge.gr, design.gr, file="~/Box Sync/BrapaNetworks/voom.gr.Rdata")
-```
-
-
-
-Fitted values interaction
-
-(Not working...)
-```{r, eval=FALSE}
-counts.voom.int2 <- counts.voom.int[,!(pdata$RIL=="RIL_234" | pdata$RIL=="RIL_311")] # these two lines are missing UN data and so the interaction terms cannot be estimated, and therfore we get an error unless we remove them.
-design.int2 <- design.int[!(pdata$RIL=="RIL_234" | pdata$RIL=="RIL_311"),]
-voom.int.fit <- lmFit(counts.voom.int2,design=design.int2)
-voom.int.fit <- eBayes(voom.int.fit)
-voom.int.topTable <- topTableF(voom.fit.int,number=Inf)
-save(counts.voom.int, voom.int.fit, voom.int.topTable, file="voom.int.Rdata")
-```
-
-
-## Separate analyses of CR and UN reads
+## only UN reads used for paper
 
 ### set up descriptive data frame
 
 ```{r}
-counts.CR <- counts[,pdata$trt=="CR",]
 counts.UN <- counts[,pdata$trt=="UN",]
 
-pdata.CR <- pdata %>% subset(trt=="CR")
 pdata.UN <- pdata %>% subset(trt=="UN")
 ```
 
 ```{r}
-counts.dge.CR <- DGEList(counts=counts.CR,group = pdata.CR$group)
-counts.dge.CR$samples
-
 counts.dge.UN <- DGEList(counts=counts.UN,group = pdata.UN$group)
 counts.dge.UN$samples
 ```
-
-Filter CR
-```{r}
-nrow(counts.dge.CR)
-counts.dge.CR <- counts.dge.CR[rowSums(cpm(counts.dge.CR)>2) >= 44,,keep.lib.sizes=FALSE]
-counts.dge.CR$samples
-nrow(counts.dge.CR)
-```
-Kept 28,857 genes of 43,150
 
 Filter UN
 ```{r}
@@ -181,15 +67,6 @@ counts.dge.UN$samples
 nrow(counts.dge.UN)
 ```
 Kept 28,668 genes of 43,150
-
-Normalize
-```{r}
-counts.dge.CR <- calcNormFactors(counts.dge.CR)
-counts.dge.CR$samples
-counts.log.cpm.CR <- cpm(counts.dge.CR,log=TRUE)
-#box_write(counts.log.cpm.CR,"RIL_CR_TMM_CPM.csv.gz")
-export(counts.log.cpm.CR,"~/Box Sync/BrapaNetworks/RIL_CR_TMM_CPM.csv.gz")
-```
 
 ```{r}
 counts.dge.UN <- calcNormFactors(counts.dge.UN)
@@ -201,7 +78,6 @@ export(counts.log.cpm.UN,"~/Box Sync/BrapaNetworks/RIL_UN_TMM_CPM.csv.gz")
 
 estimate dispersions
 ```{r}
-design.CR <- model.matrix(~pdata.CR$RIL)
 design.UN <- model.matrix(~pdata.UN$RIL)
 
 # #estimate Dispersion hangs...
@@ -217,30 +93,23 @@ design.UN <- model.matrix(~pdata.UN$RIL)
 ```
 
 ```{r}
-counts.voom.CR <- voom(counts.dge.CR,design = design.CR)
-
 counts.voom.UN <- voom(counts.dge.UN,design = design.UN)
 ```
 
 ```{r}
-voom.df.CR <- as.data.frame(counts.voom.CR)
-write.csv(voom.df.CR,file="~/Box Sync/BrapaNetworks/voom.CR.csv",row.names = TRUE)
-
 voom.df.UN <- as.data.frame(counts.voom.UN)
 write.csv(voom.df.UN,file="~/Box Sync/BrapaNetworks/voom.UN.csv",row.names = TRUE)
+write.csv(voom.df.UN,file="../output/voom.UN.csv",row.names = TRUE)
 #box_write(voom.df,filename = "voom.csv.gz")
 ```
 
 Fitted values additiive
 ```{r}
-voom.fit.CR <- lmFit(counts.voom.CR,design=design.CR)
-voom.fit.CR <- eBayes(voom.fit.CR)
-voom.topTable.CR <- topTableF(voom.fit.CR,number=Inf)
-
 voom.fit.UN <- lmFit(counts.voom.UN,design=design.UN)
 voom.fit.UN <- eBayes(voom.fit.UN)
 voom.topTable.UN <- topTableF(voom.fit.UN,number=Inf)
-save(counts.voom.CR, counts.voom.UN, voom.fit.CR, voom.fit.UN, voom.topTable.CR, voom.topTable.UN, file="~/Box Sync/BrapaNetworks/voom_CR_UN.Rdata")
+save(counts.voom.UN, voom.fit.UN, voom.topTable.UN, file="~/Box Sync/BrapaNetworks/voom_UN.Rdata")
+save(counts.voom.UN, voom.fit.UN, voom.topTable.UN, file="../output/voom_UN.Rdata")
 ```
 
 
