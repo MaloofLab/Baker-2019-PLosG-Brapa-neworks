@@ -4,7 +4,9 @@ This repository is for building networks from B.rapa RIL RNAseq data.
 
 I have taken two approaches: using mutual ranks and using WGCNA.
 
-** Mar 28, 2018** I reorganized the repo into "scripts", "input", "output", and "presentations".  Many file links will be broken.
+** Mar 28, 2018 ** I reorganized the repo into "scripts", "input", "output", and "presentations".  Many file links will be broken.
+
+** Mar 28, 2018 ** Current plan is to *only* analyze the "uncrowded" data and to look at correlations between the networks and both the 2011 and 2012 growth data.
 
 The main scripts are the .RMD files. 
 
