@@ -4,6 +4,8 @@ This repository is for building networks from B.rapa RIL RNAseq data.
 
 I have taken two approaches: using mutual ranks and using WGCNA.
 
+** Mar 28, 2018** I reorganized the repo into "scripts", "input", "output", and "presentations".  Many file links will be broken.
+
 The main scripts are the .RMD files. 
 
 * `Process Counts.Rmd` starts from RNAseq counts, normalizes and voom transforms in preparation for network building.
