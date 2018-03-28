@@ -7,7 +7,7 @@ output: html_notebook
 
 Rob Baker et al fit growth parameters to B. rapa growth data and then used those to do function-value-trait QTL mapping and to find genes under those peaks
 
-I used that same function-value-trait data to query a mutual rank (MR) gene expression network that I had built.  This returned genes that were in a networks associated with the growth paramters.  This was done separeately for the CR and UN environments.
+I used that same function-value-trait data to query a mutual rank (MR) gene expression network that I had built.  This returned genes that were in a networks associated with the growth paramters.  This was done separeately for the CR and UN environments.  (Currently we are only focused on the UN environment)
 
 Here I want to annotate candidate QTL genes with:
 
@@ -24,51 +24,38 @@ library(limma)
 ## Annotation with MR network membership
 
 ```{r}
-QTLgenes <- read_csv("~/Box Sync/BrapaNetworks/Heigh2012_uniquegenes.csv")[,-1]
+QTLgenes <- read_csv("../input/BrapaNetworks/Heigh2012_uniquegenes.csv")[,-1]
 summary(QTLgenes)
 QTLgenes
 ```
 
 ```{r}
-MR_UN_genes <- read_csv("~/Box Sync/BrapaNetworks/MR_UN_graphs_annotation.csv")
+MR_UN_genes <- read_csv("../output/MR_UN_graphs_annotation.csv")
 summary(MR_UN_genes)
 MR_UN_genes
 ```
 
 ```{r}
-MR_CR_genes <- read_csv("~/Box Sync/BrapaNetworks/MR_CR_graphs_annotation.csv")
-summary(MR_CR_genes)
-MR_CR_genes
-```
-
-```{r}
 QTLgenes$UN_network <- MR_UN_genes$.id[match(QTLgenes$name, MR_UN_genes$name)]
-QTLgenes$CR_network <- MR_CR_genes$.id[match(QTLgenes$name, MR_CR_genes$name)]
 ```
 
 ```{r}
-QTLgenes %>% filter(!(is.na(UN_network) & is.na(CR_network)))
+QTLgenes %>% filter(!is.na(UN_network) )
 ```
 
 ## Annotation with DE information
 
 ```{r}
-load("~/Box Sync/BrapaNetworks/Voom_CR_UN.Rdata")
+load("../output/Voom_UN.Rdata")
 ```
 
 ```{r}
-RIL.coefs.CR <- grep("RIL",colnames(coef(voom.fit.CR)))
-RIL.pvals.CR <- topTable(voom.fit.CR,coef = RIL.coefs.CR,number = Inf)
 RIL.coefs.UN <- grep("RIL",colnames(coef(voom.fit.UN)))
 RIL.pvals.UN <- topTable(voom.fit.UN,coef = RIL.coefs.UN,number = Inf)
 ```
 
 ```{r}
-RIL.pvals.CR$rank_F <- rank(RIL.pvals.CR$F)
 RIL.pvals.UN$rank_F <- rank(RIL.pvals.UN$F)
-
-RIL.pvals.CR %<>% select(-starts_with("pdata")) 
-colnames(RIL.pvals.CR) %<>% paste(".CR",sep="")
 
 RIL.pvals.UN %<>% select(-starts_with("pdata"))
 colnames(RIL.pvals.UN) %<>% paste(".UN",sep="")
@@ -76,9 +63,8 @@ colnames(RIL.pvals.UN) %<>% paste(".UN",sep="")
 
 ```{r}
 QTLgenes <- merge(QTLgenes, RIL.pvals.UN, by.x="name", by.y=0,all.x = TRUE, all.y = FALSE)
-QTLgenes <- merge(QTLgenes, RIL.pvals.CR, by.x="name", by.y=0,all.x = TRUE, all.y = FALSE)
 ```
 
 ```{r}
-write_csv(QTLgenes,"~/Box Sync/BrapaNetworks/Heigh2012_uniquegenes_DE_MR.csv")
+write_csv(QTLgenes,"../output/Heigh2012_uniquegenes_DE_MR_UN.csv")
 ```

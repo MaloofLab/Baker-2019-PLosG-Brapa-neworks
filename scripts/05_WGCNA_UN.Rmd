@@ -5,7 +5,14 @@ output: html_notebook
 
 WGCNA analysis of UN gene expression in B. rapa RILs.
 
-Please see the CR notebook or RMD document for a brief description of what WGCNA is doing along with links where you can learn more.
+Lets start with some notes on what WGCNA is doing.  (For more details, see [Zhang and Horvath, 2005](http://www.degruyter.com/view/j/sagmb.2005.4.1/sagmb.2005.4.1.1128/sagmb.2005.4.1.1128.xml;jsessionid=9F14E37B32BBAEB8DD0286D168168E7F) )
+
+1. A correlation coefficient is calculated between all gene pairs.
+2. This is converted to an adjacency matrix.  Unlike typical adjacency matrices (which have values of 0, meaning not connected, or 1, meaning connected, based on some hard threshold) here the adjacency matrix can take any value from 0 to 1.  Thus there is a soft threshold and the connectivity in the adjacency matrix is weighted by the correlations.  Zhang and Horvath discuss different ways to relate the correlation matrix to the adjacency matrix, the default in WGCNA, and what I use, is a power function where the adjacency represent the correlation coefficient raised to some power $\beta$.
+3. The power, $\beta$, is chosen such that the (weighted) connectivity shows a power law topology i.e. R2 of log10(p(k)) ~ log10(k) is > 0.9
+4. Once an adjacency matrix is calculated the the similarity of nodes in the matrix is calculated using a topological overlap matrix (TOM).  See Zhang and Horvath, 2005, for details.  But basically a two nodes have a high TOM if they are connected to each other and to a similar set of other nodes.
+5. To define modules genes are hiearchicaly clustered based on their distance (1-TOM) and a dynamic method is used to define cutoffs from this tree and the dissimilarity matrix.  For more info see [here](https://labs.genetics.ucla.edu/horvath/htdocs/CoexpressionNetwork/BranchCutting/)
+6.  I tshould be noted that Zhang and Horvath provide formula to generalize most network calcualtions (i.e. connectivity, etc) from a 0,1 adjacency matrix to a 0-1 adjacency matrix.
 
 ```{r}
 library(tidyverse)
@@ -20,8 +27,8 @@ options(stringsAsFactors = FALSE)
 Get data
 ```{r}
 #box_load(162362592785)
-load("~/Box Sync/BrapaNetworks/Voom_CR_UN.Rdata")
-annotation  <- read.csv("~/Box Sync/BrapaNetworks/Brapa_V1.5_annotated.csv.gz")
+load("../output/Voom_UN.Rdata")
+annotation  <- read.csv("../input/Brapa_V1.5_annotated.csv.gz")
 ```
 
 ```{r}
@@ -51,14 +58,20 @@ head(expr.data.UN[,1:6])
 
 Get Rob's Data
 ```{r}
-blups2012 <- read.csv("~/Box Sync/BrapaNetworks/Brapa2012BayesHeight_blups.csv", row.names = 1)
+blups2011 <- read.csv("../input/Brapa2011BayesHeight_blups.csv",row.names = 1)
+blups2012 <- read.csv("../input/Brapa2012BayesHeight_blups.csv", row.names = 1)
+blups2011$Line %<>% paste("RIL",.,sep="_")
 blups2012$Line %<>% paste("RIL",.,sep="_")
+blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
 blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
+head(blups2011)
 head(blups2012)
 ```
 
+Have decided to use 2011 and 2012 BLUPs but UN only...
 ```{r}
-blups.UN <- blups2012 %>% select(starts_with("Line"),starts_with("UN"),-matches("Inflection_size"))
+blups.UN <- merge(blups2011,blups2012,by="Line",suffixes = c(".2011",".2012")) %>%
+  select(starts_with("Line"),starts_with("UN"),-matches("Inflect.*_size"))
 head(blups.UN)
 ```
 
@@ -297,32 +310,32 @@ cor.top <- t(apply(blups.cor.5,1,function(x) {
 
 cor.top <- cor.top[,apply(cor.top,2,function(x) !all(is.na(x)))]
 cor.top
-write.csv(cor.top,"Eigen_trait_cor_UN_.5_threshold.csv")
+write.csv(cor.top,"../output/Eigen_trait_cor_UN_.5_threshold.csv")
 ```
 
 write the Eigen genes
 ```{r}
 head(MEs[,colnames(cor.top)])
-write.csv(MEs[,colnames(cor.top)],"Top_Eigen_genes_UN.csv")
+write.csv(MEs[,colnames(cor.top)],"../output/Top_Eigen_genes_UN.csv")
 ```
 
 write all Eigen genes
 
 ```{r}
-write.csv(MEs,"All_Eigen_genes_UN.csv")
+write.csv(MEs,"../output/All_Eigen_genes_UN.csv")
 ```
 
 save WGCNA info
 
 ```{r}
 save(annotation,blups.cor,blups.cor.5,blups.cor.P,blups.cor.sig,moduleColors,MEs,merge,expr.data.UN.t,
-     file="~/Box Sync/BrapaNetworks/WGCNA_UN.Rdata")
+     file="../output/WGCNA_UN.Rdata")
 ```
 
 ## GO enrichment for each signficant cluster
 
 ```{r}
-load("~/Box Sync/BrapaNetworks/WGCNA_UN.Rdata")
+load("../output/WGCNA_UN.Rdata")
 module_genes <- tibble(GeneID=colnames(expr.data.UN.t), module=moduleColors)
 module_genes
 ```
@@ -385,7 +398,7 @@ sig.modules
 
 Format module data for goseq. We need a vector for each gene with 1 indicating module membership and 0 indicating not in module 
 ```{r}
-file.remove("~/Box Sync/BrapaNetworks/_Figures_Tables_For_Paper/SupTable_JM5_WGCNA_UN_GO.csv")
+file.remove("../output/SupTable_JM5_WGCNA_UN_GO.csv")
 
 GO.results <- lapply(sig.modules, function(module) {
   module01 <- module_genes$module %>% str_detect(module) %>% as.numeric()
@@ -406,7 +419,7 @@ GO.results <- lapply(sig.modules, function(module) {
     filter(FDR < 0.05) %>%
     select(module,term,ontology,FDR,over_represented_pvalue,everything()) 
   
-  write_csv(GO.out.tmp,path = "~/Box Sync/BrapaNetworks/_Figures_Tables_For_Paper/SupTable_JM5_WGCNA_UN_GO.csv",append = TRUE)
+  write_csv(GO.out.tmp,path = "../output/SupTable_JM5_WGCNA_UN_GO.csv",append = TRUE)
   
   GO.out.tmp
 })

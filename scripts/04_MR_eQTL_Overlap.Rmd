@@ -7,9 +7,11 @@ output: html_notebook
 
 Rob Baker et al fit growth parameters to B. rapa growth data and then used those to do function-value-trait QTL mapping.
 
-I used those same parameters and queried a mutual rank (MR) gene expression network to find genes that were in a networks associated with these growth paramters.  This was done separeately for the CR and UN environments.  I looked for overalp between those MR-associated genes and growth parameters.
+I used those same parameters and queried a mutual rank (MR) gene expression network to find genes that were in a networks associated with these growth paramters.  This was done separeately for the CR and UN environments.  I looked for overlap between those MR-associated genes and growth parameters.
 
 The goal now is to find the trans eQTL for each of the MR-growth associated genes and ask if the trans eQTL overlap with the growth/function-value QTL.  I think I am only going to take the top eQTL for each.
+
+Focused on UN genes only.
 
 ## Methodology
 
@@ -27,31 +29,21 @@ library(qtl)
 
 Growth QTL
 ```{r}
-QTLgenes <- read_csv("~/Box Sync/BrapaNetworks/Heigh2012_uniquegenes.csv")[,-1]
+QTLgenes <- read_csv("../output/BrapaNetworks/Heigh2012_uniquegenes.csv")[,-1]
 summary(QTLgenes)
 QTLgenes
 ```
 
 MR genes from UN
 ```{r}
-MR_UN_genes <- read_csv("~/Box Sync/BrapaNetworks/MR_UN_graphs_annotation.csv") %>%
+MR_UN_genes <- read_csv("../output/MR_UN_graphs_annotation.csv") %>%
   filter(MR_Cutoff <= 50, !duplicated(name)) %>%
   select(MR_Cutoff,name)
 MR_UN_genes
 ```
 
-MR genes from CR
-```{r}
-MR_CR_genes <- read_csv("~/Box Sync/BrapaNetworks/MR_CR_graphs_annotation.csv") %>%
-  filter(MR_Cutoff <= 50, !duplicated(name)) %>%
-  select(MR_Cutoff,name)
-summary(MR_CR_genes)
-MR_CR_genes
-```
-
 eQTL
 ```{r}
-load("../brassica_eqtl_paper/input/scanone-eqtl-CR.RData")
 load("../brassica_eqtl_paper/input/scanone-eqtl-UN.Rdata")
 scanone_imp_UN <- scanone_imp_un
 ```
@@ -62,70 +54,6 @@ ls()
 
 ## Find eQTL intervals
 
-### CR data
-
-Get the scanone data in a nice format for summarizing and plotting
-```{r}
-scanone_CR_gather <- scanone_imp_CR %>%
-  gather(key = gene, value = LOD, -chr, -pos) %>%
-  semi_join(MR_CR_genes,by=c("gene"="name")) # only keep genes in MR networks
-```
-
-plot eQTL peaks...
-```{r, fig.height=10}
-pl.CR <- scanone_CR_gather %>%
-  ggplot(aes(x=pos,y=LOD,color=gene)) +
-  geom_line() +
-  geom_hline(aes(yintercept=4),lty=2,lwd=.5,alpha=.5) +
-  facet_grid( ~ chr, scales="free") +
-  theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
-  ggtitle("MR gene eQTL")
-pl.CR
-ggsave("MR gene eQTL CR.pdf",width=12,height=8)
-```
-
-
-```{r}
-sig_chromosomes_CR <- scanone_CR_gather %>%
-  group_by(gene,chr) %>%
-  summarize(pos=pos[which.max(LOD)],LOD=max(LOD)) %>%
-  filter(LOD > 4)
-
-sig_chromosomes_CR
-```
-
-now for each significant chromosome/trait combo run bayesint
-
-```{r}
-bayesint_list_CR <- apply(sig_chromosomes_CR,1,function(hit) {
-  result <- bayesint(scanone_imp_CR[c("chr","pos",hit["gene"])], 
-                     chr=hit["chr"], 
-                     lodcolumn = 1,
-                     expandtomarkers = TRUE
-  )
-  colnames(result)[3] <- "LOD"
-  result
-})
-names(bayesint_list_CR) <- sig_chromosomes_CR$gene
-
-bayesint_list_CR <- lapply(bayesint_list_CR,function(x) x %>% 
-                             as.data.frame() %>%
-                             rownames_to_column(var="markername") %>%
-                             mutate(chr=as.character(chr))
-)
-```
-
-```{r}
-bayesint_result_CR <- as.tibble(bind_rows(bayesint_list_CR,.id="gene")) %>% 
-  select(gene,chr,pos,markername,LOD) %>%
-  separate(markername,into=c("chr1","Mbp"),sep="x", convert=TRUE) %>%
-  group_by(gene,chr) %>%
-  summarize(start=min(Mbp),end=max(Mbp),min_eQTL_LOD=min(LOD),max_eQTL_LOD=max(LOD)) %>%
-  #for the high QTL peaks the interval width is 0.  That is overly precise and need to widen those.
-  mutate(start=ifelse(start==end,max(0,start-20000),start), end=ifelse(start==end,end+20000,end))
-
-bayesint_result_CR
-```
 
 ### UN data
 
@@ -192,64 +120,14 @@ bayesint_result_UN <- as.tibble(bind_rows(bayesint_list_UN,.id="gene")) %>%
 bayesint_result_UN
 ```
 
-## annotate CR and UN eQTL
+## annotate UN eQTL
 
 Load annotation
 ```{r}
-BrapaAnnotation <- read_csv("Brapa_V1.5_annotated.csv")
+BrapaAnnotation <- read_csv("../input/Brapa_V1.5_annotated.csv")
 BrapaAnnotation
 ```
 
-### CR
-```{r}
-CR_annotated <- lapply(1:nrow(bayesint_result_CR),function(row) {
-  qtl <- bayesint_result_CR[row,]
-  subset(BrapaAnnotation, chrom==qtl$chr &
-           start >= qtl$start &
-           end <= qtl$end) 
-}
-)
-names(CR_annotated) <- bayesint_result_CR$gene
-CR_annotated <- bind_rows(CR_annotated,.id="MR_gene") %>%
-  left_join(bayesint_result_CR,by=c("MR_gene"="gene","chrom"="chr")) %>% #get eQTL LOD
-    left_join(MR_CR_genes,by=c("MR_gene"="name")) %>% # get cutoff
-  rename(eQTL_candidate=name)
-
-
-CR_annotated_small <- CR_annotated %>% select(MR_gene,MR_Cutoff,eQTL_candidate,ends_with("LOD"))
-
-CR_annotated_small
-```
-
-given bayesint results, find overlaps with CR growth QTL
-
-```{r}
-CR_MReQTL_QTL_combined <- inner_join(QTLgenes,CR_annotated_small,by=c("name"="eQTL_candidate")) %>%
-  select(.id, MR_gene, MR_Cutoff, ends_with("LOD"), everything()) %>%
-  arrange(.id,desc(max_eQTL_LOD)) %>%
-  rename(eQTL_candidate=name)
-CR_MReQTL_QTL_combined
-
-CR_MReQTL_QTL_combined_small <- CR_MReQTL_QTL_combined %>% filter(!duplicated(eQTL_candidate)) %>%
-  select(-MR_gene,-MR_Cutoff) 
-CR_MReQTL_QTL_combined_small
-```
-
-how many QTL have at least some overlap?
-```{r}
-unique(QTLgenes$.id)
-unique(CR_MReQTL_QTL_combined$.id)
-```
-
-3 of 5
-
-
-```{r}
-write_csv(CR_MReQTL_QTL_combined,"Heigh2012_uniquegenes_MR_eQTL_CR_overlap.csv")
-```
-
-
-### UN
 
 ```{r}
 UN_annotated <- lapply(1:nrow(bayesint_result_UN),function(row) {
@@ -294,7 +172,7 @@ unique(UN_MReQTL_QTL_combined$.id)
 ALL
 
 ```{r}
-write_csv(UN_MReQTL_QTL_combined,"Heigh2012_uniquegenes_MR_eQTL_UN_overlap.csv")
+write_csv(UN_MReQTL_QTL_combined,"../output/Heigh2012_uniquegenes_MR_eQTL_UN_overlap.csv")
 ```
 
 

@@ -11,9 +11,11 @@ I have taken two approaches: using mutual ranks and using WGCNA.
 The main scripts are the .RMD files. 
 
 * `01_Process Counts.Rmd` starts from RNAseq counts, normalizes and voom transforms in preparation for network building.
-* `02_MR Clustering CR UN.Rmd` Builds mutual rank networks centered on traits of interest
-* `WGCNA_CR.Rmd` and `WGCNA_UN.Rmd` build WGCNA networks (CR is for data in the CRowded treatment and UN is for data from the UNcrowded treatment)
-* `QTL_Annotation_MR_Genes.Rmd` looks for overlaps betweeen network genes and QTL
-* `analyze_eigengene_QTL.Rmd` maps QTL for the WGCNA eigen genes (cluster centers)
-* `MR_eQTL_Overlap.Rmd` maps eQTL for the MR genes and then looks for overlap between those eQTL and trait QTL
+* `02_MR Clustering UN.Rmd` Builds mutual rank networks centered on traits of interest
+* `03_QTL_Annotation_MR_Genes.Rmd` looks for overlaps between network genes and QTL
+* `04_MR_eQTL_Overlap.Rmd` maps eQTL for the MR genes and then looks for overlap between those eQTL and trait QTL
+* `05_WGCNA_UN.Rmd` build WGCNA networks
+* `05b_WGCNA_UN_multi.Rmd` testing different parameters on WGCNA.  Also repeatability.
+* `06_analyze_eigengene_QTL.Rmd` maps QTL for the WGCNA eigen genes (cluster centers)
+
 
