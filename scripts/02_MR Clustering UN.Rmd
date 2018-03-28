@@ -232,10 +232,12 @@ system.time(perm.results.UN.100 <- sfSapply(1:permutations, function(p) {
 }))
 
 save(perm.results.UN.100, file="../output/permutation_results.Rdata")
+
+sfStop()
 ```
 
 ```{r}
-load("permutation_results.Rdata")
+load("../output/permutation_results.Rdata")
 apply(perm.results.UN.100,1,quantile,.95)
 ```
 
