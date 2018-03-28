@@ -21,12 +21,12 @@ options(stringsAsFactors = FALSE)
 
 Get GO
 ```{r}
-go.terms <- read.delim("FileS11.txt",header=FALSE,as.is=TRUE)
+go.terms <- read.delim("../input/FileS11.txt",header=FALSE,as.is=TRUE)
 head(go.terms)
 names(go.terms) <- c("GeneID","GO")
 summary(go.terms)
 
-gene.lengths <- read.table("Brapa_CDS_lengths.txt",as.is=TRUE)
+gene.lengths <- read.table("../input/Brapa_CDS_lengths.txt",as.is=TRUE)
 head(gene.lengths)
 summary(gene.lengths)
 
@@ -39,8 +39,8 @@ head(go.list)
 Get data
 ```{r}
 #box_load(162362592785)
-load("~/Box Sync/BrapaNetworks/Voom_CR_UN.Rdata")
-annotation  <- read.csv("~/Box Sync/BrapaNetworks/Brapa_V1.5_annotated.csv.gz")
+load("../output/Voom_UN.Rdata")
+annotation  <- read.csv("../input/Brapa_V1.5_annotated.csv")
 ```
 
 
@@ -70,20 +70,25 @@ head(expr.data.UN[,1:6])
 
 Get Rob's Data
 ```{r}
-blups2012 <- read.csv("~/Box Sync/BrapaNetworks/Brapa2012BayesHeight_blups.csv", row.names = 1)
+blups2011 <- read.csv("../input/Brapa2011BayesHeight_blups.csv",row.names = 1)
+blups2012 <- read.csv("../input/Brapa2012BayesHeight_blups.csv", row.names = 1)
+blups2011$Line %<>% paste("RIL",.,sep="_")
 blups2012$Line %<>% paste("RIL",.,sep="_")
+blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.))) %>%
+  rename(UNInflection_DD=UNInflect_DD)
 blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
+head(blups2011)
 head(blups2012)
 ```
 
+Have decided to use 2011 and 2012 BLUPs but UN only...
 ```{r}
-blups.UN <- blups2012 %>% select(starts_with("Line"),starts_with("UN"),-matches("Inflection_size"))
+blups.UN <- merge(blups2011,blups2012,by="Line",suffixes = c(".2011",".2012")) %>%
+  select(starts_with("Line"),starts_with("UN"),-matches("Inflect.*_size"))
 head(blups.UN)
 ```
 
 ## WGCNA 
-
-### UN
 
 transform
 ```{r}
@@ -134,7 +139,7 @@ rownames(MEs) <- rownames(exp.data)
 
 ME.blups <- merge(blups.UN,MEs,by.x=1.,by.y=0)
 
-blups.cor <- cor(ME.blups[,2:6],ME.blups[,7:ncol(ME.blups)])
+blups.cor <- cor(ME.blups[,2:11],ME.blups[,12:ncol(ME.blups)])
 
 blups.cor.P <- corPvalueStudent(blups.cor,nrow(exp.data)) %>%
   p.adjust() %>% #using "holm" method.  For relaxed stringency could use "fdr"
@@ -236,8 +241,22 @@ sapply(signedhybrid, function(x) x[["module.count"]])
 ```
 
 ```{r}
+names(signedhybrid) <- as.character(2:7)
+```
+
+
+```{r}
 #lapply(signed, function(x) x[["top.cor"]])
-lapply(signedhybrid, function(x) x[["top.cor"]])
+lapply(signedhybrid, function(x) range(x[["top.cor"]],na.rm = TRUE))
+```
+
+
+```{r}
+#lapply(signed, function(x) x[["top.cor"]])
+lapply(signedhybrid[2:3], function(x) {
+  sig.names <- x$sig.modules %>% str_c("ME",.)
+  x$sig.cor[,sig.names]
+})
 ```
 
 ```{r}

@@ -128,10 +128,10 @@ plot(sft$fitIndices[,1], sft$fitIndices[,5],
 text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
 ```
 
-choose 5
+choose 3
 
 ```{r}
-softPower <- 5
+softPower <- 3
 adjacency <- adjacency(expr.data.UN.t, power = softPower, type = "signed hybrid")
 # Turn adjacency into topological overlap
 TOM <- TOMsimilarity(adjacency);
@@ -160,7 +160,7 @@ table(dynamicMods)
 ```
 
 ```{r}
-# Convert numeric lables into colors
+# Convert numeric labels into colors
 dynamicColors = labels2colors(dynamicMods)
 table(dynamicColors)
 # Plot the dendrogram and colors underneath
@@ -242,8 +242,8 @@ head(ME.blups)
 ```
 
 ```{r}
-blups.cor <- cor(ME.blups[,2:6],ME.blups[,7:66])
-max(blups.cor)
+blups.cor <- cor(ME.blups[,2:11],ME.blups[,12:61])
+range(blups.cor)
 blups.cor
 ```
 
@@ -258,7 +258,7 @@ sum(blups.cor.P < 0.05)
 
 blups.cor.sig <- blups.cor
 blups.cor.sig[blups.cor.P>0.05] <- NA
-blups.cor.sig
+blups.cor.sig[,!apply(blups.cor.sig,2,function(x) all(is.na(x)))]
 
 p.asterisk <- ifelse(blups.cor.P < 0.05, "*","")
 ```
@@ -343,6 +343,7 @@ module_genes
 
 Get GO list and gene lengths
 ```{r, engine='bash', eval=FALSE}
+cd ../input
 wget http://www.g3journal.org/content/suppl/2014/08/12/g3.114.012526.DC1/FileS11.txt
 wget http://jnmaloof.github.io/BIS180L_web/data/Brapa_CDS_lengths.txt
 ```
@@ -356,12 +357,12 @@ library(stringr)
 
 Format data for GOseq
 ```{r}
-go.terms <- read.delim("FileS11.txt",header=FALSE,as.is=TRUE)
+go.terms <- read.delim("../input/FileS11.txt",header=FALSE,as.is=TRUE)
 head(go.terms)
 names(go.terms) <- c("GeneID","GO")
 summary(go.terms)
 
-gene.lengths <- read.table("Brapa_CDS_lengths.txt",as.is=TRUE)
+gene.lengths <- read.table("../input/Brapa_CDS_lengths.txt",as.is=TRUE)
 head(gene.lengths)
 summary(gene.lengths)
 
