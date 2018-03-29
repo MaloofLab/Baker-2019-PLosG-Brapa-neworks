@@ -16,6 +16,7 @@ The main scripts are the .RMD files.
 * `04_MR_eQTL_Overlap.Rmd` maps eQTL for the MR genes and then looks for overlap between those eQTL and trait QTL
 * `05_WGCNA_UN.Rmd` build WGCNA networks
 * `05b_WGCNA_UN_multi.Rmd` testing different parameters on WGCNA.  Also repeatability.
-* `06_analyze_eigengene_QTL.Rmd` maps QTL for the WGCNA eigen genes (cluster centers)
+* `06_get_eigengene_QTL.Rmd` maps QTL for the WGCNA eigen genes (cluster centers)
+* `07_analyze_eigengene_QTL.Rmd` 
 
 
