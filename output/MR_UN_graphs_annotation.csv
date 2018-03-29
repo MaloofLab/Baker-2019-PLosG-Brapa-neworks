@@ -1,166 +1,70 @@
-"",".id","MR_Cutoff","trt","name","chrom","start","end","subject","AGI","At_symbol","At_description","perc_ID","aln_length","mismatch","gap_open","qstart","qend","sstart","send","eval","score"
-"1","blup.mr.graph.UN.10",10,"UN","Bra037542","A01",20927607,20928214,"AT3G19030.1","AT3G19030",NA,NA,87.432,183,23,0,106,288,1,183,1.4e-58,226
-"2","blup.mr.graph.UN.10",10,"UN","Bra012899","A03",21658875,21660326,"AT3G50440.1","AT3G50440","ATMES10;MES10","Encodes a protein shown to have methyl jasmonate esterase activity in vitro. This protein does not act on methyl IAA, MeSA, MeGA4, or MEGA9 in vitro.",85.797,859,118,3,127,982,865,8,0,989
-"3","blup.mr.graph.UN.20",20,"UN","Bra038899","A01",15641416,15643341,"AT3G51430.1","AT3G51430","SSL5;YLS2","Although this enzyme is predicted to encode a strictosidine synthase (SS), it lacks a conserved catalytic glutamate residue found in active SS enzymes and it is not expected to have SS activity.",81.047,1108,203,5,297,1402,1103,1,0,1036
-"4","blup.mr.graph.UN.20",20,"UN","Bra037542","A01",20927607,20928214,"AT3G19030.1","AT3G19030",NA,NA,87.432,183,23,0,106,288,1,183,1.4e-58,226
-"5","blup.mr.graph.UN.20",20,"UN","Bra006755_Bra006756","A03",4918760,4925611,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"6","blup.mr.graph.UN.20",20,"UN","Bra022867","A03",7480730,7484921,"AT2G31810.1","AT2G31810",NA,NA,87.221,1479,150,5,161,1603,1,1476,0,1828
-"7","blup.mr.graph.UN.20",20,"UN","Bra023009","A03",8219083,8221040,"AT2G43590.1","AT2G43590",NA,NA,79.128,757,140,5,1,745,795,45,0,646
-"8","blup.mr.graph.UN.20",20,"UN","Bra012899","A03",21658875,21660326,"AT3G50440.1","AT3G50440","ATMES10;MES10","Encodes a protein shown to have methyl jasmonate esterase activity in vitro. This protein does not act on methyl IAA, MeSA, MeGA4, or MEGA9 in vitro.",85.797,859,118,3,127,982,865,8,0,989
-"9","blup.mr.graph.UN.20",20,"UN","Bra025790","A06",7732370,7732955,"AT1G20070.1","AT1G20070",NA,NA,82.149,549,86,4,177,719,582,40,1.87e-153,542
-"10","blup.mr.graph.UN.20",20,"UN","Bra036465","A07",224092,228427,"AT2G20340.1","AT2G20340","AAS;AtAAS",NA,87.361,1440,182,0,1,1440,1473,34,0,1777
-"11","blup.mr.graph.UN.20",20,"UN","Bra008566","A10",11646341,11651597,"AT5G17270.1","AT5G17270",NA,NA,87.532,2703,322,4,1,2691,2700,1,0,3351
-"12","blup.mr.graph.UN.20",20,"UN","Bra008575","A10",11686976,11687928,"AT5G17170.1","AT5G17170","ENH1",NA,92.263,517,40,0,13,529,807,291,0,753
-"13","blup.mr.graph.UN.20",20,"UN","Bra008577","A10",11695926,11696813,"AT5G17150.1","AT5G17150",NA,NA,75.276,453,108,2,106,556,145,595,6.21e-83,307
-"14","blup.mr.graph.UN.20",20,"UN","Bra008637","A10",11990050,11990676,"AT5G66450.1","AT5G66450","LPPepsilon2",NA,87.097,93,9,1,1,93,861,772,1.34e-24,113
-"15","blup.mr.graph.UN.20",20,"UN","Bra008840","A10",12861652,12867286,"AT5G13280.1","AT5G13280","AK;AK-LYS1;AK1","Asp kinase inhibited by Lys and S-adenosylmethionine. Contains regulatory domains that belong to the ACT domain family, which allow binding to a extreme variety  of ligands. Can function as a monomer or as a dimer with acetohydroxyacid synthase (HSDH).",87.796,1729,172,5,2378,4088,1710,3,0,2179
-"16","blup.mr.graph.UN.20",20,"UN","Bra008859","A10",12969157,12970663,"AT5G13070.1","AT5G13070",NA,NA,90.399,552,53,0,226,777,552,1,0,756
-"17","blup.mr.graph.UN.30",30,"UN","Bra011761","A01",688837,690803,"AT4G37430.1","AT4G37430","CYP81F1;CYP91A2","Encodes a member of the CYP81F cytochrome P450 monooxygenase subfamily.",82.71,1498,251,4,188,1678,1497,1,0,1523
-"18","blup.mr.graph.UN.30",30,"UN","Bra038899","A01",15641416,15643341,"AT3G51430.1","AT3G51430","SSL5;YLS2","Although this enzyme is predicted to encode a strictosidine synthase (SS), it lacks a conserved catalytic glutamate residue found in active SS enzymes and it is not expected to have SS activity.",81.047,1108,203,5,297,1402,1103,1,0,1036
-"19","blup.mr.graph.UN.30",30,"UN","Bra037542","A01",20927607,20928214,"AT3G19030.1","AT3G19030",NA,NA,87.432,183,23,0,106,288,1,183,1.4e-58,226
-"20","blup.mr.graph.UN.30",30,"UN","Bra008430","A02",14597701,14598768,"AT1G80920.1","AT1G80920","AtJ8;AtToc12;DJC22;J8;Toc12","A nuclear encoded soluble protein found in the chloroplast stroma.",90.5,400,35,1,199,595,93,492,1.42e-155,549
-"21","blup.mr.graph.UN.30",30,"UN","Bra006755_Bra006756","A03",4918760,4925611,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"22","blup.mr.graph.UN.30",30,"UN","Bra022867","A03",7480730,7484921,"AT2G31810.1","AT2G31810",NA,NA,87.221,1479,150,5,161,1603,1,1476,0,1828
-"23","blup.mr.graph.UN.30",30,"UN","Bra023009","A03",8219083,8221040,"AT2G43590.1","AT2G43590",NA,NA,79.128,757,140,5,1,745,795,45,0,646
-"24","blup.mr.graph.UN.30",30,"UN","Bra012899","A03",21658875,21660326,"AT3G50440.1","AT3G50440","ATMES10;MES10","Encodes a protein shown to have methyl jasmonate esterase activity in vitro. This protein does not act on methyl IAA, MeSA, MeGA4, or MEGA9 in vitro.",85.797,859,118,3,127,982,865,8,0,989
-"25","blup.mr.graph.UN.30",30,"UN","Bra039792","A04",3869642,3871082,"AT3G53490.1","AT3G53490",NA,NA,82.839,641,97,4,176,805,678,40,0,654
-"26","blup.mr.graph.UN.30",30,"UN","Bra028216","A04",7113249,7113620,"AT5G66450.1","AT5G66450","LPPepsilon2",NA,85.47,234,28,2,132,365,861,634,9.52e-71,266
-"27","blup.mr.graph.UN.30",30,"UN","Bra025497","A04",8699173,8703567,"AT5G41410.1","AT5G41410","BEL1","Homeodomain protein required for ovule identity.Loss of function mutations show homeotic conversion of integuments to carpels.Forms heterodimers with STM and KNAT1. Interacts with AG-SEP heterodimers is thought to restrict WUS expression. BEL interacts with MADS box dimers composed of SEP1(or SEP3) and AG, SHP1, SHP2 and STK. The interaction of BEL1 with AG-SEP3 is required for proper integument development and specification of integument identity.",84.512,1853,199,17,503,2284,1,1836,0,2051
-"28","blup.mr.graph.UN.30",30,"UN","Bra005332","A05",4887158,4887395,"AT5G66450.1","AT5G66450","LPPepsilon2",NA,87.387,222,28,0,10,231,855,634,1.12e-73,275
-"29","blup.mr.graph.UN.30",30,"UN","Bra018973","A06",947925,949061,"AT1G52565.1","AT1G52565",NA,NA,87.406,397,38,3,474,867,1,388,4.82e-137,488
-"30","blup.mr.graph.UN.30",30,"UN","Bra025790","A06",7732370,7732955,"AT1G20070.1","AT1G20070",NA,NA,82.149,549,86,4,177,719,582,40,1.87e-153,542
-"31","blup.mr.graph.UN.30",30,"UN","Bra036465","A07",224092,228427,"AT2G20340.1","AT2G20340","AAS;AtAAS",NA,87.361,1440,182,0,1,1440,1473,34,0,1777
-"32","blup.mr.graph.UN.30",30,"UN","Bra028410","A07",13812227,13814025,"AT5G38510.1","AT5G38510",NA,NA,81.56,1128,131,8,1,1052,1305,179,0,1130
-"33","blup.mr.graph.UN.30",30,"UN","Bra013959","A08",4964613,4968680,"AT5G17680.1","AT5G17680",NA,NA,88.209,2044,223,3,21,2064,33,2058,0,2603
-"34","blup.mr.graph.UN.30",30,"UN","Bra037847","A09",4480716,4482125,"AT5G67420.1","AT5G67420","ASL39;LBD37",NA,81.046,765,79,7,339,1049,1,753,0,755
-"35","blup.mr.graph.UN.30",30,"UN","Bra017468","A09",13486185,13488948,"AT5G47730.1","AT5G47730",NA,NA,90.22,1002,97,1,583,1584,1,1001,0,1362
-"36","blup.mr.graph.UN.30",30,"UN","Bra026943","A09",36179122,36180217,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"37","blup.mr.graph.UN.30",30,"UN","Bra002411","A10",9834000,9836587,"AT5G22440.1","AT5G22440",NA,NA,90.061,654,65,0,47,700,1,654,0,886
-"38","blup.mr.graph.UN.30",30,"UN","Bra008566","A10",11646341,11651597,"AT5G17270.1","AT5G17270",NA,NA,87.532,2703,322,4,1,2691,2700,1,0,3351
-"39","blup.mr.graph.UN.30",30,"UN","Bra008575","A10",11686976,11687928,"AT5G17170.1","AT5G17170","ENH1",NA,92.263,517,40,0,13,529,807,291,0,753
-"40","blup.mr.graph.UN.30",30,"UN","Bra008577","A10",11695926,11696813,"AT5G17150.1","AT5G17150",NA,NA,75.276,453,108,2,106,556,145,595,6.21e-83,307
-"41","blup.mr.graph.UN.30",30,"UN","Bra008637","A10",11990050,11990676,"AT5G66450.1","AT5G66450","LPPepsilon2",NA,87.097,93,9,1,1,93,861,772,1.34e-24,113
-"42","blup.mr.graph.UN.30",30,"UN","Bra008734","A10",12429673,12431671,"AT5G14860.1","AT5G14860",NA,NA,85.021,1462,201,3,152,1601,1466,11,0,1653
-"43","blup.mr.graph.UN.30",30,"UN","Bra008750","A10",12500020,12501272,"AT5G14600.1","AT5G14600",NA,NA,86.071,962,128,2,2,963,956,1,0,1128
-"44","blup.mr.graph.UN.30",30,"UN","Bra008840","A10",12861652,12867286,"AT5G13280.1","AT5G13280","AK;AK-LYS1;AK1","Asp kinase inhibited by Lys and S-adenosylmethionine. Contains regulatory domains that belong to the ACT domain family, which allow binding to a extreme variety  of ligands. Can function as a monomer or as a dimer with acetohydroxyacid synthase (HSDH).",87.796,1729,172,5,2378,4088,1710,3,0,2179
-"45","blup.mr.graph.UN.30",30,"UN","Bra008859","A10",12969157,12970663,"AT5G13070.1","AT5G13070",NA,NA,90.399,552,53,0,226,777,552,1,0,756
-"46","blup.mr.graph.UN.30",30,"UN","Bra039532","Scaffold000167",263780,267309,"AT3G47570.1","AT3G47570",NA,NA,69.718,142,43,0,961,1102,2369,2228,2.05e-08,62.6
-"47","blup.mr.graph.UN.40",40,"UN","Bra011761","A01",688837,690803,"AT4G37430.1","AT4G37430","CYP81F1;CYP91A2","Encodes a member of the CYP81F cytochrome P450 monooxygenase subfamily.",82.71,1498,251,4,188,1678,1497,1,0,1523
-"48","blup.mr.graph.UN.40",40,"UN","Bra038899","A01",15641416,15643341,"AT3G51430.1","AT3G51430","SSL5;YLS2","Although this enzyme is predicted to encode a strictosidine synthase (SS), it lacks a conserved catalytic glutamate residue found in active SS enzymes and it is not expected to have SS activity.",81.047,1108,203,5,297,1402,1103,1,0,1036
-"49","blup.mr.graph.UN.40",40,"UN","Bra037542","A01",20927607,20928214,"AT3G19030.1","AT3G19030",NA,NA,87.432,183,23,0,106,288,1,183,1.4e-58,226
-"50","blup.mr.graph.UN.40",40,"UN","Bra028781","A02",703916,705981,"AT5G04740.1","AT5G04740","ACR12",NA,84.699,915,110,4,1,894,906,1,0,1029
-"51","blup.mr.graph.UN.40",40,"UN","Bra008162","A02",12534785,12535753,"AT1G74670.1","AT1G74670","GASA6",NA,90.397,302,29,0,247,548,1,302,1.15e-114,414
-"52","blup.mr.graph.UN.40",40,"UN","Bra008430","A02",14597701,14598768,"AT1G80920.1","AT1G80920","AtJ8;AtToc12;DJC22;J8;Toc12","A nuclear encoded soluble protein found in the chloroplast stroma.",90.5,400,35,1,199,595,93,492,1.42e-155,549
-"53","blup.mr.graph.UN.40",40,"UN","Bra006694","A03",4665446,4667777,"AT5G59780.3","AT5G59780","ATMYB59;ATMYB59-1;ATMYB59-2;ATMYB59-3;MYB59","Encodes a putative transcription factor (MYB59).",90.395,583,50,2,629,1211,119,695,0,796
-"54","blup.mr.graph.UN.40",40,"UN","Bra006755_Bra006756","A03",4918760,4925611,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"55","blup.mr.graph.UN.40",40,"UN","Bra029099","A03",6352615,6355969,"AT5G53050.2","AT5G53050",NA,NA,84.502,1084,144,3,72,1143,120,1191,0,1205
-"56","blup.mr.graph.UN.40",40,"UN","Bra029111","A03",6415599,6418393,"AT5G52660.1","AT5G52660",NA,NA,87.855,881,92,5,84,961,123,991,0,1097
-"57","blup.mr.graph.UN.40",40,"UN","Bra022867","A03",7480730,7484921,"AT2G31810.1","AT2G31810",NA,NA,87.221,1479,150,5,161,1603,1,1476,0,1828
-"58","blup.mr.graph.UN.40",40,"UN","Bra022924","A03",7800943,7803772,"AT2G32850.1","AT2G32850",NA,NA,86.816,1115,138,1,97,1202,1,1115,0,1352
-"59","blup.mr.graph.UN.40",40,"UN","Bra023009","A03",8219083,8221040,"AT2G43590.1","AT2G43590",NA,NA,79.128,757,140,5,1,745,795,45,0,646
-"60","blup.mr.graph.UN.40",40,"UN","Bra023056","A03",8447124,8449427,"AT2G36230.1","AT2G36230","APG10;HISN3","Encodes a BBMII isomerase involved in histidine  biosynthesis.",86.696,902,114,2,380,1278,899,1,0,1083
-"61","blup.mr.graph.UN.40",40,"UN","Bra023094","A03",8669875,8675249,"AT2G37050.3","AT2G37050",NA,NA,84.265,2809,416,8,316,3102,1,2805,0,3061
-"62","blup.mr.graph.UN.40",40,"UN","Bra012899","A03",21658875,21660326,"AT3G50440.1","AT3G50440","ATMES10;MES10","Encodes a protein shown to have methyl jasmonate esterase activity in vitro. This protein does not act on methyl IAA, MeSA, MeGA4, or MEGA9 in vitro.",85.797,859,118,3,127,982,865,8,0,989
-"63","blup.mr.graph.UN.40",40,"UN","Bra014655","A04",2052836,2054516,"AT3G57010.1","AT3G57010",NA,NA,84.206,1146,166,1,1,1146,1,1131,0,1260
-"64","blup.mr.graph.UN.40",40,"UN","Bra039792","A04",3869642,3871082,"AT3G53490.1","AT3G53490",NA,NA,82.839,641,97,4,176,805,678,40,0,654
-"65","blup.mr.graph.UN.40",40,"UN","Bra032711","A04",5635165,5637779,"AT4G23250.1","AT4G23250","CRK17;DUF26-21;EMB1290;RKC1",NA,87.357,1139,138,1,679,1811,889,2027,0,1406
-"66","blup.mr.graph.UN.40",40,"UN","Bra028216","A04",7113249,7113620,"AT5G66450.1","AT5G66450","LPPepsilon2",NA,85.47,234,28,2,132,365,861,634,9.52e-71,266
-"67","blup.mr.graph.UN.40",40,"UN","Bra025497","A04",8699173,8703567,"AT5G41410.1","AT5G41410","BEL1","Homeodomain protein required for ovule identity.Loss of function mutations show homeotic conversion of integuments to carpels.Forms heterodimers with STM and KNAT1. Interacts with AG-SEP heterodimers is thought to restrict WUS expression. BEL interacts with MADS box dimers composed of SEP1(or SEP3) and AG, SHP1, SHP2 and STK. The interaction of BEL1 with AG-SEP3 is required for proper integument development and specification of integument identity.",84.512,1853,199,17,503,2284,1,1836,0,2051
-"68","blup.mr.graph.UN.40",40,"UN","Bra005332","A05",4887158,4887395,"AT5G66450.1","AT5G66450","LPPepsilon2",NA,87.387,222,28,0,10,231,855,634,1.12e-73,275
-"69","blup.mr.graph.UN.40",40,"UN","Bra018973","A06",947925,949061,"AT1G52565.1","AT1G52565",NA,NA,87.406,397,38,3,474,867,1,388,4.82e-137,488
-"70","blup.mr.graph.UN.40",40,"UN","Bra026068","A06",5963950,5967931,"AT1G16300.1","AT1G16300","GAPCP-2","Encodes one of the chloroplast/plastid localized GAPDH isoforms (GAPCp1/At1g79530 and GAPCp2/At1g16300). gapcp double mutants display a drastic phenotype of arrested root development, dwarfism and sterility. GAPCps are important for the synthesis of serine in roots.",89.097,1284,119,4,213,1496,1,1263,0,1685
-"71","blup.mr.graph.UN.40",40,"UN","Bra025790","A06",7732370,7732955,"AT1G20070.1","AT1G20070",NA,NA,82.149,549,86,4,177,719,582,40,1.87e-153,542
-"72","blup.mr.graph.UN.40",40,"UN","Bra025296","A06",21250521,21251357,"AT2G17720.1","AT2G17720","P4H5",NA,79.545,352,51,2,92,443,386,56,7.22e-87,320
-"73","blup.mr.graph.UN.40",40,"UN","Bra025250","A06",21504086,21508384,"AT3G27110.1","AT3G27110",NA,NA,86.789,1037,129,2,235,1265,1035,1,0,1251
-"74","blup.mr.graph.UN.40",40,"UN","Bra024934","A06",23231851,23235200,"AT5G47560.1","AT5G47560","ATSDAT;ATTDT;TDT","Encodes a tonoplast malate/fumarate transporter.",85.301,1626,236,1,126,1751,1,1623,0,1853
-"75","blup.mr.graph.UN.40",40,"UN","Bra036465","A07",224092,228427,"AT2G20340.1","AT2G20340","AAS;AtAAS",NA,87.361,1440,182,0,1,1440,1473,34,0,1777
-"76","blup.mr.graph.UN.40",40,"UN","Bra028410","A07",13812227,13814025,"AT5G38510.1","AT5G38510",NA,NA,81.56,1128,131,8,1,1052,1305,179,0,1130
-"77","blup.mr.graph.UN.40",40,"UN","Bra013968","A08",4933398,4934543,"AT5G17560.1","AT5G17560","BolA4",NA,85.768,534,61,2,1,534,16,534,1.3e-178,625
-"78","blup.mr.graph.UN.40",40,"UN","Bra013959","A08",4964613,4968680,"AT5G17680.1","AT5G17680",NA,NA,88.209,2044,223,3,21,2064,33,2058,0,2603
-"79","blup.mr.graph.UN.40",40,"UN","Bra037847","A09",4480716,4482125,"AT5G67420.1","AT5G67420","ASL39;LBD37",NA,81.046,765,79,7,339,1049,1,753,0,755
-"80","blup.mr.graph.UN.40",40,"UN","Bra017468","A09",13486185,13488948,"AT5G47730.1","AT5G47730",NA,NA,90.22,1002,97,1,583,1584,1,1001,0,1362
-"81","blup.mr.graph.UN.40",40,"UN","Bra026943","A09",36179122,36180217,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"82","blup.mr.graph.UN.40",40,"UN","Bra002411","A10",9834000,9836587,"AT5G22440.1","AT5G22440",NA,NA,90.061,654,65,0,47,700,1,654,0,886
-"83","blup.mr.graph.UN.40",40,"UN","Bra002255","A10",10705847,10711901,"AT5G19690.1","AT5G19690","STT3A","encodes an oligosaccharyl transferase involved response to high salt. Mutants are hypersensitive to high salt conditions",92.839,2346,162,2,228,2573,2340,1,0,3470
-"84","blup.mr.graph.UN.40",40,"UN","Bra008566","A10",11646341,11651597,"AT5G17270.1","AT5G17270",NA,NA,87.532,2703,322,4,1,2691,2700,1,0,3351
-"85","blup.mr.graph.UN.40",40,"UN","Bra008575","A10",11686976,11687928,"AT5G17170.1","AT5G17170","ENH1",NA,92.263,517,40,0,13,529,807,291,0,753
-"86","blup.mr.graph.UN.40",40,"UN","Bra102309","A10",11689228,11693443,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"87","blup.mr.graph.UN.40",40,"UN","Bra008577","A10",11695926,11696813,"AT5G17150.1","AT5G17150",NA,NA,75.276,453,108,2,106,556,145,595,6.21e-83,307
-"88","blup.mr.graph.UN.40",40,"UN","Bra008637","A10",11990050,11990676,"AT5G66450.1","AT5G66450","LPPepsilon2",NA,87.097,93,9,1,1,93,861,772,1.34e-24,113
-"89","blup.mr.graph.UN.40",40,"UN","Bra008684","A10",12184430,12186590,"AT5G15630.1","AT5G15630","COBL4;IRX6","Encodes a member of the COBRA family, similar to phytochelatin synthetase. Involved in secondary cell wall biosynthesis. Mutants make smaller plants with reduced levels of cellulose and cell wall sugars.",90.084,595,56,1,803,1397,592,1,0,805
-"90","blup.mr.graph.UN.40",40,"UN","Bra008711","A10",12311055,12317476,"AT5G15250.1","AT5G15250","ATFTSH6;FTSH6","Encodes an FtsH protease that is localized to the chloroplast. AtFtsH6 is involved in the degradation of both Lhcb3 and Lhcb1 during senescence and high-light acclimation.",86.974,2019,246,4,1,2003,7,2024,0,2453
-"91","blup.mr.graph.UN.40",40,"UN","Bra008734","A10",12429673,12431671,"AT5G14860.1","AT5G14860",NA,NA,85.021,1462,201,3,152,1601,1466,11,0,1653
-"92","blup.mr.graph.UN.40",40,"UN","Bra008750","A10",12500020,12501272,"AT5G14600.1","AT5G14600",NA,NA,86.071,962,128,2,2,963,956,1,0,1128
-"93","blup.mr.graph.UN.40",40,"UN","Bra008797","A10",12674451,12675414,"AT5G13850.1","AT5G13850","NACA3",NA,85.008,627,82,2,1,627,615,1,0,710
-"94","blup.mr.graph.UN.40",40,"UN","Bra008840","A10",12861652,12867286,"AT5G13280.1","AT5G13280","AK;AK-LYS1;AK1","Asp kinase inhibited by Lys and S-adenosylmethionine. Contains regulatory domains that belong to the ACT domain family, which allow binding to a extreme variety  of ligands. Can function as a monomer or as a dimer with acetohydroxyacid synthase (HSDH).",87.796,1729,172,5,2378,4088,1710,3,0,2179
-"95","blup.mr.graph.UN.40",40,"UN","Bra008859","A10",12969157,12970663,"AT5G13070.1","AT5G13070",NA,NA,90.399,552,53,0,226,777,552,1,0,756
-"96","blup.mr.graph.UN.40",40,"UN","Bra039532","Scaffold000167",263780,267309,"AT3G47570.1","AT3G47570",NA,NA,69.718,142,43,0,961,1102,2369,2228,2.05e-08,62.6
-"97","blup.mr.graph.UN.50",50,"UN","Bra011761","A01",688837,690803,"AT4G37430.1","AT4G37430","CYP81F1;CYP91A2","Encodes a member of the CYP81F cytochrome P450 monooxygenase subfamily.",82.71,1498,251,4,188,1678,1497,1,0,1523
-"98","blup.mr.graph.UN.50",50,"UN","Bra038899","A01",15641416,15643341,"AT3G51430.1","AT3G51430","SSL5;YLS2","Although this enzyme is predicted to encode a strictosidine synthase (SS), it lacks a conserved catalytic glutamate residue found in active SS enzymes and it is not expected to have SS activity.",81.047,1108,203,5,297,1402,1103,1,0,1036
-"99","blup.mr.graph.UN.50",50,"UN","Bra037542","A01",20927607,20928214,"AT3G19030.1","AT3G19030",NA,NA,87.432,183,23,0,106,288,1,183,1.4e-58,226
-"100","blup.mr.graph.UN.50",50,"UN","Bra021591","A01",23491632,23493063,"AT3G15115.1","AT3G15115",NA,NA,84.113,1026,136,6,182,1186,1,1020,0,1113
-"101","blup.mr.graph.UN.50",50,"UN","Bra040225","A01",25762534,25766140,"AT3G06350.1","AT3G06350","EMB3004;MEE32",NA,86.414,1818,211,6,128,1915,1,1812,0,2170
-"102","blup.mr.graph.UN.50",50,"UN","Bra028781","A02",703916,705981,"AT5G04740.1","AT5G04740","ACR12",NA,84.699,915,110,4,1,894,906,1,0,1029
-"103","blup.mr.graph.UN.50",50,"UN","Bra028603","A02",1509839,1511639,"AT5G10050.1","AT5G10050",NA,NA,83.735,498,81,0,155,652,837,340,1.84e-150,533
-"104","blup.mr.graph.UN.50",50,"UN","Bra022535","A02",8171629,8175894,"AT3G45140.1","AT3G45140","ATLOX2;LOX2","Chloroplast lipoxygenase required for wound-induced jasmonic acid accumulation in Arabidopsis.Mutants are resistant to Staphylococcus aureus and accumulate salicylic acid upon infection.",83.444,2706,422,7,138,2836,1,2687,0,2852
-"105","blup.mr.graph.UN.50",50,"UN","Bra008162","A02",12534785,12535753,"AT1G74670.1","AT1G74670","GASA6",NA,90.397,302,29,0,247,548,1,302,1.15e-114,414
-"106","blup.mr.graph.UN.50",50,"UN","Bra008430","A02",14597701,14598768,"AT1G80920.1","AT1G80920","AtJ8;AtToc12;DJC22;J8;Toc12","A nuclear encoded soluble protein found in the chloroplast stroma.",90.5,400,35,1,199,595,93,492,1.42e-155,549
-"107","blup.mr.graph.UN.50",50,"UN","Bra006694","A03",4665446,4667777,"AT5G59780.3","AT5G59780","ATMYB59;ATMYB59-1;ATMYB59-2;ATMYB59-3;MYB59","Encodes a putative transcription factor (MYB59).",90.395,583,50,2,629,1211,119,695,0,796
-"108","blup.mr.graph.UN.50",50,"UN","Bra006755_Bra006756","A03",4918760,4925611,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"109","blup.mr.graph.UN.50",50,"UN","Bra029099","A03",6352615,6355969,"AT5G53050.2","AT5G53050",NA,NA,84.502,1084,144,3,72,1143,120,1191,0,1205
-"110","blup.mr.graph.UN.50",50,"UN","Bra029100","A03",6355997,6357229,"AT5G53045.1","AT5G53045",NA,NA,86.713,286,38,0,124,409,1,286,2.46e-94,345
-"111","blup.mr.graph.UN.50",50,"UN","Bra029111","A03",6415599,6418393,"AT5G52660.1","AT5G52660",NA,NA,87.855,881,92,5,84,961,123,991,0,1097
-"112","blup.mr.graph.UN.50",50,"UN","Bra022867","A03",7480730,7484921,"AT2G31810.1","AT2G31810",NA,NA,87.221,1479,150,5,161,1603,1,1476,0,1828
-"113","blup.mr.graph.UN.50",50,"UN","Bra022924","A03",7800943,7803772,"AT2G32850.1","AT2G32850",NA,NA,86.816,1115,138,1,97,1202,1,1115,0,1352
-"114","blup.mr.graph.UN.50",50,"UN","Bra023009","A03",8219083,8221040,"AT2G43590.1","AT2G43590",NA,NA,79.128,757,140,5,1,745,795,45,0,646
-"115","blup.mr.graph.UN.50",50,"UN","Bra023056","A03",8447124,8449427,"AT2G36230.1","AT2G36230","APG10;HISN3","Encodes a BBMII isomerase involved in histidine  biosynthesis.",86.696,902,114,2,380,1278,899,1,0,1083
-"116","blup.mr.graph.UN.50",50,"UN","Bra023094","A03",8669875,8675249,"AT2G37050.3","AT2G37050",NA,NA,84.265,2809,416,8,316,3102,1,2805,0,3061
-"117","blup.mr.graph.UN.50",50,"UN","Bra012899","A03",21658875,21660326,"AT3G50440.1","AT3G50440","ATMES10;MES10","Encodes a protein shown to have methyl jasmonate esterase activity in vitro. This protein does not act on methyl IAA, MeSA, MeGA4, or MEGA9 in vitro.",85.797,859,118,3,127,982,865,8,0,989
-"118","blup.mr.graph.UN.50",50,"UN","Bra012767","A03",22388191,22390290,"AT4G15760.1","AT4G15760","MO1","Encodes a protein with similarity to monooxygenases that are known to degrade salicylic acid (SA).",85.256,1248,179,2,224,1469,1269,25,0,1416
-"119","blup.mr.graph.UN.50",50,"UN","Bra014655","A04",2052836,2054516,"AT3G57010.1","AT3G57010",NA,NA,84.206,1146,166,1,1,1146,1,1131,0,1260
-"120","blup.mr.graph.UN.50",50,"UN","Bra039792","A04",3869642,3871082,"AT3G53490.1","AT3G53490",NA,NA,82.839,641,97,4,176,805,678,40,0,654
-"121","blup.mr.graph.UN.50",50,"UN","Bra032711","A04",5635165,5637779,"AT4G23250.1","AT4G23250","CRK17;DUF26-21;EMB1290;RKC1",NA,87.357,1139,138,1,679,1811,889,2027,0,1406
-"122","blup.mr.graph.UN.50",50,"UN","Bra028216","A04",7113249,7113620,"AT5G66450.1","AT5G66450","LPPepsilon2",NA,85.47,234,28,2,132,365,861,634,9.52e-71,266
-"123","blup.mr.graph.UN.50",50,"UN","Bra025497","A04",8699173,8703567,"AT5G41410.1","AT5G41410","BEL1","Homeodomain protein required for ovule identity.Loss of function mutations show homeotic conversion of integuments to carpels.Forms heterodimers with STM and KNAT1. Interacts with AG-SEP heterodimers is thought to restrict WUS expression. BEL interacts with MADS box dimers composed of SEP1(or SEP3) and AG, SHP1, SHP2 and STK. The interaction of BEL1 with AG-SEP3 is required for proper integument development and specification of integument identity.",84.512,1853,199,17,503,2284,1,1836,0,2051
-"124","blup.mr.graph.UN.50",50,"UN","Bra032157","A04",10826957,10829863,"AT2G23580.1","AT2G23580","ABE4;ATMES4;MES4","Encodes a protein shown to have carboxylesterase activity and methyl salicylate esterase activity in vitro. This protein does not act on methyl IAA, methyl JA, MeGA4, or MEGA9 in vitro.",81.807,786,119,2,1,762,792,7,0,785
-"125","blup.mr.graph.UN.50",50,"UN","Bra034353","A04",12450468,12452187,"AT2G27450.1","AT2G27450","ATNLP1;CPA;NLP1","Encodes N-carbamoylputrescine amidohydrolase that is involved in putrescine and polyamine biosynthesis.",90.428,888,85,0,5,892,896,9,0,1218
-"126","blup.mr.graph.UN.50",50,"UN","Bra017236","A04",15950721,15952589,"AT2G36430.1","AT2G36430",NA,NA,82.335,1302,217,4,147,1445,40,1331,0,1305
-"127","blup.mr.graph.UN.50",50,"UN","Bra005332","A05",4887158,4887395,"AT5G66450.1","AT5G66450","LPPepsilon2",NA,87.387,222,28,0,10,231,855,634,1.12e-73,275
-"128","blup.mr.graph.UN.50",50,"UN","Bra018973","A06",947925,949061,"AT1G52565.1","AT1G52565",NA,NA,87.406,397,38,3,474,867,1,388,4.82e-137,488
-"129","blup.mr.graph.UN.50",50,"UN","Bra019796","A06",4384287,4385644,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"130","blup.mr.graph.UN.50",50,"UN","Bra026068","A06",5963950,5967931,"AT1G16300.1","AT1G16300","GAPCP-2","Encodes one of the chloroplast/plastid localized GAPDH isoforms (GAPCp1/At1g79530 and GAPCp2/At1g16300). gapcp double mutants display a drastic phenotype of arrested root development, dwarfism and sterility. GAPCps are important for the synthesis of serine in roots.",89.097,1284,119,4,213,1496,1,1263,0,1685
-"131","blup.mr.graph.UN.50",50,"UN","Bra025790","A06",7732370,7732955,"AT1G20070.1","AT1G20070",NA,NA,82.149,549,86,4,177,719,582,40,1.87e-153,542
-"132","blup.mr.graph.UN.50",50,"UN","Bra018223","A06",10940405,10947361,"AT3G46130.1","AT3G46130","ATMYB48;ATMYB48-1;ATMYB48-2;ATMYB48-3;MYB48","Encodes a putative transcription factor (MYB48) that functions to regulate flavonol biosynthesis primarily in cotyledons.",83.458,804,79,6,1,783,771,1,0,872
-"133","blup.mr.graph.UN.50",50,"UN","Bra024437","A06",16385524,16386949,"AT5G67590.1","AT5G67590","FRO1","Mutant leaves have a reduced capacity for cold acclimation, appear water-soaked, leak electrolytes, and accumulate reactive oxygen species constitutively. Encode a protein with high similarity to the 18-kD Fe-S subunit of complex I (NADH dehydrogenase, EC 1.6.5.3) in the mitochondrial electron transfer chain.",86.667,465,59,1,1,462,465,1,1.9e-158,558
-"134","blup.mr.graph.UN.50",50,"UN","Bra025296","A06",21250521,21251357,"AT2G17720.1","AT2G17720","P4H5",NA,79.545,352,51,2,92,443,386,56,7.22e-87,320
-"135","blup.mr.graph.UN.50",50,"UN","Bra025250","A06",21504086,21508384,"AT3G27110.1","AT3G27110",NA,NA,86.789,1037,129,2,235,1265,1035,1,0,1251
-"136","blup.mr.graph.UN.50",50,"UN","Bra024934","A06",23231851,23235200,"AT5G47560.1","AT5G47560","ATSDAT;ATTDT;TDT","Encodes a tonoplast malate/fumarate transporter.",85.301,1626,236,1,126,1751,1,1623,0,1853
-"137","blup.mr.graph.UN.50",50,"UN","Bra036465","A07",224092,228427,"AT2G20340.1","AT2G20340","AAS;AtAAS",NA,87.361,1440,182,0,1,1440,1473,34,0,1777
-"138","blup.mr.graph.UN.50",50,"UN","Bra028410","A07",13812227,13814025,"AT5G38510.1","AT5G38510",NA,NA,81.56,1128,131,8,1,1052,1305,179,0,1130
-"139","blup.mr.graph.UN.50",50,"UN","Bra013968","A08",4933398,4934543,"AT5G17560.1","AT5G17560","BolA4",NA,85.768,534,61,2,1,534,16,534,1.3e-178,625
-"140","blup.mr.graph.UN.50",50,"UN","Bra013959","A08",4964613,4968680,"AT5G17680.1","AT5G17680",NA,NA,88.209,2044,223,3,21,2064,33,2058,0,2603
-"141","blup.mr.graph.UN.50",50,"UN","Bra101871","A08",20598542,20599010,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"142","blup.mr.graph.UN.50",50,"UN","Bra037847","A09",4480716,4482125,"AT5G67420.1","AT5G67420","ASL39;LBD37",NA,81.046,765,79,7,339,1049,1,753,0,755
-"143","blup.mr.graph.UN.50",50,"UN","Bra017468","A09",13486185,13488948,"AT5G47730.1","AT5G47730",NA,NA,90.22,1002,97,1,583,1584,1,1001,0,1362
-"144","blup.mr.graph.UN.50",50,"UN","Bra029573","A09",18401806,18403570,"AT4G05380.1","AT4G05380",NA,NA,87.366,744,91,1,25,768,741,1,0,917
-"145","blup.mr.graph.UN.50",50,"UN","Bra032410","A09",21717415,21719578,"AT1G30630.1","AT1G30630",NA,NA,90.59,882,80,1,141,1022,1,879,0,1214
-"146","blup.mr.graph.UN.50",50,"UN","Bra026943","A09",36179122,36180217,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"147","blup.mr.graph.UN.50",50,"UN","Bra002619","A10",8591950,8593425,"AT5G58770.1","AT5G58770","AtcPT4;cPT4",NA,83.458,937,132,6,200,1117,1,933,0,985
-"148","blup.mr.graph.UN.50",50,"UN","Bra002411","A10",9834000,9836587,"AT5G22440.1","AT5G22440",NA,NA,90.061,654,65,0,47,700,1,654,0,886
-"149","blup.mr.graph.UN.50",50,"UN","Bra002255","A10",10705847,10711901,"AT5G19690.1","AT5G19690","STT3A","encodes an oligosaccharyl transferase involved response to high salt. Mutants are hypersensitive to high salt conditions",92.839,2346,162,2,228,2573,2340,1,0,3470
-"150","blup.mr.graph.UN.50",50,"UN","Bra008566","A10",11646341,11651597,"AT5G17270.1","AT5G17270",NA,NA,87.532,2703,322,4,1,2691,2700,1,0,3351
-"151","blup.mr.graph.UN.50",50,"UN","Bra008575","A10",11686976,11687928,"AT5G17170.1","AT5G17170","ENH1",NA,92.263,517,40,0,13,529,807,291,0,753
-"152","blup.mr.graph.UN.50",50,"UN","Bra102309","A10",11689228,11693443,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"153","blup.mr.graph.UN.50",50,"UN","Bra008577","A10",11695926,11696813,"AT5G17150.1","AT5G17150",NA,NA,75.276,453,108,2,106,556,145,595,6.21e-83,307
-"154","blup.mr.graph.UN.50",50,"UN","Bra008635","A10",11981667,11984486,"AT5G16210.1","AT5G16210",NA,NA,88.556,568,50,2,18,573,2199,2763,0,737
-"155","blup.mr.graph.UN.50",50,"UN","Bra008637","A10",11990050,11990676,"AT5G66450.1","AT5G66450","LPPepsilon2",NA,87.097,93,9,1,1,93,861,772,1.34e-24,113
-"156","blup.mr.graph.UN.50",50,"UN","Bra008684","A10",12184430,12186590,"AT5G15630.1","AT5G15630","COBL4;IRX6","Encodes a member of the COBRA family, similar to phytochelatin synthetase. Involved in secondary cell wall biosynthesis. Mutants make smaller plants with reduced levels of cellulose and cell wall sugars.",90.084,595,56,1,803,1397,592,1,0,805
-"157","blup.mr.graph.UN.50",50,"UN","Bra008711","A10",12311055,12317476,"AT5G15250.1","AT5G15250","ATFTSH6;FTSH6","Encodes an FtsH protease that is localized to the chloroplast. AtFtsH6 is involved in the degradation of both Lhcb3 and Lhcb1 during senescence and high-light acclimation.",86.974,2019,246,4,1,2003,7,2024,0,2453
-"158","blup.mr.graph.UN.50",50,"UN","Bra008734","A10",12429673,12431671,"AT5G14860.1","AT5G14860",NA,NA,85.021,1462,201,3,152,1601,1466,11,0,1653
-"159","blup.mr.graph.UN.50",50,"UN","Bra008750","A10",12500020,12501272,"AT5G14600.1","AT5G14600",NA,NA,86.071,962,128,2,2,963,956,1,0,1128
-"160","blup.mr.graph.UN.50",50,"UN","Bra008797","A10",12674451,12675414,"AT5G13850.1","AT5G13850","NACA3",NA,85.008,627,82,2,1,627,615,1,0,710
-"161","blup.mr.graph.UN.50",50,"UN","Bra008840","A10",12861652,12867286,"AT5G13280.1","AT5G13280","AK;AK-LYS1;AK1","Asp kinase inhibited by Lys and S-adenosylmethionine. Contains regulatory domains that belong to the ACT domain family, which allow binding to a extreme variety  of ligands. Can function as a monomer or as a dimer with acetohydroxyacid synthase (HSDH).",87.796,1729,172,5,2378,4088,1710,3,0,2179
-"162","blup.mr.graph.UN.50",50,"UN","Bra008859","A10",12969157,12970663,"AT5G13070.1","AT5G13070",NA,NA,90.399,552,53,0,226,777,552,1,0,756
-"163","blup.mr.graph.UN.50",50,"UN","Bra008931","A10",13276674,13279017,"AT5G11880.1","AT5G11880",NA,NA,88.06,1474,155,3,201,1659,1,1468,0,1871
-"164","blup.mr.graph.UN.50",50,"UN","Bra009285","A10",14501965,14503398,"AT5G07200.1","AT5G07200","ATGA20OX3;GA20OX3;YAP169","encodes a gibberellin 20-oxidase.",89.239,1143,120,1,1,1140,1,1143,0,1505
-"165","blup.mr.graph.UN.50",50,"UN","Bra039532","Scaffold000167",263780,267309,"AT3G47570.1","AT3G47570",NA,NA,69.718,142,43,0,961,1102,2369,2228,2.05e-08,62.6
+,.id,MR_Cutoff,trt,name,chrom,start,end,subject,AGI,At_symbol,At_description,perc_ID,aln_length,mismatch,gap_open,qstart,qend,sstart,send,eval,score
+1,blup.mr.graph.UN.15,15,UN,Bra038899,A01,15641416,15643341,AT3G51430.1,AT3G51430,SSL5;YLS2,"Although this enzyme is predicted to encode a strictosidine synthase (SS), it lacks a conserved catalytic glutamate residue found in active SS enzymes and it is not expected to have SS activity.",81.047,1108,203,5,297,1402,1103,1,0,1036
+2,blup.mr.graph.UN.15,15,UN,Bra037542,A01,20927607,20928214,AT3G19030.1,AT3G19030,NA,NA,87.432,183,23,0,106,288,1,183,1.40E-58,226
+3,blup.mr.graph.UN.15,15,UN,Bra006755_Bra006756,A03,4918760,4925611,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+4,blup.mr.graph.UN.15,15,UN,Bra012899,A03,21658875,21660326,AT3G50440.1,AT3G50440,ATMES10;MES10,"Encodes a protein shown to have methyl jasmonate esterase activity in vitro. This protein does not act on methyl IAA, MeSA, MeGA4, or MEGA9 in vitro.",85.797,859,118,3,127,982,865,8,0,989
+5,blup.mr.graph.UN.15,15,UN,Bra025790,A06,7732370,7732955,AT1G20070.1,AT1G20070,NA,NA,82.149,549,86,4,177,719,582,40,1.87E-153,542
+6,blup.mr.graph.UN.15,15,UN,Bra036465,A07,224092,228427,AT2G20340.1,AT2G20340,AAS;AtAAS,NA,87.361,1440,182,0,1,1440,1473,34,0,1777
+7,blup.mr.graph.UN.15,15,UN,Bra008566,A10,11646341,11651597,AT5G17270.1,AT5G17270,NA,NA,87.532,2703,322,4,1,2691,2700,1,0,3351
+8,blup.mr.graph.UN.15,15,UN,Bra008575,A10,11686976,11687928,AT5G17170.1,AT5G17170,ENH1,NA,92.263,517,40,0,13,529,807,291,0,753
+9,blup.mr.graph.UN.15,15,UN,Bra008840,A10,12861652,12867286,AT5G13280.1,AT5G13280,AK;AK-LYS1;AK1,"Asp kinase inhibited by Lys and S-adenosylmethionine. Contains regulatory domains that belong to the ACT domain family, which allow binding to a extreme variety  of ligands. Can function as a monomer or as a dimer with acetohydroxyacid synthase (HSDH).",87.796,1729,172,5,2378,4088,1710,3,0,2179
+10,blup.mr.graph.UN.25,25,UN,Bra011761,A01,688837,690803,AT4G37430.1,AT4G37430,CYP81F1;CYP91A2,Encodes a member of the CYP81F cytochrome P450 monooxygenase subfamily.,82.71,1498,251,4,188,1678,1497,1,0,1523
+13,blup.mr.graph.UN.25,25,UN,Bra008430,A02,14597701,14598768,AT1G80920.1,AT1G80920,AtJ8;AtToc12;DJC22;J8;Toc12,A nuclear encoded soluble protein found in the chloroplast stroma.,90.5,400,35,1,199,595,93,492,1.42E-155,549
+15,blup.mr.graph.UN.25,25,UN,Bra022867,A03,7480730,7484921,AT2G31810.1,AT2G31810,NA,NA,87.221,1479,150,5,161,1603,1,1476,0,1828
+16,blup.mr.graph.UN.25,25,UN,Bra023009,A03,8219083,8221040,AT2G43590.1,AT2G43590,NA,NA,79.128,757,140,5,1,745,795,45,0,646
+18,blup.mr.graph.UN.25,25,UN,Bra028216,A04,7113249,7113620,AT5G66450.1,AT5G66450,LPPepsilon2,NA,85.47,234,28,2,132,365,861,634,9.52E-71,266
+21,blup.mr.graph.UN.25,25,UN,Bra028410,A07,13812227,13814025,AT5G38510.1,AT5G38510,NA,NA,81.56,1128,131,8,1,1052,1305,179,0,1130
+22,blup.mr.graph.UN.25,25,UN,Bra013959,A08,4964613,4968680,AT5G17680.1,AT5G17680,NA,NA,88.209,2044,223,3,21,2064,33,2058,0,2603
+23,blup.mr.graph.UN.25,25,UN,Bra037847,A09,4480716,4482125,AT5G67420.1,AT5G67420,ASL39;LBD37,NA,81.046,765,79,7,339,1049,1,753,0,755
+24,blup.mr.graph.UN.25,25,UN,Bra017468,A09,13486185,13488948,AT5G47730.1,AT5G47730,NA,NA,90.22,1002,97,1,583,1584,1,1001,0,1362
+25,blup.mr.graph.UN.25,25,UN,Bra026943,A09,36179122,36180217,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+28,blup.mr.graph.UN.25,25,UN,Bra008577,A10,11695926,11696813,AT5G17150.1,AT5G17150,NA,NA,75.276,453,108,2,106,556,145,595,6.21E-83,307
+29,blup.mr.graph.UN.25,25,UN,Bra008637,A10,11990050,11990676,AT5G66450.1,AT5G66450,LPPepsilon2,NA,87.097,93,9,1,1,93,861,772,1.34E-24,113
+31,blup.mr.graph.UN.25,25,UN,Bra008859,A10,12969157,12970663,AT5G13070.1,AT5G13070,NA,NA,90.399,552,53,0,226,777,552,1,0,756
+36,blup.mr.graph.UN.35,35,UN,Bra006694,A03,4665446,4667777,AT5G59780.3,AT5G59780,ATMYB59;ATMYB59-1;ATMYB59-2;ATMYB59-3;MYB59,Encodes a putative transcription factor (MYB59).,90.395,583,50,2,629,1211,119,695,0,796
+38,blup.mr.graph.UN.35,35,UN,Bra029111,A03,6415599,6418393,AT5G52660.1,AT5G52660,NA,NA,87.855,881,92,5,84,961,123,991,0,1097
+41,blup.mr.graph.UN.35,35,UN,Bra023056,A03,8447124,8449427,AT2G36230.1,AT2G36230,APG10;HISN3,Encodes a BBMII isomerase involved in histidine  biosynthesis.,86.696,902,114,2,380,1278,899,1,0,1083
+42,blup.mr.graph.UN.35,35,UN,Bra023094,A03,8669875,8675249,AT2G37050.3,AT2G37050,NA,NA,84.265,2809,416,8,316,3102,1,2805,0,3061
+44,blup.mr.graph.UN.35,35,UN,Bra014655,A04,2052836,2054516,AT3G57010.1,AT3G57010,NA,NA,84.206,1146,166,1,1,1146,1,1131,0,1260
+45,blup.mr.graph.UN.35,35,UN,Bra039792,A04,3869642,3871082,AT3G53490.1,AT3G53490,NA,NA,82.839,641,97,4,176,805,678,40,0,654
+47,blup.mr.graph.UN.35,35,UN,Bra025497,A04,8699173,8703567,AT5G41410.1,AT5G41410,BEL1,"Homeodomain protein required for ovule identity.Loss of function mutations show homeotic conversion of integuments to carpels.Forms heterodimers with STM and KNAT1. Interacts with AG-SEP heterodimers is thought to restrict WUS expression. BEL interacts with MADS box dimers composed of SEP1(or SEP3) and AG, SHP1, SHP2 and STK. The interaction of BEL1 with AG-SEP3 is required for proper integument development and specification of integument identity.",84.512,1853,199,17,503,2284,1,1836,0,2051
+48,blup.mr.graph.UN.35,35,UN,Bra005332,A05,4887158,4887395,AT5G66450.1,AT5G66450,LPPepsilon2,NA,87.387,222,28,0,10,231,855,634,1.12E-73,275
+49,blup.mr.graph.UN.35,35,UN,Bra018973,A06,947925,949061,AT1G52565.1,AT1G52565,NA,NA,87.406,397,38,3,474,867,1,388,4.82E-137,488
+51,blup.mr.graph.UN.35,35,UN,Bra025296,A06,21250521,21251357,AT2G17720.1,AT2G17720,P4H5,NA,79.545,352,51,2,92,443,386,56,7.22E-87,320
+52,blup.mr.graph.UN.35,35,UN,Bra025250,A06,21504086,21508384,AT3G27110.1,AT3G27110,NA,NA,86.789,1037,129,2,235,1265,1035,1,0,1251
+55,blup.mr.graph.UN.35,35,UN,Bra013968,A08,4933398,4934543,AT5G17560.1,AT5G17560,BolA4,NA,85.768,534,61,2,1,534,16,534,1.30E-178,625
+60,blup.mr.graph.UN.35,35,UN,Bra002411,A10,9834000,9836587,AT5G22440.1,AT5G22440,NA,NA,90.061,654,65,0,47,700,1,654,0,886
+63,blup.mr.graph.UN.35,35,UN,Bra102309,A10,11689228,11693443,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+66,blup.mr.graph.UN.35,35,UN,Bra008684,A10,12184430,12186590,AT5G15630.1,AT5G15630,COBL4;IRX6,"Encodes a member of the COBRA family, similar to phytochelatin synthetase. Involved in secondary cell wall biosynthesis. Mutants make smaller plants with reduced levels of cellulose and cell wall sugars.",90.084,595,56,1,803,1397,592,1,0,805
+67,blup.mr.graph.UN.35,35,UN,Bra008734,A10,12429673,12431671,AT5G14860.1,AT5G14860,NA,NA,85.021,1462,201,3,152,1601,1466,11,0,1653
+68,blup.mr.graph.UN.35,35,UN,Bra008750,A10,12500020,12501272,AT5G14600.1,AT5G14600,NA,NA,86.071,962,128,2,2,963,956,1,0,1128
+69,blup.mr.graph.UN.35,35,UN,Bra008797,A10,12674451,12675414,AT5G13850.1,AT5G13850,NACA3,NA,85.008,627,82,2,1,627,615,1,0,710
+72,blup.mr.graph.UN.35,35,UN,Bra039532,Scaffold000167,263780,267309,AT3G47570.1,AT3G47570,NA,NA,69.718,142,43,0,961,1102,2369,2228,2.05E-08,62.6
+76,blup.mr.graph.UN.50,50,UN,Bra021591,A01,23491632,23493063,AT3G15115.1,AT3G15115,NA,NA,84.113,1026,136,6,182,1186,1,1020,0,1113
+77,blup.mr.graph.UN.50,50,UN,Bra040225,A01,25762534,25766140,AT3G06350.1,AT3G06350,EMB3004;MEE32,NA,86.414,1818,211,6,128,1915,1,1812,0,2170
+78,blup.mr.graph.UN.50,50,UN,Bra028781,A02,703916,705981,AT5G04740.1,AT5G04740,ACR12,NA,84.699,915,110,4,1,894,906,1,0,1029
+79,blup.mr.graph.UN.50,50,UN,Bra028603,A02,1509839,1511639,AT5G10050.1,AT5G10050,NA,NA,83.735,498,81,0,155,652,837,340,1.84E-150,533
+80,blup.mr.graph.UN.50,50,UN,Bra022535,A02,8171629,8175894,AT3G45140.1,AT3G45140,ATLOX2;LOX2,Chloroplast lipoxygenase required for wound-induced jasmonic acid accumulation in Arabidopsis.Mutants are resistant to Staphylococcus aureus and accumulate salicylic acid upon infection.,83.444,2706,422,7,138,2836,1,2687,0,2852
+81,blup.mr.graph.UN.50,50,UN,Bra008162,A02,12534785,12535753,AT1G74670.1,AT1G74670,GASA6,NA,90.397,302,29,0,247,548,1,302,1.15E-114,414
+85,blup.mr.graph.UN.50,50,UN,Bra029099,A03,6352615,6355969,AT5G53050.2,AT5G53050,NA,NA,84.502,1084,144,3,72,1143,120,1191,0,1205
+86,blup.mr.graph.UN.50,50,UN,Bra029100,A03,6355997,6357229,AT5G53045.1,AT5G53045,NA,NA,86.713,286,38,0,124,409,1,286,2.46E-94,345
+89,blup.mr.graph.UN.50,50,UN,Bra022924,A03,7800943,7803772,AT2G32850.1,AT2G32850,NA,NA,86.816,1115,138,1,97,1202,1,1115,0,1352
+94,blup.mr.graph.UN.50,50,UN,Bra012767,A03,22388191,22390290,AT4G15760.1,AT4G15760,MO1,Encodes a protein with similarity to monooxygenases that are known to degrade salicylic acid (SA).,85.256,1248,179,2,224,1469,1269,25,0,1416
+97,blup.mr.graph.UN.50,50,UN,Bra032711,A04,5635165,5637779,AT4G23250.1,AT4G23250,CRK17;DUF26-21;EMB1290;RKC1,NA,87.357,1139,138,1,679,1811,889,2027,0,1406
+100,blup.mr.graph.UN.50,50,UN,Bra032157,A04,10826957,10829863,AT2G23580.1,AT2G23580,ABE4;ATMES4;MES4,"Encodes a protein shown to have carboxylesterase activity and methyl salicylate esterase activity in vitro. This protein does not act on methyl IAA, methyl JA, MeGA4, or MEGA9 in vitro.",81.807,786,119,2,1,762,792,7,0,785
+101,blup.mr.graph.UN.50,50,UN,Bra034353,A04,12450468,12452187,AT2G27450.1,AT2G27450,ATNLP1;CPA;NLP1,Encodes N-carbamoylputrescine amidohydrolase that is involved in putrescine and polyamine biosynthesis.,90.428,888,85,0,5,892,896,9,0,1218
+102,blup.mr.graph.UN.50,50,UN,Bra017236,A04,15950721,15952589,AT2G36430.1,AT2G36430,NA,NA,82.335,1302,217,4,147,1445,40,1331,0,1305
+105,blup.mr.graph.UN.50,50,UN,Bra019796,A06,4384287,4385644,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+106,blup.mr.graph.UN.50,50,UN,Bra026068,A06,5963950,5967931,AT1G16300.1,AT1G16300,GAPCP-2,"Encodes one of the chloroplast/plastid localized GAPDH isoforms (GAPCp1/At1g79530 and GAPCp2/At1g16300). gapcp double mutants display a drastic phenotype of arrested root development, dwarfism and sterility. GAPCps are important for the synthesis of serine in roots.",89.097,1284,119,4,213,1496,1,1263,0,1685
+108,blup.mr.graph.UN.50,50,UN,Bra018223,A06,10940405,10947361,AT3G46130.1,AT3G46130,ATMYB48;ATMYB48-1;ATMYB48-2;ATMYB48-3;MYB48,Encodes a putative transcription factor (MYB48) that functions to regulate flavonol biosynthesis primarily in cotyledons.,83.458,804,79,6,1,783,771,1,0,872
+109,blup.mr.graph.UN.50,50,UN,Bra024437,A06,16385524,16386949,AT5G67590.1,AT5G67590,FRO1,"Mutant leaves have a reduced capacity for cold acclimation, appear water-soaked, leak electrolytes, and accumulate reactive oxygen species constitutively. Encode a protein with high similarity to the 18-kD Fe-S subunit of complex I (NADH dehydrogenase, EC 1.6.5.3) in the mitochondrial electron transfer chain.",86.667,465,59,1,1,462,465,1,1.90E-158,558
+112,blup.mr.graph.UN.50,50,UN,Bra024934,A06,23231851,23235200,AT5G47560.1,AT5G47560,ATSDAT;ATTDT;TDT,Encodes a tonoplast malate/fumarate transporter.,85.301,1626,236,1,126,1751,1,1623,0,1853
+117,blup.mr.graph.UN.50,50,UN,Bra101871,A08,20598542,20599010,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+120,blup.mr.graph.UN.50,50,UN,Bra029573,A09,18401806,18403570,AT4G05380.1,AT4G05380,NA,NA,87.366,744,91,1,25,768,741,1,0,917
+121,blup.mr.graph.UN.50,50,UN,Bra032410,A09,21717415,21719578,AT1G30630.1,AT1G30630,NA,NA,90.59,882,80,1,141,1022,1,879,0,1214
+123,blup.mr.graph.UN.50,50,UN,Bra002619,A10,8591950,8593425,AT5G58770.1,AT5G58770,AtcPT4;cPT4,NA,83.458,937,132,6,200,1117,1,933,0,985
+125,blup.mr.graph.UN.50,50,UN,Bra002255,A10,10705847,10711901,AT5G19690.1,AT5G19690,STT3A,encodes an oligosaccharyl transferase involved response to high salt. Mutants are hypersensitive to high salt conditions,92.839,2346,162,2,228,2573,2340,1,0,3470
+130,blup.mr.graph.UN.50,50,UN,Bra008635,A10,11981667,11984486,AT5G16210.1,AT5G16210,NA,NA,88.556,568,50,2,18,573,2199,2763,0,737
+133,blup.mr.graph.UN.50,50,UN,Bra008711,A10,12311055,12317476,AT5G15250.1,AT5G15250,ATFTSH6;FTSH6,Encodes an FtsH protease that is localized to the chloroplast. AtFtsH6 is involved in the degradation of both Lhcb3 and Lhcb1 during senescence and high-light acclimation.,86.974,2019,246,4,1,2003,7,2024,0,2453
+139,blup.mr.graph.UN.50,50,UN,Bra008931,A10,13276674,13279017,AT5G11880.1,AT5G11880,NA,NA,88.06,1474,155,3,201,1659,1,1468,0,1871
+140,blup.mr.graph.UN.50,50,UN,Bra009285,A10,14501965,14503398,AT5G07200.1,AT5G07200,ATGA20OX3;GA20OX3;YAP169,encodes a gibberellin 20-oxidase.,89.239,1143,120,1,1,1140,1,1143,0,1505

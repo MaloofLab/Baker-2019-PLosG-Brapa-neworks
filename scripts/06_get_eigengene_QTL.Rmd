@@ -20,28 +20,23 @@ library(stringr)
 ### get eigen genes and format for qtl
 
 ```{r}
-eigen.CR <- read_csv("Top_Eigen_genes_CR.csv")
-colnames(eigen.CR)[-1] <- str_c("CR_",colnames(eigen.CR)[-1])
-  
-eigen.UN <- read_csv("Top_Eigen_genes_UN.csv")
+eigen.UN <- read_csv("../output/Sig_Eigen_genes_UN.csv")
 colnames(eigen.UN)[-1] <- str_c("UN_",colnames(eigen.UN)[-1])
 
-eigen.all <- full_join(eigen.CR, eigen.UN)
-
-eigen.all.t <- eigen.all %>%
+eigen.UN.t <- eigen.UN %>%
   select(-X1) %>%
   t() %>%
   as_tibble %>%
-  mutate(id=colnames(eigen.all)[-1]) %>%
+  mutate(id=colnames(eigen.UN)[-1]) %>%
   select(id,everything())
 
-colnames(eigen.all.t)[-1] <- eigen.all$X1
+colnames(eigen.UN.t)[-1] <- eigen.UN$X1
 
-eigen.all.t
+eigen.UN.t
 ```
 
 ```{r}
-write_csv(eigen.all.t,"Top_Eigen_genes_qtl_input.csv")
+write_csv(eigen.UN.t,"../output/Top_Eigen_genes_qtl_input.csv")
 ```
 
 
@@ -49,8 +44,8 @@ write_csv(eigen.all.t,"Top_Eigen_genes_qtl_input.csv")
 
 ```{r}
 cross.all <- read.cross("csvsr", 
-                       genfile="../brassica_genetic_map_paper/output/snp_map_rqtl_Mbp_ref1.5.2_cross_output_gen.csv" , 
-	                       phefile="Top_Eigen_genes_qtl_input.csv", 
+                       genfile="../input/snp_map_rqtl_Mbp_ref1.5.2_cross_output_gen.csv" , 
+	                       phefile="../output/Top_Eigen_genes_qtl_input.csv", 
 	                       genotypes=c("AA","BB"), na.strings = "-")
 
 class(cross.all)[1] <- "riself"
@@ -77,7 +72,7 @@ permtest <- scanone(cross.all, method = "imp",
                        pheno.col = 2:ncol(cross.all$pheno),
                        n.perm = 1000,
                     n.cluster=4)
-permtest
+permtest[1:10]
 ```
 
 ```{r}
@@ -87,5 +82,5 @@ lod.thrs
 ```
 
 ```{r}
-save(cross.all,scanone_eigen,permtest,lod.thrs,file = "scanone-eigengene-qtl.RData")
+save(cross.all,scanone_eigen,permtest,lod.thrs,file = "../output/scanone-eigengene-qtl.RData")
 ```

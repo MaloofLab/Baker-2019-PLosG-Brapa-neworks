@@ -258,7 +258,8 @@ sum(blups.cor.P < 0.05)
 
 blups.cor.sig <- blups.cor
 blups.cor.sig[blups.cor.P>0.05] <- NA
-blups.cor.sig[,!apply(blups.cor.sig,2,function(x) all(is.na(x)))]
+blups.cor.sig <- blups.cor.sig[,!apply(blups.cor.sig,2,function(x) all(is.na(x)))]
+blups.cor.sig
 
 p.asterisk <- ifelse(blups.cor.P < 0.05, "*","")
 ```
@@ -266,7 +267,7 @@ p.asterisk <- ifelse(blups.cor.P < 0.05, "*","")
 plot it
 ```{r,fig.width=12}
 # Will display correlations and their p-values
-par(mar = c(8, 5, 3, 3));
+par(mar = c(8, 8, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
                yLabels = names(blups.UN)[-1],
@@ -280,8 +281,8 @@ labeledHeatmap(Matrix = blups.cor,
                zlim = c(-1,1),
                main = "UN Module-trait relationships")
 
-pdf("Module-trait_heatmap_UN.pdf",height = 8,width = 12)
-par(mar = c(8, 5, 3, 3));
+pdf("../output/Module-trait_heatmap_UN.pdf",height = 8,width = 12)
+par(mar = c(8, 8, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
                yLabels = names(blups.UN)[-1],
@@ -314,10 +315,10 @@ cor.top
 write.csv(cor.top,"../output/Eigen_trait_cor_UN_.5_threshold.csv")
 ```
 
-write the Eigen genes
+write the significant Eigen genes
 ```{r}
-head(MEs[,colnames(cor.top)])
-write.csv(MEs[,colnames(cor.top)],"../output/Top_Eigen_genes_UN.csv")
+head(MEs[,colnames(blups.cor.sig)])
+write.csv(MEs[,colnames(blups.cor.sig)],"../output/Sig_Eigen_genes_UN.csv")
 ```
 
 write all Eigen genes

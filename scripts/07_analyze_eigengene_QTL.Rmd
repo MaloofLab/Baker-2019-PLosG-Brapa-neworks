@@ -5,7 +5,7 @@ author: "Julin Maloof"
 ---
 
 
-Previous script: "get_eigengene_QTL.Rmd"
+Previous script: "06_get_eigengene_QTL.Rmd"
 
 The goal is to find QTL peaks for the WGCNA eigen genes and see if those overalp with any growth QTL.  We are only focusing on eigen genes that correlated with some growth traits/paramters.
 
@@ -13,7 +13,7 @@ The goal is to find QTL peaks for the WGCNA eigen genes and see if those overalp
 library(qtl)
 library(tidyverse)
 library(stringr)
-load("scanone-eigengene-qtl.RData")
+load("../output/scanone-eigengene-qtl.RData")
 ```
 
 ## Plot QTL
@@ -32,18 +32,6 @@ scanone.gather
 ```
 
 ```{r}
-pl.CR <- scanone.gather %>% filter(condition=="CR") %>%
-  ggplot(aes(x=pos,y=LOD)) +
-  geom_line() +
-  geom_hline(aes(yintercept=perm.threshold),lty=2,lwd=.5,alpha=.5) +
-  facet_grid(trait ~ chr, scales="free") +
-  theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
-  ggtitle("CR Eigen Gene QTL")
-pl.CR
-ggsave("eigen gene eQTL CR.pdf",width=12,height=8)
-```
-
-```{r}
    pl.UN <- scanone.gather %>% filter(condition=="UN") %>%
   ggplot(aes(x=pos,y=LOD)) +
   geom_line() +
@@ -52,21 +40,9 @@ ggsave("eigen gene eQTL CR.pdf",width=12,height=8)
   theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
   ggtitle("UN Eigen Gene QTL")
 pl.UN
-ggsave("eigen gene eQTL UN.pdf",width=12,height=8)
+ggsave("../output/eigen gene eQTL UN.pdf",width=12,height=8)
 ```
 
-All together
-
-```{r, fig.height=10}
-pl.all <- scanone.gather %>%
-  ggplot(aes(x=pos,y=LOD)) +
-  geom_line() +
-  geom_hline(aes(yintercept=perm.threshold),lty=2,lwd=.5,alpha=.5) +
-  facet_grid(trait ~ chr, scales="free") +
-  theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
-  ggtitle("Eigen Gene QTL")
-pl.all
-```
 
 ## Look for overlap
 
@@ -118,7 +94,7 @@ bayesint.result
 
 Load annotation
 ```{r}
-BrapaAnnotation <- read_csv("Brapa_V1.5_annotated.csv")
+BrapaAnnotation <- read_csv("../input/Brapa_V1.5_annotated.csv")
 BrapaAnnotation
 ```
 
@@ -142,10 +118,10 @@ eigen.annotated.small <- eigen.annotated %>% select(trait,eigen_eQTL_candidate,e
 eigen.annotated.small
 ```
 
-given bayesint results, find overlaps with CR and UN growth QTL
+given bayesint results, find overlaps with UN growth QTL
 
 ```{r}
-QTLgenes <- read_csv("~/Box Sync/BrapaNetworks/Heigh2012_uniquegenes.csv")[,-1] #genes under height QTL peaks
+QTLgenes <- read_csv("../input/Heigh2012_uniquegenes.csv")[,-1] #genes under height QTL peaks
 QTLgenes
 ```
 
@@ -161,7 +137,7 @@ unique(QTLgenes$.id)
 unique(eigen.qtl.combined$.id)
 ```
 
-Three of five
+Two of five
 
 are all eigen genes overlapping?
 
@@ -170,9 +146,9 @@ unique(eigen.annotated.small$trait)
 unique(eigen.qtl.combined$trait)
 ```
 
-No, 3 of ten
+No, 3 
 
 ```{r}
-write_csv(eigen.qtl.combined,"Heigh2012_uniquegenes_eigenQTL_overlap.csv")
+write_csv(eigen.qtl.combined,"../output/Heigh2012_uniquegenes_eigenQTL_overlap.csv")
 ```
 

@@ -145,7 +145,7 @@ get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NULL,neighborhood,ord
 Use different MR thresholds of 10 to 50 (absolute values) to build the network (genes with a correlation higher than the threshold were considered connected).  Then subset the network to take all genes "directly" connected to a FVT
 
 ```{r, echo=FALSE, eval=TRUE}
-cutoffs <- c(10,20,30,40,50)
+cutoffs <- c(15,25,35,50)
 
 blup.mr.graphs.UN <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr.UN, annotation= annotation, neighborhood = colnames(blups.UN)[-1])
 names(blup.mr.graphs.UN) <- sapply(blup.mr.graphs.UN, function(x) paste("blup.mr.graph.UN",x$cutoff,sep="."))
@@ -187,7 +187,9 @@ UN.annotation <- lapply(blup.mr.graphs.UN, function (blup.graph) {
 }
 )
 
-UN.annotation <- ldply(UN.annotation)
+UN.annotation <- ldply(UN.annotation) 
+
+UN.annotation <- UN.annotation[!duplicated(UN.annotation$name),]
 
 write.csv(UN.annotation,file="../output/MR_UN_graphs_annotation.csv")
 
