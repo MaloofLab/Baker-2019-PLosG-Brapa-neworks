@@ -13,6 +13,7 @@ This script is to get the QTL.  A separte script will be used to analyze the QTL
 library(tidyverse)
 library(qtl)
 library(stringr)
+library(snowfall)
 ```
 
 ## get cross ingo
@@ -55,25 +56,54 @@ cross.all
 
 ```{r}
 cross.all <- est.rf(cross.all)
-plot.rf(cross.all) 
+plotRF(cross.all) 
 
 cross.all <- calc.errorlod(cross.all, error.prob=0.001)
+cross.all <- sim.geno(cross.all,step=2)
 ```
 
 
 ```{r}
 scanone_eigen <- scanone(cross.all, pheno.col = 2:ncol(cross.all$pheno), 
 	         method = "imp", use = "all.obs")
+scanone_eigen_cim <- lapply(2:ncol(cross.all$pheno),function(pheno) cim(cross.all, pheno.col = pheno, 
+	         method = "imp"))
+
+scanone_eigen_cim <- do.call(c,scanone_eigen_cim)
+colnames(scanone_eigen_cim)[-1:-2] <- colnames(cross.all$pheno)[-1]
+
 ```
 
 ```{r}
 set.seed(12345)
 permtest <- scanone(cross.all, method = "imp", 
                        pheno.col = 2:ncol(cross.all$pheno),
-                       n.perm = 1000,
+                       n.perm = 10,
                     n.cluster=4)
 permtest[1:10]
 ```
+
+```{r}
+sfInit(parallel = TRUE, cpus = 4)
+
+sfLibrary(qtl)
+
+sfExport("cross.all")
+
+system.time(permtest.cim <- sfSapply(2:ncol(cross.all$pheno),
+                                     function(pheno) cim(cross.all,
+                                                         pheno.col = pheno, 
+                                                         method = "imp",
+                                                         n.perm=1000))
+)
+
+sfStop()
+
+attr(permtest.cim,"class") <- "scanoneperm"
+
+colnames(permtest.cim) <- colnames(cross.all$pheno)[-1]
+```
+
 
 ```{r}
 alphas <- seq(0.01, 0.10, by = 0.01)
@@ -82,5 +112,11 @@ lod.thrs
 ```
 
 ```{r}
-save(cross.all,scanone_eigen,permtest,lod.thrs,file = "../output/scanone-eigengene-qtl.RData")
+lod.thrs.cim <- summary(permtest.cim, alphas)
+lod.thrs.cim
+```
+
+
+```{r}
+save(cross.all,scanone_eigen,scanone_eigen_cim,permtest,permtest.cim,lod.thrs,lod.thrs.cim,file = "../output/scanone-eigengene-qtl.RData")
 ```
