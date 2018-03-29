@@ -433,3 +433,22 @@ names(GO.results) <- sig.modules
 GO.results
 ```
 
+## Are any of the clusters due to linkage?
+
+```{r}
+BrapaLocation <- read_csv("../input/Brapa_V1.5_annotated.csv") %>% select(GeneID=name, chrom, start) 
+BrapaLocation
+```
+
+
+```{r}
+modules_genes.pl <- left_join(module_genes, BrapaLocation) 
+modules_genes.pl %>%
+  filter(module %in% sig.modules, str_detect(chrom,"^A[01]")) %>%
+  ggplot(aes(x=start)) +
+  geom_dotplot() +
+  facet_grid(module ~ chrom) +
+  theme(axis.text.x = element_text(angle = 90),
+        strip.text.y = element_text(angle=0))
+```
+

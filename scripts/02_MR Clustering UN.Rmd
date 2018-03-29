@@ -14,6 +14,7 @@ library(snowfall)
 library(igraph)
 library(plyr)
 library(dplyr)
+library(stringr)
 box_auth()
 box_setwd(24503987860)
 box_ls()
@@ -124,7 +125,7 @@ get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NULL,neighborhood,ord
                                 mode="undirected",
                                 weighted="mr",
                                 diag=FALSE)
-
+  
   sub.graphs <- graph.neighborhood(gene.graph,order=order,nodes=neighborhood) #for each node of interest get all other nodes within order of 1
   
   #get combined list of vertices...
@@ -163,7 +164,7 @@ result <- sapply(blup.mr.graphs.UN,function (blup.graph) {
          layout = layout_with_kk, 
          vertex.label = ifelse(is.na(V(blup.graph$graph)$gene)|V(blup.graph$graph)$gene=="",
                                V(blup.graph$graph)$name,
-                          paste(V(blup.graph$graph)$gene,V(blup.graph$graph)$name,sep="\n")),
+                               paste(V(blup.graph$graph)$gene,V(blup.graph$graph)$name,sep="\n")),
          vertex.label.cex=1,
          main=paste("MR cutoff =",sub("blup.mr.graph.","",blup.graph$cutoff,fixed=T)))
     rm(blup.graph)
@@ -177,13 +178,13 @@ make annotation tables for plots
 
 ```{r}
 UN.annotation <- lapply(blup.mr.graphs.UN, function (blup.graph) {
-    if(blup.graph$cutoff <= cutoff) {
-      data.frame(
-        MR_Cutoff=blup.graph$cutoff,
-        trt="UN",
-        annotation[annotation$name %in% blup.graph$nodes,]
-      )
-    }
+  if(blup.graph$cutoff <= cutoff) {
+    data.frame(
+      MR_Cutoff=blup.graph$cutoff,
+      trt="UN",
+      annotation[annotation$name %in% blup.graph$nodes,]
+    )
+  }
 }
 )
 
@@ -194,6 +195,24 @@ UN.annotation <- UN.annotation[!duplicated(UN.annotation$name),]
 write.csv(UN.annotation,file="../output/MR_UN_graphs_annotation.csv")
 
 ```
+
+## overlap between 2011 and 2012
+
+Want to determine, for each FVT, how similar the connections are in 2011 and 2012
+
+```{r}
+MR35 <- blup.mr.graphs.UN[["blup.mr.graph.UN.35"]]$graph
+
+sapply(blup.mr.graphs.UN, function(g) {
+  
+  sapply(FVTs, function(f) {
+    V2011 <- V(g$graph)[.nei(str_c(f,"2011",sep = "."))] %>% names() %>% str_subset("Bra")
+    V2012 <- V(g$graph)[.nei(str_c(f,"2012",sep = "."))] %>% names() %>% str_subset("Bra")
+    length(intersect(V2011,V2012)) / length(union(V2011,V2012))
+  })
+})
+```
+
 
 ## Permutations
 
