@@ -13,11 +13,10 @@ library(limma)
 library(snowfall)
 library(igraph)
 library(plyr)
-library(dplyr)
-library(stringr)
-box_auth()
-box_setwd(24503987860)
-box_ls()
+library(tidyverse)
+#box_auth()
+#box_setwd(24503987860)
+#box_ls()
 ```
 
 ### First attempt, use RIL means
@@ -99,8 +98,8 @@ sfStop()
 
 
 ```{r}
-save(blups.UN, expr.blup.UN, expr.blup.mr.UN,expr.data.UN,file = "~/Box Sync/BrapaNetworks/MR_UN.Rdata")
-save(blups.UN, expr.blup.UN, expr.blup.mr.UN,expr.data.UN,file = "../output/MR_UN.Rdata")
+save(blups.UN, expr.blup.UN, expr.blup.mr.UN,expr.data.UN, expr.blup.cor.UN,file = "~/Box Sync/BrapaNetworks/MR_UN.Rdata")
+save(blups.UN, expr.blup.UN, expr.blup.mr.UN,expr.data.UN, expr.blup.cor.UN,file = "../output/MR_UN.Rdata")
 ```
 
 Get graphs at different MR
@@ -152,14 +151,32 @@ blup.mr.graphs.UN <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr.U
 names(blup.mr.graphs.UN) <- sapply(blup.mr.graphs.UN, function(x) paste("blup.mr.graph.UN",x$cutoff,sep="."))
 ```
 
+## get edge correlation info
+
+```{r}
+edge.col.sign <- function(graph,edge.colors) {#color edges by correlation sign
+  E(graph) %>% 
+    attr("vnames") %>% 
+    tibble(edge=.) %>% 
+    separate(edge,into=c("node1","node2"),remove = FALSE,sep="\\|") %>%
+    rowwise() %>% 
+    mutate(cor=expr.blup.cor.UN[node1,node2],
+           col=ifelse(cor > 0, edge.colors[1], edge.colors[2])) %>%
+    select(col) %>%
+    unlist()
+}
+```
+
+
 ## plots
 
-```{r plot, echo=FALSE, cache=TRUE}
+```{r plot, echo=FALSE, cache=TRUE, edge.colors=c("magenta","green")}
 cutoff=200
 pdf("../output/blup.mr.plots.UN.pdf",height=12,width=12)
 result <- sapply(blup.mr.graphs.UN,function (blup.graph) {
   if(blup.graph$cutoff <= cutoff) {
-    E(blup.graph$graph)$weight <- rank(E(blup.graph$graph)$mr)^(1/4)
+    E(blup.graph$graph)$width <- rank(E(blup.graph$graph)$mr)^(1/4)
+    if(!is.na(edge.colors[1])) E(blup.graph$graph)$color <- edge.col.sign(blup.graph$graph,edge.colors)
     plot(blup.graph$graph,
          layout = layout_with_kk, 
          vertex.label = ifelse(is.na(V(blup.graph$graph)$gene)|V(blup.graph$graph)$gene=="",
@@ -176,8 +193,9 @@ file.copy(from = "../output/blup.mr.plots.UN.pdf", to = "~/Box Sync/BrapaNetwork
 
 make annotation tables for plots
 
+Node annotation
 ```{r}
-UN.annotation <- lapply(blup.mr.graphs.UN, function (blup.graph) {
+UN.node.annotation <- lapply(blup.mr.graphs.UN, function (blup.graph) {
   if(blup.graph$cutoff <= cutoff) {
     data.frame(
       MR_Cutoff=blup.graph$cutoff,
@@ -188,13 +206,35 @@ UN.annotation <- lapply(blup.mr.graphs.UN, function (blup.graph) {
 }
 )
 
-UN.annotation <- ldply(UN.annotation) 
+UN.node.annotation <- ldply(UN..node.annotation) 
 
-UN.annotation <- UN.annotation[!duplicated(UN.annotation$name),]
+UN..node.annotation <- UN..node.annotation[!duplicated(UN.node.annotation$name),]
 
-write.csv(UN.annotation,file="../output/MR_UN_graphs_annotation.csv")
+write.csv(UN.node.annotation,file="../output/MR_UN_graphs_node_annotation.csv")
+```
+
+Edge Annotation
+```{r}
+UN.edge.annotation <- map(blup.mr.graphs.UN, function(blup.graph) {
+  if(blup.graph$cutoff <= cutoff) {
+    E(blup.graph$graph) %>% 
+      attr("vnames") %>% 
+      tibble(edge=.) %>% 
+      separate(edge,into=c("node1","node2"),remove = FALSE,sep="\\|") %>%
+      rowwise() %>% 
+      mutate(cor=expr.blup.cor.UN[node1,node2]) %>%
+      as.data.frame()
+  }
+}
+)
+
+UN.edge.annotation <- bind_rows(UN.edge.annotation) %>% filter(!duplicated(edge))
+
+write_csv(UN.edge.annotation,file="../output/MR_UN_graphs_edge_annotation.csv")
 
 ```
+
+
 
 ## overlap between 2011 and 2012
 
@@ -269,3 +309,7 @@ kable(cbind(threshold=cutoffs,
 ```
 
 Our networks are significant, but not sure that this is not helping set a threshold.  Try correlation with scale-free?
+
+## Color edge by correlation direction
+
+

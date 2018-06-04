@@ -7,7 +7,7 @@ output: html_notebook
 
 Rob Baker et al fit growth parameters to B. rapa growth data and then used those to do function-value-trait QTL mapping and to find genes under those peaks
 
-I used that same function-value-trait data to query a mutual rank (MR) gene expression network that I had built.  This returned genes that were in a networks associated with the growth paramters.  This was done separeately for the CR and UN environments.  (Currently we are only focused on the UN environment)
+I used that same function-value-trait data to query a mutual rank (MR) gene expression network that I had built.  This returned genes that were in a networks associated with the growth paramters.  This was done separately for the CR and UN environments.  (Currently we are only focused on the UN environment)
 
 Here I want to annotate candidate QTL genes with:
 
