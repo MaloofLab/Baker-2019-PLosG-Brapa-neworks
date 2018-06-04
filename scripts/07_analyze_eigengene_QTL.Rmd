@@ -123,7 +123,7 @@ eigen.annotated.small
 given bayesint results, find overlaps with UN growth QTL
 
 ```{r}
-QTLgenes <- read_csv("../input/Heigh2012_uniquegenes.csv")[,-1] #genes under height QTL peaks
+QTLgenes <- read_csv("../input/Bayesian2012Height_genesunderQTLS.csv")[,-1] #genes under height QTL peaks
 QTLgenes
 ```
 
@@ -135,11 +135,11 @@ eigen.qtl.combined
 
 how many QTL have at least some overlap?
 ```{r}
-unique(QTLgenes$.id)
-unique(eigen.qtl.combined$.id)
+sort(unique(QTLgenes$.id))
+sort(unique(eigen.qtl.combined$.id))
 ```
 
-Three of five
+All
 
 are all eigen genes overlapping?
 
@@ -148,10 +148,10 @@ unique(eigen.annotated.small$trait)
 unique(eigen.qtl.combined$trait)
 ```
 
-No, 7
+No, 8 of 10
 
 ```{r}
-write_csv(eigen.qtl.combined,"../output/Heigh2012_uniquegenes_eigenQTL_overlap.csv")
+write_csv(eigen.qtl.combined,"../output/Bayesian2012Height_genesunderQTLS_eigenQTL_overlap.csv")
 ```
 
 # cim
@@ -261,7 +261,7 @@ eigen.annotated.small
 given bayesint results, find overlaps with UN growth QTL
 
 ```{r}
-QTLgenes <- read_csv("../input/Heigh2012_uniquegenes.csv")[,-1] #genes under height QTL peaks
+QTLgenes <- read_csv("../input/Bayesian2012Height_genesunderQTLS.csv")[,-1] #genes under height QTL peaks
 QTLgenes
 ```
 
@@ -277,7 +277,7 @@ unique(QTLgenes$.id)
 unique(eigen.qtl.combined$.id)
 ```
 
-Three of five
+seven of nine
 
 are all eigen genes overlapping?
 
@@ -286,9 +286,9 @@ unique(eigen.annotated.small$trait)
 unique(eigen.qtl.combined$trait)
 ```
 
-No, 7
+No, 5
 
 ```{r}
-write_csv(eigen.qtl.combined,"../output/Heigh2012_uniquegenes_eigenQTL_overlap_CIM.csv")
+write_csv(eigen.qtl.combined,"../output/Bayesian2012Height_genesunderQTLS_eigenQTL_overlap_CIM.csv")
 ```
 

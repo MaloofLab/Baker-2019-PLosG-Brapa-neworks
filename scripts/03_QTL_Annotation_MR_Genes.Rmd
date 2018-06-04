@@ -24,13 +24,13 @@ library(limma)
 ## Annotation with MR network membership
 
 ```{r}
-QTLgenes <- read_csv("../input/Heigh2012_uniquegenes.csv")[,-1]
+QTLgenes <- read_csv("../input/Bayesian2012Height_genesunderQTLS.csv")[,-1]
 summary(QTLgenes)
 QTLgenes
 ```
 
 ```{r}
-MR_UN_genes <- read_csv("../output/MR_UN_graphs_annotation.csv")
+MR_UN_genes <- read_csv("../output/MR_UN_graphs_node_annotation.csv")
 summary(MR_UN_genes)
 MR_UN_genes
 ```
@@ -66,14 +66,14 @@ QTLgenes <- merge(QTLgenes, RIL.pvals.UN, by.x="name", by.y=0,all.x = TRUE, all.
 ```
 
 ```{r}
-write_csv(QTLgenes,"../output/Heigh2012_uniquegenes_DE_MR_UN.csv")
+write_csv(QTLgenes,"../output/Bayesian2012Height_genesunderQTLS_DE_MR_UN.csv")
 ```
 
 Also subset to only include genes that are in an MR network
 
 ```{r}
 QTLgenes  %>% filter(!is.na(UN_network) ) %>%
-  write_csv("../output/Heigh2012_uniquegenes_networkgenesonly_DE_MR_UN.csv")
+  write_csv("../output/Bayesian2012Height_genesunderQTLS_networkgenesonly_DE_MR_UN.csv")
 
 
 ```

@@ -7,7 +7,7 @@ output: html_notebook
 
 Rob Baker et al fit growth parameters to B. rapa growth data and then used those to do function-value-trait QTL mapping.
 
-I used those same parameters and queried a mutual rank (MR) gene expression network to find genes that were in a networks associated with these growth paramters.  This was done separeately for the CR and UN environments.  I looked for overlap between those MR-associated genes and growth parameters.
+I used those same parameters and queried a mutual rank (MR) gene expression network to find genes that were in a networks associated with these growth paramters.  This was done separately for the CR and UN environments.  I looked for overlap between those MR-associated genes and growth parameters.
 
 The goal now is to find the trans eQTL for each of the MR-growth associated genes and ask if the trans eQTL overlap with the growth/function-value QTL.  I think I am only going to take the top eQTL for each.
 
@@ -29,14 +29,14 @@ library(qtl)
 
 Growth QTL
 ```{r}
-QTLgenes <- read_csv("../input/BrapaNetworks/Heigh2012_uniquegenes.csv")[,-1]
+QTLgenes <- read_csv("../input/Bayesian2012Height_genesunderQTLS.csv")[,-1]
 summary(QTLgenes)
 QTLgenes
 ```
 
 MR genes from UN
 ```{r}
-MR_UN_genes <- read_csv("../output/MR_UN_graphs_annotation.csv") %>%
+MR_UN_genes <- read_csv("../output/MR_UN_graphs_node_annotation.csv") %>%
   filter(MR_Cutoff <= 50, !duplicated(name)) %>%
   select(MR_Cutoff,name)
 MR_UN_genes
@@ -44,7 +44,7 @@ MR_UN_genes
 
 eQTL
 ```{r}
-load("../brassica_eqtl_paper/input/scanone-eqtl-UN.Rdata")
+load("../../brassica_eqtl_paper/input/scanone-eqtl-UN.Rdata")
 scanone_imp_UN <- scanone_imp_un
 ```
 
@@ -74,7 +74,7 @@ pl.UN <- scanone_UN_gather %>%
   theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
   ggtitle("MR gene eQTL")
 pl.UN
-ggsave("MR gene eQTL UN.pdf",width=12,height=8)
+ggsave("../output/MR gene eQTL UN.pdf",width=12,height=8)
 ```
 
 
@@ -172,7 +172,7 @@ unique(UN_MReQTL_QTL_combined$.id)
 ALL
 
 ```{r}
-write_csv(UN_MReQTL_QTL_combined,"../output/Heigh2012_uniquegenes_MR_eQTL_UN_overlap.csv")
+write_csv(UN_MReQTL_QTL_combined,"../output/Bayesian2012Height_genesunderQTLS_MR_eQTL_UN_overlap.csv")
 ```
 
 
