@@ -60,16 +60,18 @@ blups2012 <- read.csv("../input/Brapa2012BayesHeight_blups.csv", row.names = 1)
 blups2011$Line %<>% paste("RIL",.,sep="_")
 blups2012$Line %<>% paste("RIL",.,sep="_")
 blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.))) %>%
-  rename(UNInflection_DD=UNInflect_DD)
-blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
+  rename(UNiD=UNInflect_DD,UNd=UNduration) %>%
+  select(starts_with("Line"),starts_with("UN"),-matches("Inflect.*_size"))
+blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.))) %>%
+  rename(UNiD=UNInflection_DD,UNd=UNduration) %>%
+    select(starts_with("Line"),starts_with("UN"),-matches("Inflect.*_size"))
 head(blups2011)
 head(blups2012)
 ```
 
-Have decided to use 2011 and 2012 BLUPs but UN only...
+Have decided to use 2011 and 2012 UN BLUPs.
 ```{r}
-blups.UN <- merge(blups2011,blups2012,by="Line",suffixes = c(".2011",".2012")) %>%
-  select(starts_with("Line"),starts_with("UN"),-matches("Inflect.*_size"))
+blups.UN <- merge(blups2011,blups2012,by="Line",suffixes = c("11","12"))
 head(blups.UN)
 ```
 
@@ -79,27 +81,41 @@ expr.blup.UN <- merge(blups.UN,t(expr.data.UN),by.x="Line",by.y=0)
 head(expr.blup.UN[,1:6])
 ```
 
-Correlation
-```{r}
-expr.blup.cor.UN <- cor(expr.blup.UN[,-1])
-```
 
-Mutual Rank
+Correlation and Mutual Rank
 ```{r}
 sfInit(parallel = TRUE, cpus=4)
 
-expr.blup.rank.UN <- sfApply(expr.blup.cor.UN,2,function(x) rank(-abs(x)))
-expr.blup.rank.UN[1:10,1:10]
-expr.blup.mr.UN <- sqrt(expr.blup.rank.UN*t(expr.blup.rank.UN))
-expr.blup.mr.UN[1:10,1:10]
+expr.blup.cor.UN <- cor(expr.blup.UN[,-1])
+
+expr.blup.rank.UN.all <- sfApply(expr.blup.cor.UN,2,function(x) rank(-abs(x)))
+expr.blup.rank.UN.all[1:10,1:10]
+expr.blup.mr.UN.all <- sqrt(expr.blup.rank.UN.all*t(expr.blup.rank.UN.all))
+expr.blup.mr.UN.all[1:10,1:10]
+
+expr.blup.rank.UN.2011 <- expr.blup.UN %>% 
+  select(ends_with("11"), starts_with("Bra"))  %>%
+  cor() %>% 
+  sfApply(2,function(x) rank(-abs(x)))
+expr.blup.rank.UN.2011[1:10,1:10]
+expr.blup.mr.UN.2011 <- sqrt(expr.blup.rank.UN.2011*t(expr.blup.rank.UN.2011))
+expr.blup.mr.UN.2011[1:10,1:10]
+
+expr.blup.rank.UN.2012 <- expr.blup.UN %>% 
+  select(ends_with("12"), starts_with("Bra"))  %>%
+  cor() %>% 
+  sfApply(2,function(x) rank(-abs(x)))
+expr.blup.rank.UN.2012[1:10,1:10]
+expr.blup.mr.UN.2012 <- sqrt(expr.blup.rank.UN.2012*t(expr.blup.rank.UN.2012))
+expr.blup.mr.UN.2012[1:10,1:10]
 
 sfStop()
 ```
 
 
 ```{r}
-save(blups.UN, expr.blup.UN, expr.blup.mr.UN,expr.data.UN, expr.blup.cor.UN,file = "~/Box Sync/BrapaNetworks/MR_UN.Rdata")
-save(blups.UN, expr.blup.UN, expr.blup.mr.UN,expr.data.UN, expr.blup.cor.UN,file = "../output/MR_UN.Rdata")
+save(blups.UN, expr.blup.UN, expr.blup.mr.UN.all, expr.blup.mr.UN.2012, expr.blup.mr.UN.2011,expr.data.UN, expr.blup.cor.UN,file = "~/Box Sync/BrapaNetworks/MR_UN.Rdata")
+file.copy(from = "~/Box Sync/BrapaNetworks/MR_UN.Rdata", to= "../output/MR_UN.Rdata",overwrite = TRUE)
 ```
 
 Get graphs at different MR
@@ -147,8 +163,22 @@ Use different MR thresholds of 10 to 50 (absolute values) to build the network (
 ```{r, echo=FALSE, eval=TRUE}
 cutoffs <- c(15,25,35,50)
 
-blup.mr.graphs.UN <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr.UN, annotation= annotation, neighborhood = colnames(blups.UN)[-1])
-names(blup.mr.graphs.UN) <- sapply(blup.mr.graphs.UN, function(x) paste("blup.mr.graph.UN",x$cutoff,sep="."))
+blup.mr.graphs.UN.all <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr.UN.all, annotation= annotation, neighborhood = colnames(blups.UN)[-1])
+names(blup.mr.graphs.UN.all) <- sapply(blup.mr.graphs.UN.all, function(x) paste("blup.mr.graph.UN.all",x$cutoff,sep="."))
+```
+
+```{r, echo=FALSE, eval=TRUE}
+cutoffs <- c(10,20,30,50)
+
+blup.mr.graphs.UN.2011 <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr.UN.2011, annotation= annotation, neighborhood = colnames(blups.UN) %>% str_subset("11"))
+names(blup.mr.graphs.UN.2011) <- sapply(blup.mr.graphs.UN.2011, function(x) paste("blup.mr.graph.UN.2011",x$cutoff,sep="."))
+```
+
+```{r, echo=FALSE, eval=TRUE}
+cutoffs <- c(10,20,30,50)
+
+blup.mr.graphs.UN.2012 <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr.UN.2012, annotation= annotation, neighborhood = colnames(blups.UN) %>% str_subset("12"))
+names(blup.mr.graphs.UN.2012) <- sapply(blup.mr.graphs.UN.2012, function(x) paste("blup.mr.graph.UN.2012",x$cutoff,sep="."))
 ```
 
 ## get edge correlation info
@@ -170,10 +200,8 @@ edge.col.sign <- function(graph,edge.colors) {#color edges by correlation sign
 
 ## plots
 
-```{r plot, echo=FALSE, cache=TRUE}
-cutoff=200
-pdf("../output/blup.mr.plots.UN.pdf",height=12,width=12)
-result <- sapply(blup.mr.graphs.UN,function (blup.graph) {
+```{r plot.function}
+plot.graph <- function (blup.graph) {
   if(blup.graph$cutoff <= cutoff) {
     E(blup.graph$graph)$width <- rank(E(blup.graph$graph)$mr)^(1/4)
     E(blup.graph$graph)$color <- edge.col.sign(blup.graph$graph, edge.colors=c("magenta","green"))
@@ -186,51 +214,97 @@ result <- sapply(blup.mr.graphs.UN,function (blup.graph) {
          main=paste("MR cutoff =",sub("blup.mr.graph.","",blup.graph$cutoff,fixed=T)))
     rm(blup.graph)
   }
-})
-dev.off()
-file.copy(from = "../output/blup.mr.plots.UN.pdf", to = "~/Box Sync/BrapaNetworks/blup.mr.plots.UN.pdf", overwrite = TRUE)
+}
 ```
 
-make annotation tables for plots
+All
+```{r plot_all, echo=FALSE, cache=TRUE}
+cutoff=200
+pdf("../output/blup.mr.plots.UN.all.pdf",height=12,width=12)
+result <- sapply(blup.mr.graphs.UN.all,plot.graph)
+dev.off()
+file.copy(from = "../output/blup.mr.plots.UN.all.pdf", to = "~/Box Sync/BrapaNetworks/blup.mr.plots.UN.all.pdf", overwrite = TRUE)
+```
+
+2011
+```{r plot_2011, echo=FALSE, cache=TRUE}
+cutoff=200
+pdf("../output/blup.mr.plots.UN.2011.pdf",height=12,width=12)
+result <- sapply(blup.mr.graphs.UN.2011,plot.graph)
+dev.off()
+file.copy(from = "../output/blup.mr.plots.UN.2011.pdf", to = "~/Box Sync/BrapaNetworks/blup.mr.plots.UN.2011.pdf", overwrite = TRUE)
+```
+
+2012
+```{r plot_2012, echo=FALSE, cache=TRUE}
+cutoff=200
+pdf("../output/blup.mr.plots.UN.2012.pdf",height=12,width=12)
+result <- sapply(blup.mr.graphs.UN.2012,plot.graph)
+dev.off()
+file.copy(from = "../output/blup.mr.plots.UN.2012.pdf", to = "~/Box Sync/BrapaNetworks/blup.mr.plots.UN.2012.pdf", overwrite = TRUE)
+```
+
+### make annotation tables for plots
+```{r annoation.functions}
+annotate.nodes <- function(graph.list) {
+  tmp.results <- lapply(graph.list, function (blup.graph) {
+    if(blup.graph$cutoff <= cutoff) {
+      data.frame(
+        MR_Cutoff=blup.graph$cutoff,
+        trt="UN",
+        annotation[annotation$name %in% blup.graph$nodes,]
+      )
+    }
+  }
+  )
+  
+  tmp.results <- ldply(tmp.results) 
+  
+  tmp.results[!duplicated(tmp.results$name),]
+}
+
+annotate.edges <- function(graph.list) {
+  tmp.results <- map(graph.list, function(blup.graph) {
+    if(blup.graph$cutoff <= cutoff) {
+      E(blup.graph$graph) %>% 
+        attr("vnames") %>% 
+        tibble(edge=.) %>% 
+        separate(edge,into=c("node1","node2"),remove = FALSE,sep="\\|") %>%
+        rowwise() %>% 
+        mutate(cor=expr.blup.cor.UN[node1,node2]) %>%
+        as.data.frame()
+    }
+  }
+  )
+  
+  bind_rows(tmp.results) %>% filter(!duplicated(edge))
+}
+```
+
 
 Node annotation
 ```{r}
-UN.node.annotation <- lapply(blup.mr.graphs.UN, function (blup.graph) {
-  if(blup.graph$cutoff <= cutoff) {
-    data.frame(
-      MR_Cutoff=blup.graph$cutoff,
-      trt="UN",
-      annotation[annotation$name %in% blup.graph$nodes,]
-    )
-  }
-}
-)
+blup.mr.graphs.UN.all %>% annotate.nodes %>% 
+  write_csv(path="../output/MR_UN_graphs_node_annotation_all.csv")
 
-UN.node.annotation <- ldply(UN.node.annotation) 
+blup.mr.graphs.UN.2011 %>% annotate.nodes %>%
+  write_csv(path="../output/MR_UN_graphs_node_annotation_2011.csv")
 
-UN.node.annotation <- UN.node.annotation[!duplicated(UN.node.annotation$name),]
+blup.mr.graphs.UN.2012 %>% annotate.nodes %>%
+  write_csv(path="../output/MR_UN_graphs_node_annotation_2012.csv")
 
-write.csv(UN.node.annotation,file="../output/MR_UN_graphs_node_annotation.csv")
 ```
 
 Edge Annotation
 ```{r}
-UN.edge.annotation <- map(blup.mr.graphs.UN, function(blup.graph) {
-  if(blup.graph$cutoff <= cutoff) {
-    E(blup.graph$graph) %>% 
-      attr("vnames") %>% 
-      tibble(edge=.) %>% 
-      separate(edge,into=c("node1","node2"),remove = FALSE,sep="\\|") %>%
-      rowwise() %>% 
-      mutate(cor=expr.blup.cor.UN[node1,node2]) %>%
-      as.data.frame()
-  }
-}
-)
+blup.mr.graphs.UN.all %>% annotate.edges %>% 
+  write_csv(path="../output/MR_UN_graphs_edge_annotation_all.csv")
 
-UN.edge.annotation <- bind_rows(UN.edge.annotation) %>% filter(!duplicated(edge))
+blup.mr.graphs.UN.2011 %>% annotate.edges %>%
+  write_csv(path="../output/MR_UN_graphs_edge_annotation_2011.csv")
 
-write_csv(UN.edge.annotation,path="../output/MR_UN_graphs_edge_annotation.csv")
+blup.mr.graphs.UN.2012 %>% annotate.edges %>%
+  write_csv(path="../output/MR_UN_graphs_edge_annotation_2012.csv")
 ```
 
 
