@@ -13,7 +13,7 @@ The goal is to find QTL peaks for the WGCNA eigen genes and see if those overalp
 library(qtl)
 library(tidyverse)
 library(stringr)
-load("../output/scanone-eigengene-qtl.RData")
+load("../output/scanone-eigengene-qtl_2012.RData")
 ```
 
 # scanone imp
@@ -42,7 +42,7 @@ scanone.gather
   theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
   ggtitle("UN Eigen Gene QTL")
 pl.UN
-ggsave("../output/eigen gene eQTL UN.pdf",width=12,height=8)
+ggsave("../output/eigen gene eQTL UN 2012.pdf",width=12,height=8)
 ```
 
 
@@ -180,7 +180,7 @@ scanone.gather
   theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
   ggtitle("UN Eigen Gene QTL")
 pl.UN
-ggsave("../output/eigen gene eQTL UN CIM.pdf",width=12,height=8)
+ggsave("../output/eigen gene eQTL UN CIM 2012.pdf",width=12,height=8)
 ```
 
 
