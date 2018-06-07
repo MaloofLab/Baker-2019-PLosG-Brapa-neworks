@@ -63,15 +63,18 @@ blups2012 <- read.csv("../input/Brapa2012BayesHeight_blups.csv", row.names = 1)
 blups2011$Line %<>% paste("RIL",.,sep="_")
 blups2012$Line %<>% paste("RIL",.,sep="_")
 blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.))) %>%
-  rename(UNInflection_DD=UNInflect_DD)
-blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.)))
+  rename(UNiD=UNInflect_DD,UNd=UNduration) %>%
+  select(starts_with("Line"),starts_with("UN"),-matches("Inflect.*_size"))
+blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.))) %>%
+  rename(UNiD=UNInflection_DD,UNd=UNduration) %>%
+    select(starts_with("Line"),starts_with("UN"),-matches("Inflect.*_size"))
 head(blups2011)
 head(blups2012)
 ```
 
 Have decided to use 2011 and 2012 BLUPs but UN only...
 ```{r}
-blups.UN <- merge(blups2011,blups2012,by="Line",suffixes = c(".2011",".2012")) %>%
+blups.UN <- merge(blups2011,blups2012,by="Line",suffixes = c("11","12")) %>%
   select(starts_with("Line"),starts_with("UN"),-matches("Inflect.*_size"))
 head(blups.UN)
 ```
@@ -281,7 +284,7 @@ labeledHeatmap(Matrix = blups.cor,
                zlim = c(-1,1),
                main = "UN Module-trait relationships")
 
-pdf("../output/Module-trait_heatmap_UN.pdf",height = 8,width = 12)
+pdf("../output/Module-trait_heatmap_UN_all.pdf",height = 8,width = 12)
 par(mar = c(8, 8, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
@@ -312,32 +315,132 @@ cor.top <- t(apply(blups.cor.5,1,function(x) {
 
 cor.top <- cor.top[,apply(cor.top,2,function(x) !all(is.na(x)))]
 cor.top
-write.csv(cor.top,"../output/Eigen_trait_cor_UN_.5_threshold.csv")
+write.csv(cor.top,"../output/Eigen_trait_cor_UN_.5_threshold_all.csv")
 ```
 
 write the significant Eigen genes
 ```{r}
 head(MEs[,colnames(blups.cor.sig)])
-write.csv(MEs[,colnames(blups.cor.sig)],"../output/Sig_Eigen_genes_UN.csv")
+write.csv(MEs[,colnames(blups.cor.sig)],"../output/Sig_Eigen_genes_UN_all.csv")
 ```
 
 write all Eigen genes
 
 ```{r}
-write.csv(MEs,"../output/All_Eigen_genes_UN.csv")
+write.csv(MEs,"../output/All_Eigen_genes_UN_all.csv")
 ```
 
 save WGCNA info
 
 ```{r}
 save(annotation,blups.cor,blups.cor.5,blups.cor.P,blups.cor.sig,moduleColors,MEs,merge,expr.data.UN.t,
-     file="../output/WGCNA_UN.Rdata")
+     file="../output/WGCNA_UN_all.Rdata")
+```
+
+## 2012 only
+
+```{r}
+ME.blups <- blups.UN %>% select("Line", ends_with("12")) %>% merge(MEs,by.x=1.,by.y=0)
+head(ME.blups)
+```
+
+```{r}
+blups.cor <- cor(ME.blups[,2:6],ME.blups[,7:ncol(ME.blups)])
+range(blups.cor)
+blups.cor
+```
+
+
+```{r}
+blups.cor.P <- corPvalueStudent(blups.cor,nrow(expr.data.UN.t)) %>%
+  p.adjust() %>% #using "holm" method.  For relaxed stringency could use "fdr"
+  matrix(nrow=nrow(blups.cor),
+         dimnames = dimnames(blups.cor))
+
+sum(blups.cor.P < 0.05)
+
+blups.cor.sig <- blups.cor
+blups.cor.sig[blups.cor.P>0.05] <- NA
+blups.cor.sig <- blups.cor.sig[,!apply(blups.cor.sig,2,function(x) all(is.na(x)))]
+blups.cor.sig
+
+p.asterisk <- ifelse(blups.cor.P < 0.05, "*","")
+```
+
+plot it
+```{r,fig.width=12}
+# Will display correlations and their p-values
+par(mar = c(8, 8, 3, 3));
+# Display the correlation values within a heatmap plot
+labeledHeatmap(Matrix = blups.cor,
+               yLabels = names(blups.UN)[-1],
+               xLabels = names(MEs),
+               xSymbols = names(MEs),
+               colorLabels = FALSE,
+               colors = blueWhiteRed(50),
+               textMatrix = p.asterisk,
+               setStdMargins = FALSE,
+               #cex.text = 0.5,
+               zlim = c(-1,1),
+               main = "UN Module-trait relationships")
+
+pdf("../output/Module-trait_heatmap_UN_2012.pdf",height = 8,width = 12)
+par(mar = c(8, 8, 3, 3));
+# Display the correlation values within a heatmap plot
+labeledHeatmap(Matrix = blups.cor,
+               yLabels = names(blups.UN)[-1],
+               xLabels = names(MEs),
+               xSymbols = names(MEs),
+               colorLabels = FALSE,
+               colors = blueWhiteRed(50),
+               textMatrix = p.asterisk,
+               setStdMargins = FALSE,
+               #cex.text = 0.5,
+               zlim = c(-1,1),
+               main = paste("UN Module-trait relationships"))
+dev.off()
+```
+
+Arbitrary, but let's take the max and min for each trait (so long as they are significant)
+```{r}
+blups.cor.5 <- blups.cor.sig
+
+cor.top <- t(apply(blups.cor.5,1,function(x) {
+  maxx = max(x,na.rm=TRUE)
+  minx = min(x,na.rm=TRUE)
+  ifelse(x == maxx | x == minx, x, NA)
+}
+))
+
+
+cor.top <- cor.top[,apply(cor.top,2,function(x) !all(is.na(x)))]
+cor.top
+write.csv(cor.top,"../output/Eigen_trait_cor_UN_.5_threshold_2012.csv")
+```
+
+write the significant Eigen genes
+```{r}
+head(MEs[,colnames(blups.cor.sig)])
+write.csv(MEs[,colnames(blups.cor.sig)],"../output/Sig_Eigen_genes_UN_2012.csv")
+```
+
+write all Eigen genes
+
+```{r}
+write.csv(MEs,"../output/All_Eigen_genes_UN_2012.csv")
+```
+
+save WGCNA info
+
+```{r}
+save(annotation,blups.cor,blups.cor.5,blups.cor.P,blups.cor.sig,moduleColors,MEs,merge,expr.data.UN.t,
+     file="../output/WGCNA_UN_2012.Rdata")
 ```
 
 ## GO enrichment for each signficant cluster
 
 ```{r}
-load("../output/WGCNA_UN.Rdata")
+load("../output/WGCNA_UN_2012.Rdata")
 module_genes <- tibble(GeneID=colnames(expr.data.UN.t), module=moduleColors)
 module_genes
 ```
@@ -401,7 +504,7 @@ sig.modules
 
 Format module data for goseq. We need a vector for each gene with 1 indicating module membership and 0 indicating not in module 
 ```{r}
-file.remove("../output/SupTable_JM5_WGCNA_UN_GO.csv")
+file.remove("../output/SupTable_JM5_WGCNA_UN_GO_2012.csv")
 
 GO.results <- lapply(sig.modules, function(module) {
   module01 <- module_genes$module %>% str_detect(module) %>% as.numeric()
@@ -422,7 +525,7 @@ GO.results <- lapply(sig.modules, function(module) {
     filter(FDR < 0.05) %>%
     select(module,term,ontology,FDR,over_represented_pvalue,everything()) 
   
-  write_csv(GO.out.tmp,path = "../output/SupTable_JM5_WGCNA_UN_GO.csv",append = TRUE)
+  write_csv(GO.out.tmp,path = "../output/SupTable_JM5_WGCNA_UN_GO_2012.csv",append = TRUE)
   
   GO.out.tmp
 })

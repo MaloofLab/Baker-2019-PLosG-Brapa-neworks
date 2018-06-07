@@ -21,7 +21,7 @@ library(snowfall)
 ### get eigen genes and format for qtl
 
 ```{r}
-eigen.UN <- read_csv("../output/Sig_Eigen_genes_UN.csv")
+eigen.UN <- read_csv("../output/Sig_Eigen_genes_UN_2012.csv")
 colnames(eigen.UN)[-1] <- str_c("UN_",colnames(eigen.UN)[-1])
 
 eigen.UN.t <- eigen.UN %>%
@@ -37,7 +37,7 @@ eigen.UN.t
 ```
 
 ```{r}
-write_csv(eigen.UN.t,"../output/Top_Eigen_genes_qtl_input.csv")
+write_csv(eigen.UN.t,"../output/Top_Eigen_genes_qtl_input_2012.csv")
 ```
 
 
@@ -118,5 +118,5 @@ lod.thrs.cim
 
 
 ```{r}
-save(cross.all,scanone_eigen,scanone_eigen_cim,permtest,permtest.cim,lod.thrs,lod.thrs.cim,file = "../output/scanone-eigengene-qtl.RData")
+save(cross.all,scanone_eigen,scanone_eigen_cim,permtest,permtest.cim,lod.thrs,lod.thrs.cim,file = "../output/scanone-eigengene-qtl_2012.RData")
 ```

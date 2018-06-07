@@ -36,7 +36,7 @@ QTLgenes
 
 MR genes from UN
 ```{r}
-MR_UN_genes <- read_csv("../output/MR_UN_graphs_node_annotation.csv") %>%
+MR_UN_genes <- read_csv("../output/MR_UN_graphs_node_annotation_2012.csv") %>%
   filter(MR_Cutoff <= 50, !duplicated(name)) %>%
   select(MR_Cutoff,name)
 MR_UN_genes

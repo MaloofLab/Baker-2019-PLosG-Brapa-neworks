@@ -30,7 +30,7 @@ QTLgenes
 ```
 
 ```{r}
-MR_UN_genes <- read_csv("../output/MR_UN_graphs_node_annotation.csv")
+MR_UN_genes <- read_csv("../output/MR_UN_graphs_node_annotation_2012.csv")
 summary(MR_UN_genes)
 MR_UN_genes
 ```
