@@ -64,8 +64,8 @@ cross.all <- sim.geno(cross.all,step=2)
 
 
 ```{r}
-scanone_eigen <- scanone(cross.all, pheno.col = 2:ncol(cross.all$pheno), 
-	         method = "imp", use = "all.obs")
+system.time(scanone_eigen <- scanone(cross.all, pheno.col = 2:ncol(cross.all$pheno), 
+	         method = "imp", use = "all.obs"))
 scanone_eigen_cim <- lapply(2:ncol(cross.all$pheno),function(pheno) cim(cross.all, pheno.col = pheno, 
 	         method = "imp"))
 
@@ -75,12 +75,32 @@ colnames(scanone_eigen_cim)[-1:-2] <- colnames(cross.all$pheno)[-1]
 ```
 
 ```{r}
+
+#the built-in parallel method for scanone is hanging, so roll my own
+sfInit(parallel = TRUE, cpus = 4)
+
+sfLibrary(qtl)
+
+sfExport("cross.all")
+
 set.seed(12345)
-permtest <- scanone(cross.all, method = "imp", 
+system.time(permtest <- sfLapply(1:4,function(x) scanone(cross.all, method = "imp", 
                        pheno.col = 2:ncol(cross.all$pheno),
-                       n.perm = 10,
-                    n.cluster=4)
-permtest[1:10]
+                       n.perm = 250)))
+
+sfStop()
+
+permtest <- do.call(rbind,permtest)
+
+attr(permtest,"method") <- "imp"
+attr(permtest,"model") <- "normal"
+attr(permtest,"type") <- "riself"
+attr(permtest,"class") <- c("scanoneperm","matrix")
+
+permtest[1:5,1:5]
+
+dim(permtest)
+
 ```
 
 ```{r}
