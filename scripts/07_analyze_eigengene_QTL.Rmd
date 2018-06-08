@@ -62,6 +62,8 @@ sig.chrs
 now for each significant chromosome/trait combo run bayesint
 
 ```{r}
+scanone_eigen.phys <- scanone_eigen[!str_detect(rownames(scanone_eigen),"^cA"),]
+
 bayesint.list <- apply(sig.chrs,1,function(hit) {
     result <- bayesint(scanone_eigen[c("chr","pos",hit["trait"])], 
                      chr=hit["chr"], 
@@ -139,7 +141,7 @@ sort(unique(QTLgenes$.id))
 sort(unique(eigen.qtl.combined$.id))
 ```
 
-All
+seven of nine
 
 are all eigen genes overlapping?
 
@@ -148,7 +150,7 @@ unique(eigen.annotated.small$trait)
 unique(eigen.qtl.combined$trait)
 ```
 
-No, 8 of 10
+No, 8 of 9
 
 ```{r}
 write_csv(eigen.qtl.combined,"../output/Bayesian2012Height_genesunderQTLS_eigenQTL_overlap.csv")
@@ -200,8 +202,11 @@ sig.chrs
 now for each significant chromosome/trait combo run bayesint
 
 ```{r}
+#remove markers without physical position
+scanone_eigen_cim.phys <- scanone_eigen_cim[!str_detect(rownames(scanone_eigen),"^cA"),]
+
 bayesint.list <- apply(sig.chrs,1,function(hit) {
-    result <- bayesint(scanone_eigen[c("chr","pos",hit["trait"])], 
+    result <- bayesint(scanone_eigen_cim.phys[c("chr","pos",hit["trait"])], 
                      chr=hit["chr"], 
                      lodcolumn = 1,
                      expandtomarkers = TRUE
@@ -277,7 +282,7 @@ unique(QTLgenes$.id)
 unique(eigen.qtl.combined$.id)
 ```
 
-seven of nine
+four of nine
 
 are all eigen genes overlapping?
 
@@ -286,7 +291,7 @@ unique(eigen.annotated.small$trait)
 unique(eigen.qtl.combined$trait)
 ```
 
-No, 5
+No, 2
 
 ```{r}
 write_csv(eigen.qtl.combined,"../output/Bayesian2012Height_genesunderQTLS_eigenQTL_overlap_CIM.csv")
