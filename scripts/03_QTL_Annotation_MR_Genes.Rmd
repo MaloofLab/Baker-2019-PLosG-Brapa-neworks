@@ -36,12 +36,15 @@ MR_UN_genes
 ```
 
 ```{r}
-QTLgenes$UN_network <- MR_UN_genes$.id[match(QTLgenes$name, MR_UN_genes$name)]
+QTLgenes <- MR_UN_genes %>%
+  select(name, UN_network=.id, MR_Cutoff) %>%
+  right_join(QTLgenes,by="name")
 ```
 
 ```{r}
-QTLgenes %>% filter(!is.na(UN_network) )
+QTLgenes %>% filter(!is.na(UN_network) ) %>% arrange(.id)
 ```
+
 
 ## Annotation with DE information
 
@@ -74,7 +77,53 @@ Also subset to only include genes that are in an MR network
 ```{r}
 QTLgenes  %>% filter(!is.na(UN_network) ) %>%
   write_csv("../output/Bayesian2012Height_genesunderQTLS_networkgenesonly_DE_MR_UN.csv")
-
-
 ```
 
+## Test for enrichment
+
+Determine number of genes within QTL boundaries, number of MR genes, and overlap, then Fisher's exact test.
+
+Total genes
+```{r}
+annotation <- read_csv("../input/Brapa_V1.5_annotated.csv")
+all.genes <- nrow(annotation)
+all.genes
+```
+
+QTL genes
+```{r}
+qtl.genes <- nrow(QTLgenes)
+qtl.genes
+```
+
+now go through each MR_cutoff
+
+```{r}
+fisher.results <- MR_UN_genes$MR_Cutoff %>%
+  unique() %>%
+  map(function(cutoff) {
+    mr.genes <- sum(MR_UN_genes$MR_Cutoff <= cutoff)
+    qtl.mr.genes <- sum(QTLgenes$MR_Cutoff <= cutoff,na.rm = TRUE)
+    m <- matrix(c(all.genes-qtl.genes-mr.genes+qtl.mr.genes, qtl.genes-qtl.mr.genes,
+             mr.genes-qtl.mr.genes,qtl.mr.genes),
+           byrow=TRUE,
+           ncol=2,
+           dimnames=list(MR=c("no","yes"),QTL=c("no","yes"))
+    )
+    return(list(cutoff=cutoff,data=m,fisher=fisher.test(m)))
+  }
+  )
+
+p.vals <- tibble(mr.cutoff=map_int(fisher.results,function(x) x[["cutoff"]]),
+                fisher.p.val=map_dbl(fisher.results,function(x) x[["fisher"]]$p.value)
+)
+
+p.vals
+
+fisher.results
+```
+    
+    
+    
+    
+    

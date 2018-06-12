@@ -25,6 +25,7 @@ library(tidyverse)
 library(stringr)
 library(magrittr)
 library(qtl)
+library(GenomicRanges)
 ```
 
 Growth QTL
@@ -140,7 +141,7 @@ UN_annotated <- lapply(1:nrow(bayesint_result_UN),function(row) {
 names(UN_annotated) <- bayesint_result_UN$gene
 UN_annotated <- bind_rows(UN_annotated,.id="MR_gene") %>%
   left_join(bayesint_result_UN,by=c("MR_gene"="gene","chrom"="chr")) %>% #get eQTL LOD
-    left_join(MR_UN_genes,by=c("MR_gene"="name")) %>% # get cutoff
+  left_join(MR_UN_genes,by=c("MR_gene"="name")) %>% # get cutoff
   rename(eQTL_candidate=name)
 
 
@@ -175,7 +176,62 @@ ALL
 write_csv(UN_MReQTL_QTL_combined,"../output/Bayesian2012Height_genesunderQTLS_MR_eQTL_UN_overlap.csv")
 ```
 
+How to assess if overlap is significant?
+
+I think pull regions of same size as eQTL and ask how often they overlap with growth QTL.
+
+For each eQTL, randomly select a chromosome, then a position, and widen based on interval.  Then check overlap.  Repeat.
+
+Make table of chromosome info
+```{r}
+chr.info <- scanone_imp_UN %>% 
+  rownames_to_column("marker") %>%
+  select(marker) %>%
+  separate(marker,into=c("chr","bp"),sep="x",convert=TRUE) %>%
+  group_by(chr) %>%
+  summarize(start=min(bp),end=max(bp))
+```
+
+Make a table of QTL info
+
+```{r}
+qtl.info <- QTLgenes %>%
+  group_by(.id) %>%
+  summarize(chrom=unique(chrom),start=min(start),end=max(end))
+qtl.info
+qtl.ranges <- GRanges(seqnames = qtl.info$chrom,ranges=IRanges(start=qtl.info$start,end=qtl.info$end))
+qtl.ranges
+```
 
 
+The eQTL are in Bayesint_results
+
+```{r}
+sims <- 1000
+sim.results <- sapply(1:sims, function(s) {
+  sim.eQTL <- tibble(
+    chr=sample(chr.info$chr,
+               size = nrow(bayesint_result_UN),
+               replace = TRUE,
+               prob=chr.info$end/sum(chr.info$end)),
+    width=bayesint_result_UN$end-bayesint_result_UN$start # width of the QTL to simulate
+  )
+  sim.eQTL <- chr.info %>% 
+    select(chr,chr.start=start,chr.end=end) %>% right_join(sim.eQTL,by="chr") #need to get the chrom end so we can sample correctly
+  sim.eQTL <- sim.eQTL %>% mutate(qtl.start = runif(n=n(),
+                                                    min = chr.start,
+                                                    max=chr.end-width),
+                                  qtl.end=qtl.start+width)
+  sim.eQTL.ranges <- GRanges(seqnames = sim.eQTL$chr,ranges = IRanges(start=sim.eQTL$qtl.start,end=sim.eQTL$qtl.end))
+  suppressWarnings(result <- sum(countOverlaps(qtl.ranges,sim.eQTL.ranges)>0))
+  result
+})
+
+```
 
 
+```{r}
+mean(sim.results < 9)
+```
+
+significnt at p < 0.05 (barely!)
