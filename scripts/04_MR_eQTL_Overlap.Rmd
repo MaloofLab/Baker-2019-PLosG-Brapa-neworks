@@ -142,7 +142,7 @@ names(UN_annotated) <- bayesint_result_UN$gene
 UN_annotated <- bind_rows(UN_annotated,.id="MR_gene") %>%
   left_join(bayesint_result_UN,by=c("MR_gene"="gene","chrom"="chr")) %>% #get eQTL LOD
   left_join(MR_UN_genes,by=c("MR_gene"="name")) %>% # get cutoff
-  rename(eQTL_candidate=name)
+  dplyr::rename(eQTL_candidate=name)
 
 
 UN_annotated_small <- UN_annotated %>% select(MR_gene,MR_Cutoff,eQTL_candidate,ends_with("LOD"))
@@ -156,7 +156,7 @@ given bayesint results, find overlaps with UN growth QTL
 UN_MReQTL_QTL_combined <- inner_join(QTLgenes,UN_annotated_small,by=c("name"="eQTL_candidate")) %>%
   select(.id, MR_gene, MR_Cutoff, ends_with("LOD"), everything()) %>%
   arrange(.id,desc(max_eQTL_LOD)) %>%
-  rename(eQTL_candidate=name)
+  dplyr::rename(eQTL_candidate=name)
 UN_MReQTL_QTL_combined
 
 UN_MReQTL_QTL_combined_small <- UN_MReQTL_QTL_combined %>% filter(!duplicated(eQTL_candidate)) %>%
@@ -200,21 +200,28 @@ qtl.info <- QTLgenes %>%
   summarize(chrom=unique(chrom),start=min(start),end=max(end))
 qtl.info
 qtl.ranges <- GRanges(seqnames = qtl.info$chrom,ranges=IRanges(start=qtl.info$start,end=qtl.info$end))
-qtl.ranges
+qtl.ranges <- reduce(qtl.ranges)
 ```
 
 
 The eQTL are in Bayesint_results
 
+\
 ```{r}
 sims <- 1000
+eQTL.ranges <- GRanges(bayesint_result_UN$chr,
+                       ranges = IRanges(start=bayesint_result_UN$start,
+                                        end=bayesint_result_UN$end))
+eQTL.ranges <- reduce(eQTL.ranges)
+
+set.seed(54321)
 sim.results <- sapply(1:sims, function(s) {
   sim.eQTL <- tibble(
     chr=sample(chr.info$chr,
-               size = nrow(bayesint_result_UN),
+               size = length(eQTL.ranges),
                replace = TRUE,
                prob=chr.info$end/sum(chr.info$end)),
-    width=bayesint_result_UN$end-bayesint_result_UN$start # width of the QTL to simulate
+    width=width(eQTL.ranges) # width of the QTL to simulate
   )
   sim.eQTL <- chr.info %>% 
     select(chr,chr.start=start,chr.end=end) %>% right_join(sim.eQTL,by="chr") #need to get the chrom end so we can sample correctly
@@ -231,7 +238,8 @@ sim.results <- sapply(1:sims, function(s) {
 
 
 ```{r}
-mean(sim.results < 9)
+sum(countOverlaps(qtl.ranges,eQTL.ranges))
+mean(sim.results < 3)
 ```
 
-significnt at p < 0.05 (barely!)
+significnt at p < 0.05
