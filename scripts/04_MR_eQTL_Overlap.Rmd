@@ -227,7 +227,7 @@ sim.results <- sapply(1:sims, function(s) {
     select(chr,chr.start=start,chr.end=end) %>% right_join(sim.eQTL,by="chr") #need to get the chrom end so we can sample correctly
   sim.eQTL <- sim.eQTL %>% mutate(qtl.start = runif(n=n(),
                                                     min = chr.start,
-                                                    max=chr.end-width),
+                                                    max= max(chr.start,chr.end-width)),
                                   qtl.end=qtl.start+width)
   sim.eQTL.ranges <- GRanges(seqnames = sim.eQTL$chr,ranges = IRanges(start=sim.eQTL$qtl.start,end=sim.eQTL$qtl.end))
   suppressWarnings(result <- sum(countOverlaps(qtl.ranges,sim.eQTL.ranges)>0))

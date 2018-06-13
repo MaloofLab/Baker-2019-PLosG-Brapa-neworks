@@ -120,7 +120,7 @@ p.vals <- tibble(mr.cutoff=map_int(fisher.results,function(x) x[["cutoff"]]),
 
 p.vals
 
-fisher.results
+lapply(fisher.results,function(x) x[["data"]])
 ```
     
     

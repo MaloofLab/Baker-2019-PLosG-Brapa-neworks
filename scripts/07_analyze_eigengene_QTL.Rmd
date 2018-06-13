@@ -10,6 +10,7 @@ Previous script: "06_get_eigengene_QTL.Rmd"
 The goal is to find QTL peaks for the WGCNA eigen genes and see if those overalp with any growth QTL.  We are only focusing on eigen genes that correlated with some growth traits/paramters.
 
 ```{r}
+library(GenomicRanges)
 library(qtl)
 library(tidyverse)
 library(stringr)
@@ -65,7 +66,7 @@ now for each significant chromosome/trait combo run bayesint
 scanone_eigen.phys <- scanone_eigen[!str_detect(rownames(scanone_eigen),"^cA"),]
 
 bayesint.list <- apply(sig.chrs,1,function(hit) {
-    result <- bayesint(scanone_eigen[c("chr","pos",hit["trait"])], 
+    result <- bayesint(scanone_eigen.phys[c("chr","pos",hit["trait"])], 
                      chr=hit["chr"], 
                      lodcolumn = 1,
                      expandtomarkers = TRUE
@@ -154,6 +155,72 @@ No, 8 of 9
 
 ```{r}
 write_csv(eigen.qtl.combined,"../output/Bayesian2012Height_genesunderQTLS_eigenQTL_overlap.csv")
+```
+
+## overlaps and significance
+
+first convert things to ranges
+```{r}
+qtl.info <- QTLgenes %>%
+  group_by(.id) %>%
+  summarize(chrom=unique(chrom),start=min(start),end=max(end))
+qtl.info
+qtl.ranges <- GRanges(seqnames = qtl.info$chrom,ranges=IRanges(start=qtl.info$start,end=qtl.info$end))
+qtl.ranges <- GenomicRanges::reduce(qtl.ranges)
+```
+
+```{r}
+eQTL.ranges <- GRanges(bayesint.result$chr,
+                       ranges = IRanges(start=bayesint.result$start,
+                                        end=bayesint.result$end))
+eQTL.ranges <- GenomicRanges::reduce(eQTL.ranges)
+```
+
+Make table of chromosome info
+```{r}
+chr.info <- scanone_eigen.phys %>% 
+  rownames_to_column("marker") %>%
+  select(marker) %>%
+  separate(marker,into=c("chr","bp"),sep="x",convert=TRUE) %>%
+  group_by(chr) %>%
+  summarize(start=min(bp),end=max(bp))
+```
+
+Do the simulations
+```{r}
+sims <- 1000
+
+set.seed(2323)
+sim.results <- sapply(1:sims, function(s) {
+  if (s %% 10 == 0) print(s)
+  sim.eQTL <- tibble(
+    chr=sample(chr.info$chr,
+               size = length(eQTL.ranges),
+               replace = TRUE,
+               prob=chr.info$end/sum(chr.info$end)),
+    width=width(eQTL.ranges) # width of the QTL to simulate
+  )
+  sim.eQTL <- chr.info %>% 
+    select(chr,chr.start=start,chr.end=end) %>% right_join(sim.eQTL,by="chr") #need to get the chrom end so we can sample correctly
+  sim.eQTL <- sim.eQTL %>% mutate(qtl.start = runif(n=n(),
+                                                    min = chr.start,
+                                                    max= max(chr.start,chr.end-width)),
+                                  qtl.end=qtl.start+width)
+  sim.eQTL.ranges <- GRanges(seqnames = sim.eQTL$chr,
+                             ranges = IRanges(start=sim.eQTL$qtl.start,
+                                              end=sim.eQTL$qtl.end))
+  
+  suppressWarnings(result <- sum(countOverlaps(qtl.ranges,sim.eQTL.ranges)>0))
+  result
+})
+
+```
+
+
+```{r}
+true.overlap <- sum(countOverlaps(qtl.ranges,eQTL.ranges))
+true.overlap
+mean(sim.results < true.overlap)
 ```
 
 # cim
@@ -297,3 +364,48 @@ No, 2
 write_csv(eigen.qtl.combined,"../output/Bayesian2012Height_genesunderQTLS_eigenQTL_overlap_CIM.csv")
 ```
 
+## overlaps and signficance
+
+```{r}
+eQTL.ranges <- GRanges(bayesint.result$chr,
+                       ranges = IRanges(start=bayesint.result$start,
+                                        end=bayesint.result$end))
+eQTL.ranges <- GenomicRanges::reduce(eQTL.ranges)
+```
+
+Do the simulations
+```{r}
+sims <- 1000
+
+set.seed(4545)
+sim.results <- sapply(1:sims, function(s) {
+  if (s %% 10 == 0) print(s)
+  sim.eQTL <- tibble(
+    chr=sample(chr.info$chr,
+               size = length(eQTL.ranges),
+               replace = TRUE,
+               prob=chr.info$end/sum(chr.info$end)),
+    width=width(eQTL.ranges) # width of the QTL to simulate
+  )
+  sim.eQTL <- chr.info %>% 
+    select(chr,chr.start=start,chr.end=end) %>% right_join(sim.eQTL,by="chr") #need to get the chrom end so we can sample correctly
+  sim.eQTL <- sim.eQTL %>% mutate(qtl.start = runif(n=n(),
+                                                    min = chr.start,
+                                                    max= max(chr.start,chr.end-width)),
+                                  qtl.end=qtl.start+width)
+  sim.eQTL.ranges <- GRanges(seqnames = sim.eQTL$chr,
+                             ranges = IRanges(start=sim.eQTL$qtl.start,
+                                              end=sim.eQTL$qtl.end))
+  
+  suppressWarnings(result <- sum(countOverlaps(qtl.ranges,sim.eQTL.ranges)>0))
+  result
+})
+
+```
+
+
+```{r}
+true.overlap <- sum(countOverlaps(qtl.ranges,eQTL.ranges))
+true.overlap
+mean(sim.results < true.overlap)
+```

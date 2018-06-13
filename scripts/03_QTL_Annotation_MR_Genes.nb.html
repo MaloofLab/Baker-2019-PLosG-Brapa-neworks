@@ -187,13 +187,13 @@ $(document).ready(function () {
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
 <pre class="r"><code>library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1BdHRhY2hpbmcgcGFja2FnZXNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2UgMS4yLjEg4pSA4pSAXHUwMDFiWzM5bVxuXHUwMDFiWzMwbVx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1nZ3Bsb3QyXHUwMDFiWzMwbSAyLjIuMSAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXB1cnJyICBcdTAwMWJbMzBtIDAuMi40XG5cdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtdGliYmxlIFx1MDAxYlszMG0gMS40LjIgICAgIFx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1kcGx5ciAgXHUwMDFiWzMwbSAwLjcuNFxuXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXRpZHlyICBcdTAwMWJbMzBtIDAuOC4wICAgICBcdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtc3RyaW5nclx1MDAxYlszMG0gMS4zLjBcblx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1yZWFkciAgXHUwMDFiWzMwbSAxLjEuMSAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bWZvcmNhdHNcdTAwMWJbMzBtIDAuMy4wXHUwMDFiWzM5bVxuXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1Db25mbGljdHNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2VfY29uZmxpY3RzKCkg4pSA4pSAXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtZmlsdGVyKClcdTAwMWJbMzBtIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszMG06OmZpbHRlcigpXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtbGFnKClcdTAwMWJbMzBtICAgIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszMG06OmxhZygpXHUwMDFiWzM5bVxuIn0= -->
-<pre><code>[30m── [1mAttaching packages[22m ─────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──[39m
+<!-- rnb-output-begin eyJkYXRhIjoiXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1BdHRhY2hpbmcgcGFja2FnZXNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2UgMS4yLjEg4pSA4pSAXHUwMDFiWzM5bVxuXHUwMDFiWzMwbVx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1nZ3Bsb3QyXHUwMDFiWzMwbSAyLjIuMSAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXB1cnJyICBcdTAwMWJbMzBtIDAuMi40XG5cdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtdGliYmxlIFx1MDAxYlszMG0gMS40LjIgICAgIFx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1kcGx5ciAgXHUwMDFiWzMwbSAwLjcuNFxuXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXRpZHlyICBcdTAwMWJbMzBtIDAuOC4wICAgICBcdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtc3RyaW5nclx1MDAxYlszMG0gMS4zLjBcblx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1yZWFkciAgXHUwMDFiWzMwbSAxLjEuMSAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bWZvcmNhdHNcdTAwMWJbMzBtIDAuMy4wXHUwMDFiWzM5bVxuXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1Db25mbGljdHNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2VfY29uZmxpY3RzKCkg4pSA4pSAXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtZmlsdGVyKClcdTAwMWJbMzBtIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszMG06OmZpbHRlcigpXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtbGFnKClcdTAwMWJbMzBtICAgIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszMG06OmxhZygpXHUwMDFiWzM5bVxuIn0= -->
+<pre><code>[30m── [1mAttaching packages[22m ───────────────────────────────────── tidyverse 1.2.1 ──[39m
 [30m[32m✔[30m [34mggplot2[30m 2.2.1     [32m✔[30m [34mpurrr  [30m 0.2.4
 [32m✔[30m [34mtibble [30m 1.4.2     [32m✔[30m [34mdplyr  [30m 0.7.4
 [32m✔[30m [34mtidyr  [30m 0.8.0     [32m✔[30m [34mstringr[30m 1.3.0
 [32m✔[30m [34mreadr  [30m 1.1.1     [32m✔[30m [34mforcats[30m 0.3.0[39m
-[30m── [1mConflicts[22m ────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+[30m── [1mConflicts[22m ──────────────────────────────────────── tidyverse_conflicts() ──
 [31m✖[30m [34mdplyr[30m::[32mfilter()[30m masks [34mstats[30m::filter()
 [31m✖[30m [34mdplyr[30m::[32mlag()[30m    masks [34mstats[30m::lag()[39m</code></pre>
 <!-- rnb-output-end -->
@@ -246,28 +246,35 @@ See spec(...) for full column specifications.</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShRVExnZW5lcylcbmBgYCJ9 -->
 <pre class="r"><code>summary(QTLgenes)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiICAgICAuaWQgICAgICAgICAgICAgIEZWVHRyYWl0ICAgICAgICAgICAgIG5hbWUgICAgICAgICAgICAgIGNocm9tICAgICAgICAgICAgICAgc3RhcnQgICAgICAgICBcbiBMZW5ndGg6OTQ1ICAgICAgICAgTGVuZ3RoOjk0NSAgICAgICAgIExlbmd0aDo5NDUgICAgICAgICBMZW5ndGg6OTQ1ICAgICAgICAgTWluLiAgIDogMTUyMDIxNCAgXG4gQ2xhc3MgOmNoYXJhY3RlciAgIENsYXNzIDpjaGFyYWN0ZXIgICBDbGFzcyA6Y2hhcmFjdGVyICAgQ2xhc3MgOmNoYXJhY3RlciAgIDFzdCBRdS46IDYyOTA2MzkgIFxuIE1vZGUgIDpjaGFyYWN0ZXIgICBNb2RlICA6Y2hhcmFjdGVyICAgTW9kZSAgOmNoYXJhY3RlciAgIE1vZGUgIDpjaGFyYWN0ZXIgICBNZWRpYW4gOjExNzIzNDAzICBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTWVhbiAgIDogODQwNDU5MCAgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDNyZCBRdS46MTIwNTY3NjYgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBNYXguICAgOjEyMjk5NDEzICBcbiAgICAgIGVuZCAgICAgICAgICAgICBzdWJqZWN0ICAgICAgICAgICAgICBBR0kgICAgICAgICAgICAgQXRfc3ltYm9sICAgICAgICAgQXRfZGVzY3JpcHRpb24gICAgXG4gTWluLiAgIDogMTUyMTg2OSAgIExlbmd0aDo5NDUgICAgICAgICBMZW5ndGg6OTQ1ICAgICAgICAgTGVuZ3RoOjk0NSAgICAgICAgIExlbmd0aDo5NDUgICAgICAgIFxuIDFzdCBRdS46IDYyOTEyNDcgICBDbGFzcyA6Y2hhcmFjdGVyICAgQ2xhc3MgOmNoYXJhY3RlciAgIENsYXNzIDpjaGFyYWN0ZXIgICBDbGFzcyA6Y2hhcmFjdGVyICBcbiBNZWRpYW4gOjExNzI3NjM3ICAgTW9kZSAgOmNoYXJhY3RlciAgIE1vZGUgIDpjaGFyYWN0ZXIgICBNb2RlICA6Y2hhcmFjdGVyICAgTW9kZSAgOmNoYXJhY3RlciAgXG4gTWVhbiAgIDogODQwNzA1NiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIDNyZCBRdS46MTIwNTkxMTggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiBNYXguICAgOjEyMzAwMTc5ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gICAgcGVyY19JRCAgICAgICAgYWxuX2xlbmd0aCAgICAgIG1pc21hdGNoICAgICAgICBnYXBfb3BlbiAgICAgICAgICBxc3RhcnQgICAgICAgICAgICBxZW5kICAgICBcbiBNaW4uICAgOjY1Ljg2ICAgTWluLiAgIDogIDUwICAgTWluLiAgIDogIDUuMCAgIE1pbi4gICA6IDAuMDAwICAgTWluLiAgIDogICAxLjAgICBNaW4uICAgOiAgNzEgIFxuIDFzdCBRdS46ODAuMDMgICAxc3QgUXUuOiA1MTggICAxc3QgUXUuOiA2Ny4wICAgMXN0IFF1LjogMS4wMDAgICAxc3QgUXUuOiAgMzcuMCAgIDFzdCBRdS46IDcxNyAgXG4gTWVkaWFuIDo4NC44MCAgIE1lZGlhbiA6MTAwOCAgIE1lZGlhbiA6MTE4LjAgICBNZWRpYW4gOiAzLjAwMCAgIE1lZGlhbiA6IDE2OS4wICAgTWVkaWFuIDoxMTMzICBcbiBNZWFuICAgOjgzLjczICAgTWVhbiAgIDoxMTAwICAgTWVhbiAgIDoxNDIuMSAgIE1lYW4gICA6IDUuMDE5ICAgTWVhbiAgIDogMjYwLjkgICBNZWFuICAgOjEzNDEgIFxuIDNyZCBRdS46ODguMDMgICAzcmQgUXUuOjE0NDQgICAzcmQgUXUuOjE4My4wICAgM3JkIFF1LjogNy4wMDAgICAzcmQgUXUuOiAyOTEuMCAgIDNyZCBRdS46MTc2OCAgXG4gTWF4LiAgIDo5NC40OCAgIE1heC4gICA6NTU3MiAgIE1heC4gICA6NzU0LjAgICBNYXguICAgOjUyLjAwMCAgIE1heC4gICA6MjcxOS4wICAgTWF4LiAgIDo1NzM3ICBcbiAgICAgc3N0YXJ0ICAgICAgICAgICAgc2VuZCAgICAgICAgICAgICBldmFsICAgICAgICAgICAgICAgc2NvcmUgICAgICAgXG4gTWluLiAgIDogICAxLjAgICBNaW4uICAgOiAgIDEuMCAgIE1pbi4gICA6MC4wMDBlKzAwICAgTWluLiAgIDogIDU1LjQgIFxuIDFzdCBRdS46ICAgMS4wICAgMXN0IFF1LjogICAxLjAgICAxc3QgUXUuOjAuMDAwZSswMCAgIDFzdCBRdS46IDQ4NC4wICBcbiBNZWRpYW4gOiAzNzkuMCAgIE1lZGlhbiA6IDQ4Mi4wICAgTWVkaWFuIDowLjAwMGUrMDAgICBNZWRpYW4gOjEwNTQuMCAgXG4gTWVhbiAgIDogNjgzLjUgICBNZWFuICAgOiA3MTYuMiAgIE1lYW4gICA6MS4wNjllLTA5ICAgTWVhbiAgIDoxMjE1LjcgIFxuIDNyZCBRdS46MTE0NC4wICAgM3JkIFF1LjoxMTA0LjAgICAzcmQgUXUuOjAuMDAwZSswMCAgIDNyZCBRdS46MTY1MS4wICBcbiBNYXguICAgOjUzOTIuMCAgIE1heC4gICA6NTUzOS4wICAgTWF4LiAgIDoxLjAxMGUtMDYgICBNYXguICAgOjcyODguMCAgXG4ifQ== -->
-<pre><code>     .id              FVTtrait             name              chrom               start         
- Length:945         Length:945         Length:945         Length:945         Min.   : 1520214  
- Class :character   Class :character   Class :character   Class :character   1st Qu.: 6290639  
- Mode  :character   Mode  :character   Mode  :character   Mode  :character   Median :11723403  
-                                                                             Mean   : 8404590  
-                                                                             3rd Qu.:12056766  
-                                                                             Max.   :12299413  
-      end             subject              AGI             At_symbol         At_description    
- Min.   : 1521869   Length:945         Length:945         Length:945         Length:945        
- 1st Qu.: 6291247   Class :character   Class :character   Class :character   Class :character  
- Median :11727637   Mode  :character   Mode  :character   Mode  :character   Mode  :character  
- Mean   : 8407056                                                                              
- 3rd Qu.:12059118                                                                              
- Max.   :12300179                                                                              
-    perc_ID        aln_length      mismatch        gap_open          qstart            qend     
- Min.   :65.86   Min.   :  50   Min.   :  5.0   Min.   : 0.000   Min.   :   1.0   Min.   :  71  
- 1st Qu.:80.03   1st Qu.: 518   1st Qu.: 67.0   1st Qu.: 1.000   1st Qu.:  37.0   1st Qu.: 717  
- Median :84.80   Median :1008   Median :118.0   Median : 3.000   Median : 169.0   Median :1133  
- Mean   :83.73   Mean   :1100   Mean   :142.1   Mean   : 5.019   Mean   : 260.9   Mean   :1341  
- 3rd Qu.:88.03   3rd Qu.:1444   3rd Qu.:183.0   3rd Qu.: 7.000   3rd Qu.: 291.0   3rd Qu.:1768  
- Max.   :94.48   Max.   :5572   Max.   :754.0   Max.   :52.000   Max.   :2719.0   Max.   :5737  
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAuaWQgICAgICAgICAgICAgIEZWVHRyYWl0ICAgICAgICAgICAgIG5hbWUgICAgICAgICAgICAgIGNocm9tICAgICAgICAgIFxuIExlbmd0aDo5NDUgICAgICAgICBMZW5ndGg6OTQ1ICAgICAgICAgTGVuZ3RoOjk0NSAgICAgICAgIExlbmd0aDo5NDUgICAgICAgIFxuIENsYXNzIDpjaGFyYWN0ZXIgICBDbGFzcyA6Y2hhcmFjdGVyICAgQ2xhc3MgOmNoYXJhY3RlciAgIENsYXNzIDpjaGFyYWN0ZXIgIFxuIE1vZGUgIDpjaGFyYWN0ZXIgICBNb2RlICA6Y2hhcmFjdGVyICAgTW9kZSAgOmNoYXJhY3RlciAgIE1vZGUgIDpjaGFyYWN0ZXIgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICBzdGFydCAgICAgICAgICAgICAgIGVuZCAgICAgICAgICAgICBzdWJqZWN0ICAgICAgICAgICAgICBBR0kgICAgICAgICAgIFxuIE1pbi4gICA6IDE1MjAyMTQgICBNaW4uICAgOiAxNTIxODY5ICAgTGVuZ3RoOjk0NSAgICAgICAgIExlbmd0aDo5NDUgICAgICAgIFxuIDFzdCBRdS46IDYyOTA2MzkgICAxc3QgUXUuOiA2MjkxMjQ3ICAgQ2xhc3MgOmNoYXJhY3RlciAgIENsYXNzIDpjaGFyYWN0ZXIgIFxuIE1lZGlhbiA6MTE3MjM0MDMgICBNZWRpYW4gOjExNzI3NjM3ICAgTW9kZSAgOmNoYXJhY3RlciAgIE1vZGUgIDpjaGFyYWN0ZXIgIFxuIE1lYW4gICA6IDg0MDQ1OTAgICBNZWFuICAgOiA4NDA3MDU2ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIDNyZCBRdS46MTIwNTY3NjYgICAzcmQgUXUuOjEyMDU5MTE4ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIE1heC4gICA6MTIyOTk0MTMgICBNYXguICAgOjEyMzAwMTc5ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICBBdF9zeW1ib2wgICAgICAgICBBdF9kZXNjcmlwdGlvbiAgICAgICAgcGVyY19JRCAgICAgICAgYWxuX2xlbmd0aCAgXG4gTGVuZ3RoOjk0NSAgICAgICAgIExlbmd0aDo5NDUgICAgICAgICBNaW4uICAgOjY1Ljg2ICAgTWluLiAgIDogIDUwICBcbiBDbGFzcyA6Y2hhcmFjdGVyICAgQ2xhc3MgOmNoYXJhY3RlciAgIDFzdCBRdS46ODAuMDMgICAxc3QgUXUuOiA1MTggIFxuIE1vZGUgIDpjaGFyYWN0ZXIgICBNb2RlICA6Y2hhcmFjdGVyICAgTWVkaWFuIDo4NC44MCAgIE1lZGlhbiA6MTAwOCAgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBNZWFuICAgOjgzLjczICAgTWVhbiAgIDoxMTAwICBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDNyZCBRdS46ODguMDMgICAzcmQgUXUuOjE0NDQgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTWF4LiAgIDo5NC40OCAgIE1heC4gICA6NTU3MiAgXG4gICAgbWlzbWF0Y2ggICAgICAgIGdhcF9vcGVuICAgICAgICAgIHFzdGFydCAgICAgICAgICAgIHFlbmQgICAgIFxuIE1pbi4gICA6ICA1LjAgICBNaW4uICAgOiAwLjAwMCAgIE1pbi4gICA6ICAgMS4wICAgTWluLiAgIDogIDcxICBcbiAxc3QgUXUuOiA2Ny4wICAgMXN0IFF1LjogMS4wMDAgICAxc3QgUXUuOiAgMzcuMCAgIDFzdCBRdS46IDcxNyAgXG4gTWVkaWFuIDoxMTguMCAgIE1lZGlhbiA6IDMuMDAwICAgTWVkaWFuIDogMTY5LjAgICBNZWRpYW4gOjExMzMgIFxuIE1lYW4gICA6MTQyLjEgICBNZWFuICAgOiA1LjAxOSAgIE1lYW4gICA6IDI2MC45ICAgTWVhbiAgIDoxMzQxICBcbiAzcmQgUXUuOjE4My4wICAgM3JkIFF1LjogNy4wMDAgICAzcmQgUXUuOiAyOTEuMCAgIDNyZCBRdS46MTc2OCAgXG4gTWF4LiAgIDo3NTQuMCAgIE1heC4gICA6NTIuMDAwICAgTWF4LiAgIDoyNzE5LjAgICBNYXguICAgOjU3MzcgIFxuICAgICBzc3RhcnQgICAgICAgICAgICBzZW5kICAgICAgICAgICAgIGV2YWwgICAgICAgICAgICAgICBzY29yZSAgICAgICBcbiBNaW4uICAgOiAgIDEuMCAgIE1pbi4gICA6ICAgMS4wICAgTWluLiAgIDowLjAwMGUrMDAgICBNaW4uICAgOiAgNTUuNCAgXG4gMXN0IFF1LjogICAxLjAgICAxc3QgUXUuOiAgIDEuMCAgIDFzdCBRdS46MC4wMDBlKzAwICAgMXN0IFF1LjogNDg0LjAgIFxuIE1lZGlhbiA6IDM3OS4wICAgTWVkaWFuIDogNDgyLjAgICBNZWRpYW4gOjAuMDAwZSswMCAgIE1lZGlhbiA6MTA1NC4wICBcbiBNZWFuICAgOiA2ODMuNSAgIE1lYW4gICA6IDcxNi4yICAgTWVhbiAgIDoxLjA2OWUtMDkgICBNZWFuICAgOjEyMTUuNyAgXG4gM3JkIFF1LjoxMTQ0LjAgICAzcmQgUXUuOjExMDQuMCAgIDNyZCBRdS46MC4wMDBlKzAwICAgM3JkIFF1LjoxNjUxLjAgIFxuIE1heC4gICA6NTM5Mi4wICAgTWF4LiAgIDo1NTM5LjAgICBNYXguICAgOjEuMDEwZS0wNiAgIE1heC4gICA6NzI4OC4wICBcbiJ9 -->
+<pre><code>     .id              FVTtrait             name              chrom          
+ Length:945         Length:945         Length:945         Length:945        
+ Class :character   Class :character   Class :character   Class :character  
+ Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+                                                                            
+                                                                            
+                                                                            
+     start               end             subject              AGI           
+ Min.   : 1520214   Min.   : 1521869   Length:945         Length:945        
+ 1st Qu.: 6290639   1st Qu.: 6291247   Class :character   Class :character  
+ Median :11723403   Median :11727637   Mode  :character   Mode  :character  
+ Mean   : 8404590   Mean   : 8407056                                        
+ 3rd Qu.:12056766   3rd Qu.:12059118                                        
+ Max.   :12299413   Max.   :12300179                                        
+  At_symbol         At_description        perc_ID        aln_length  
+ Length:945         Length:945         Min.   :65.86   Min.   :  50  
+ Class :character   Class :character   1st Qu.:80.03   1st Qu.: 518  
+ Mode  :character   Mode  :character   Median :84.80   Median :1008  
+                                       Mean   :83.73   Mean   :1100  
+                                       3rd Qu.:88.03   3rd Qu.:1444  
+                                       Max.   :94.48   Max.   :5572  
+    mismatch        gap_open          qstart            qend     
+ Min.   :  5.0   Min.   : 0.000   Min.   :   1.0   Min.   :  71  
+ 1st Qu.: 67.0   1st Qu.: 1.000   1st Qu.:  37.0   1st Qu.: 717  
+ Median :118.0   Median : 3.000   Median : 169.0   Median :1133  
+ Mean   :142.1   Mean   : 5.019   Mean   : 260.9   Mean   :1341  
+ 3rd Qu.:183.0   3rd Qu.: 7.000   3rd Qu.: 291.0   3rd Qu.:1768  
+ Max.   :754.0   Max.   :52.000   Max.   :2719.0   Max.   :5737  
      sstart            send             eval               score       
  Min.   :   1.0   Min.   :   1.0   Min.   :0.000e+00   Min.   :  55.4  
  1st Qu.:   1.0   1st Qu.:   1.0   1st Qu.:0.000e+00   1st Qu.: 484.0  
@@ -314,39 +321,55 @@ See spec(...) for full column specifications.</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShNUl9VTl9nZW5lcylcbmBgYCJ9 -->
 <pre class="r"><code>summary(MR_UN_genes)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiICAgICAuaWQgICAgICAgICAgICAgIE1SX0N1dG9mZiAgICAgICAgIHRydCAgICAgICAgICAgICAgICBuYW1lICAgICAgICAgICAgICBjaHJvbSAgICAgICAgICBcbiBMZW5ndGg6NTcgICAgICAgICAgTWluLiAgIDoxMC4wMCAgIExlbmd0aDo1NyAgICAgICAgICBMZW5ndGg6NTcgICAgICAgICAgTGVuZ3RoOjU3ICAgICAgICAgXG4gQ2xhc3MgOmNoYXJhY3RlciAgIDFzdCBRdS46MzAuMDAgICBDbGFzcyA6Y2hhcmFjdGVyICAgQ2xhc3MgOmNoYXJhY3RlciAgIENsYXNzIDpjaGFyYWN0ZXIgIFxuIE1vZGUgIDpjaGFyYWN0ZXIgICBNZWRpYW4gOjUwLjAwICAgTW9kZSAgOmNoYXJhY3RlciAgIE1vZGUgIDpjaGFyYWN0ZXIgICBNb2RlICA6Y2hhcmFjdGVyICBcbiAgICAgICAgICAgICAgICAgICAgTWVhbiAgIDozNy43MiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gICAgICAgICAgICAgICAgICAgIDNyZCBRdS46NTAuMDAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICBNYXguICAgOjUwLjAwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gICAgIHN0YXJ0ICAgICAgICAgICAgICAgZW5kICAgICAgICAgICAgIHN1YmplY3QgICAgICAgICAgICAgIEFHSSAgICAgICAgICAgICBBdF9zeW1ib2wgICAgICAgIFxuIE1pbi4gICA6ICAyMjQwOTIgICBNaW4uICAgOiAgMjI4NDI3ICAgTGVuZ3RoOjU3ICAgICAgICAgIExlbmd0aDo1NyAgICAgICAgICBMZW5ndGg6NTcgICAgICAgICBcbiAxc3QgUXUuOiA2MzUyNjE1ICAgMXN0IFF1LjogNjM1NTk2OSAgIENsYXNzIDpjaGFyYWN0ZXIgICBDbGFzcyA6Y2hhcmFjdGVyICAgQ2xhc3MgOmNoYXJhY3RlciAgXG4gTWVkaWFuIDoxMDcwNTg0NyAgIE1lZGlhbiA6MTA3MTE5MDEgICBNb2RlICA6Y2hhcmFjdGVyICAgTW9kZSAgOmNoYXJhY3RlciAgIE1vZGUgIDpjaGFyYWN0ZXIgIFxuIE1lYW4gICA6MTA3NDUwOTkgICBNZWFuICAgOjEwNzQ3NjcyICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiAzcmQgUXUuOjEyODYxNjUyICAgM3JkIFF1LjoxMjg2NzI4NiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gTWF4LiAgIDozNjE3OTEyMiAgIE1heC4gICA6MzYxODAyMTcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiBBdF9kZXNjcmlwdGlvbiAgICAgICAgcGVyY19JRCAgICAgICAgYWxuX2xlbmd0aCAgICAgICAgbWlzbWF0Y2ggICAgICAgIGdhcF9vcGVuICAgICAgICAgIHFzdGFydCAgICAgICBcbiBMZW5ndGg6NTcgICAgICAgICAgTWluLiAgIDo2OS43MiAgIE1pbi4gICA6ICA5My4wICAgTWluLiAgIDogIDkuMCAgIE1pbi4gICA6IDAuMDAwICAgTWluLiAgIDogICAxLjAwICBcbiBDbGFzcyA6Y2hhcmFjdGVyICAgMXN0IFF1Ljo4NC4yNSAgIDFzdCBRdS46IDU1MS4yICAgMXN0IFF1LjogNjAuNSAgIDFzdCBRdS46IDEuMDAwICAgMXN0IFF1LjogIDEyLjI1ICBcbiBNb2RlICA6Y2hhcmFjdGVyICAgTWVkaWFuIDo4Ni43MCAgIE1lZGlhbiA6IDg5Mi4wICAgTWVkaWFuIDoxMTIuMCAgIE1lZGlhbiA6IDIuMDAwICAgTWVkaWFuIDogMTI5LjUwICBcbiAgICAgICAgICAgICAgICAgICAgTWVhbiAgIDo4NS44NiAgIE1lYW4gICA6MTAyNy4yICAgTWVhbiAgIDoxMjcuNCAgIE1lYW4gICA6IDIuOTgxICAgTWVhbiAgIDogMjExLjkyICBcbiAgICAgICAgICAgICAgICAgICAgM3JkIFF1Ljo4Ny44MSAgIDNyZCBRdS46MTQ0NS41ICAgM3JkIFF1LjoxNjMuMCAgIDNyZCBRdS46IDQuMDAwICAgM3JkIFF1LjogMjI2LjUwICBcbiAgICAgICAgICAgICAgICAgICAgTWF4LiAgIDo5Mi44NCAgIE1heC4gICA6MjgwOS4wICAgTWF4LiAgIDo0MjIuMCAgIE1heC4gICA6MTcuMDAwICAgTWF4LiAgIDoyMzc4LjAwICBcbiAgICAgICAgICAgICAgICAgICAgTkEncyAgIDo1ICAgICAgIE5BJ3MgICA6NSAgICAgICAgTkEncyAgIDo1ICAgICAgIE5BJ3MgICA6NSAgICAgICAgTkEncyAgIDo1ICAgICAgICBcbiAgICAgIHFlbmQgICAgICAgICAgICBzc3RhcnQgICAgICAgICAgICBzZW5kICAgICAgICAgICBldmFsICAgICAgIHNjb3JlICAgICAgIFxuIE1pbi4gICA6ICA5My4wICAgTWluLiAgIDogICAxLjAgICBNaW4uICAgOiAgIDEgICBNaW4uICAgOjAgICBNaW4uICAgOiAgNjIuNiAgXG4gMXN0IFF1LjogNzE0LjIgICAxc3QgUXUuOiAgIDEuMCAgIDFzdCBRdS46ICAgMSAgIDFzdCBRdS46MCAgIDFzdCBRdS46IDY1Mi4wICBcbiBNZWRpYW4gOjEwNzUuNSAgIE1lZGlhbiA6IDUwOC41ICAgTWVkaWFuIDogNDYxICAgTWVkaWFuIDowICAgTWVkaWFuIDoxMDMyLjUgIFxuIE1lYW4gICA6MTIyOS42ICAgTWVhbiAgIDogNTk5LjIgICBNZWFuICAgOiA3MDYgICBNZWFuICAgOjAgICBNZWFuICAgOjEyMTIuMCAgXG4gM3JkIFF1LjoxNTg4LjIgICAzcmQgUXUuOiA4NzMuNSAgIDNyZCBRdS46MTExOSAgIDNyZCBRdS46MCAgIDNyZCBRdS46MTY2MS4wICBcbiBNYXguICAgOjQwODguMCAgIE1heC4gICA6MjcwMC4wICAgTWF4LiAgIDoyODA1ICAgTWF4LiAgIDowICAgTWF4LiAgIDozNDcwLjAgIFxuIE5BJ3MgICA6NSAgICAgICAgTkEncyAgIDo1ICAgICAgICBOQSdzICAgOjUgICAgICBOQSdzICAgOjUgICBOQSdzICAgOjUgICAgICAgXG4ifQ== -->
-<pre><code>     .id              MR_Cutoff         trt                name              chrom          
- Length:57          Min.   :10.00   Length:57          Length:57          Length:57         
- Class :character   1st Qu.:30.00   Class :character   Class :character   Class :character  
- Mode  :character   Median :50.00   Mode  :character   Mode  :character   Mode  :character  
-                    Mean   :37.72                                                           
-                    3rd Qu.:50.00                                                           
-                    Max.   :50.00                                                           
-                                                                                            
-     start               end             subject              AGI             At_symbol        
- Min.   :  224092   Min.   :  228427   Length:57          Length:57          Length:57         
- 1st Qu.: 6352615   1st Qu.: 6355969   Class :character   Class :character   Class :character  
- Median :10705847   Median :10711901   Mode  :character   Mode  :character   Mode  :character  
- Mean   :10745099   Mean   :10747672                                                           
- 3rd Qu.:12861652   3rd Qu.:12867286                                                           
- Max.   :36179122   Max.   :36180217                                                           
-                                                                                               
- At_description        perc_ID        aln_length        mismatch        gap_open          qstart       
- Length:57          Min.   :69.72   Min.   :  93.0   Min.   :  9.0   Min.   : 0.000   Min.   :   1.00  
- Class :character   1st Qu.:84.25   1st Qu.: 551.2   1st Qu.: 60.5   1st Qu.: 1.000   1st Qu.:  12.25  
- Mode  :character   Median :86.70   Median : 892.0   Median :112.0   Median : 2.000   Median : 129.50  
-                    Mean   :85.86   Mean   :1027.2   Mean   :127.4   Mean   : 2.981   Mean   : 211.92  
-                    3rd Qu.:87.81   3rd Qu.:1445.5   3rd Qu.:163.0   3rd Qu.: 4.000   3rd Qu.: 226.50  
-                    Max.   :92.84   Max.   :2809.0   Max.   :422.0   Max.   :17.000   Max.   :2378.00  
-                    NA's   :5       NA's   :5        NA's   :5       NA's   :5        NA's   :5        
-      qend            sstart            send           eval       score       
- Min.   :  93.0   Min.   :   1.0   Min.   :   1   Min.   :0   Min.   :  62.6  
- 1st Qu.: 714.2   1st Qu.:   1.0   1st Qu.:   1   1st Qu.:0   1st Qu.: 652.0  
- Median :1075.5   Median : 508.5   Median : 461   Median :0   Median :1032.5  
- Mean   :1229.6   Mean   : 599.2   Mean   : 706   Mean   :0   Mean   :1212.0  
- 3rd Qu.:1588.2   3rd Qu.: 873.5   3rd Qu.:1119   3rd Qu.:0   3rd Qu.:1661.0  
- Max.   :4088.0   Max.   :2700.0   Max.   :2805   Max.   :0   Max.   :3470.0  
- NA's   :5        NA's   :5        NA's   :5      NA's   :5   NA's   :5       </code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAuaWQgICAgICAgICAgICAgIE1SX0N1dG9mZiAgICAgICAgIHRydCAgICAgICAgICAgICAgICBuYW1lICAgICAgICAgIFxuIExlbmd0aDo1NyAgICAgICAgICBNaW4uICAgOjEwLjAwICAgTGVuZ3RoOjU3ICAgICAgICAgIExlbmd0aDo1NyAgICAgICAgIFxuIENsYXNzIDpjaGFyYWN0ZXIgICAxc3QgUXUuOjMwLjAwICAgQ2xhc3MgOmNoYXJhY3RlciAgIENsYXNzIDpjaGFyYWN0ZXIgIFxuIE1vZGUgIDpjaGFyYWN0ZXIgICBNZWRpYW4gOjUwLjAwICAgTW9kZSAgOmNoYXJhY3RlciAgIE1vZGUgIDpjaGFyYWN0ZXIgIFxuICAgICAgICAgICAgICAgICAgICBNZWFuICAgOjM3LjcyICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAzcmQgUXUuOjUwLjAwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICBNYXguICAgOjUwLjAwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgIGNocm9tICAgICAgICAgICAgICAgc3RhcnQgICAgICAgICAgICAgICBlbmQgICAgICAgICAgICAgc3ViamVjdCAgICAgICAgIFxuIExlbmd0aDo1NyAgICAgICAgICBNaW4uICAgOiAgMjI0MDkyICAgTWluLiAgIDogIDIyODQyNyAgIExlbmd0aDo1NyAgICAgICAgIFxuIENsYXNzIDpjaGFyYWN0ZXIgICAxc3QgUXUuOiA2MzUyNjE1ICAgMXN0IFF1LjogNjM1NTk2OSAgIENsYXNzIDpjaGFyYWN0ZXIgIFxuIE1vZGUgIDpjaGFyYWN0ZXIgICBNZWRpYW4gOjEwNzA1ODQ3ICAgTWVkaWFuIDoxMDcxMTkwMSAgIE1vZGUgIDpjaGFyYWN0ZXIgIFxuICAgICAgICAgICAgICAgICAgICBNZWFuICAgOjEwNzQ1MDk5ICAgTWVhbiAgIDoxMDc0NzY3MiAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAzcmQgUXUuOjEyODYxNjUyICAgM3JkIFF1LjoxMjg2NzI4NiAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICBNYXguICAgOjM2MTc5MTIyICAgTWF4LiAgIDozNjE4MDIxNyAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICBBR0kgICAgICAgICAgICAgQXRfc3ltYm9sICAgICAgICAgQXRfZGVzY3JpcHRpb24gICAgICAgIHBlcmNfSUQgICAgIFxuIExlbmd0aDo1NyAgICAgICAgICBMZW5ndGg6NTcgICAgICAgICAgTGVuZ3RoOjU3ICAgICAgICAgIE1pbi4gICA6NjkuNzIgIFxuIENsYXNzIDpjaGFyYWN0ZXIgICBDbGFzcyA6Y2hhcmFjdGVyICAgQ2xhc3MgOmNoYXJhY3RlciAgIDFzdCBRdS46ODQuMjUgIFxuIE1vZGUgIDpjaGFyYWN0ZXIgICBNb2RlICA6Y2hhcmFjdGVyICAgTW9kZSAgOmNoYXJhY3RlciAgIE1lZGlhbiA6ODYuNzAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIE1lYW4gICA6ODUuODYgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDNyZCBRdS46ODcuODEgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIE1heC4gICA6OTIuODQgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIE5BJ3MgICA6NSAgICAgIFxuICAgYWxuX2xlbmd0aCAgICAgICAgbWlzbWF0Y2ggICAgICAgIGdhcF9vcGVuICAgICAgICAgIHFzdGFydCAgICAgICBcbiBNaW4uICAgOiAgOTMuMCAgIE1pbi4gICA6ICA5LjAgICBNaW4uICAgOiAwLjAwMCAgIE1pbi4gICA6ICAgMS4wMCAgXG4gMXN0IFF1LjogNTUxLjIgICAxc3QgUXUuOiA2MC41ICAgMXN0IFF1LjogMS4wMDAgICAxc3QgUXUuOiAgMTIuMjUgIFxuIE1lZGlhbiA6IDg5Mi4wICAgTWVkaWFuIDoxMTIuMCAgIE1lZGlhbiA6IDIuMDAwICAgTWVkaWFuIDogMTI5LjUwICBcbiBNZWFuICAgOjEwMjcuMiAgIE1lYW4gICA6MTI3LjQgICBNZWFuICAgOiAyLjk4MSAgIE1lYW4gICA6IDIxMS45MiAgXG4gM3JkIFF1LjoxNDQ1LjUgICAzcmQgUXUuOjE2My4wICAgM3JkIFF1LjogNC4wMDAgICAzcmQgUXUuOiAyMjYuNTAgIFxuIE1heC4gICA6MjgwOS4wICAgTWF4LiAgIDo0MjIuMCAgIE1heC4gICA6MTcuMDAwICAgTWF4LiAgIDoyMzc4LjAwICBcbiBOQSdzICAgOjUgICAgICAgIE5BJ3MgICA6NSAgICAgICBOQSdzICAgOjUgICAgICAgIE5BJ3MgICA6NSAgICAgICAgXG4gICAgICBxZW5kICAgICAgICAgICAgc3N0YXJ0ICAgICAgICAgICAgc2VuZCAgICAgICAgICAgZXZhbCAgXG4gTWluLiAgIDogIDkzLjAgICBNaW4uICAgOiAgIDEuMCAgIE1pbi4gICA6ICAgMSAgIE1pbi4gICA6MCAgXG4gMXN0IFF1LjogNzE0LjIgICAxc3QgUXUuOiAgIDEuMCAgIDFzdCBRdS46ICAgMSAgIDFzdCBRdS46MCAgXG4gTWVkaWFuIDoxMDc1LjUgICBNZWRpYW4gOiA1MDguNSAgIE1lZGlhbiA6IDQ2MSAgIE1lZGlhbiA6MCAgXG4gTWVhbiAgIDoxMjI5LjYgICBNZWFuICAgOiA1OTkuMiAgIE1lYW4gICA6IDcwNiAgIE1lYW4gICA6MCAgXG4gM3JkIFF1LjoxNTg4LjIgICAzcmQgUXUuOiA4NzMuNSAgIDNyZCBRdS46MTExOSAgIDNyZCBRdS46MCAgXG4gTWF4LiAgIDo0MDg4LjAgICBNYXguICAgOjI3MDAuMCAgIE1heC4gICA6MjgwNSAgIE1heC4gICA6MCAgXG4gTkEncyAgIDo1ICAgICAgICBOQSdzICAgOjUgICAgICAgIE5BJ3MgICA6NSAgICAgIE5BJ3MgICA6NSAgXG4gICAgIHNjb3JlICAgICAgIFxuIE1pbi4gICA6ICA2Mi42ICBcbiAxc3QgUXUuOiA2NTIuMCAgXG4gTWVkaWFuIDoxMDMyLjUgIFxuIE1lYW4gICA6MTIxMi4wICBcbiAzcmQgUXUuOjE2NjEuMCAgXG4gTWF4LiAgIDozNDcwLjAgIFxuIE5BJ3MgICA6NSAgICAgICBcbiJ9 -->
+<pre><code>     .id              MR_Cutoff         trt                name          
+ Length:57          Min.   :10.00   Length:57          Length:57         
+ Class :character   1st Qu.:30.00   Class :character   Class :character  
+ Mode  :character   Median :50.00   Mode  :character   Mode  :character  
+                    Mean   :37.72                                        
+                    3rd Qu.:50.00                                        
+                    Max.   :50.00                                        
+                                                                         
+    chrom               start               end             subject         
+ Length:57          Min.   :  224092   Min.   :  228427   Length:57         
+ Class :character   1st Qu.: 6352615   1st Qu.: 6355969   Class :character  
+ Mode  :character   Median :10705847   Median :10711901   Mode  :character  
+                    Mean   :10745099   Mean   :10747672                     
+                    3rd Qu.:12861652   3rd Qu.:12867286                     
+                    Max.   :36179122   Max.   :36180217                     
+                                                                            
+     AGI             At_symbol         At_description        perc_ID     
+ Length:57          Length:57          Length:57          Min.   :69.72  
+ Class :character   Class :character   Class :character   1st Qu.:84.25  
+ Mode  :character   Mode  :character   Mode  :character   Median :86.70  
+                                                          Mean   :85.86  
+                                                          3rd Qu.:87.81  
+                                                          Max.   :92.84  
+                                                          NA's   :5      
+   aln_length        mismatch        gap_open          qstart       
+ Min.   :  93.0   Min.   :  9.0   Min.   : 0.000   Min.   :   1.00  
+ 1st Qu.: 551.2   1st Qu.: 60.5   1st Qu.: 1.000   1st Qu.:  12.25  
+ Median : 892.0   Median :112.0   Median : 2.000   Median : 129.50  
+ Mean   :1027.2   Mean   :127.4   Mean   : 2.981   Mean   : 211.92  
+ 3rd Qu.:1445.5   3rd Qu.:163.0   3rd Qu.: 4.000   3rd Qu.: 226.50  
+ Max.   :2809.0   Max.   :422.0   Max.   :17.000   Max.   :2378.00  
+ NA's   :5        NA's   :5       NA's   :5        NA's   :5        
+      qend            sstart            send           eval  
+ Min.   :  93.0   Min.   :   1.0   Min.   :   1   Min.   :0  
+ 1st Qu.: 714.2   1st Qu.:   1.0   1st Qu.:   1   1st Qu.:0  
+ Median :1075.5   Median : 508.5   Median : 461   Median :0  
+ Mean   :1229.6   Mean   : 599.2   Mean   : 706   Mean   :0  
+ 3rd Qu.:1588.2   3rd Qu.: 873.5   3rd Qu.:1119   3rd Qu.:0  
+ Max.   :4088.0   Max.   :2700.0   Max.   :2805   Max.   :0  
+ NA's   :5        NA's   :5        NA's   :5      NA's   :5  
+     score       
+ Min.   :  62.6  
+ 1st Qu.: 652.0  
+ Median :1032.5  
+ Mean   :1212.0  
+ 3rd Qu.:1661.0  
+ Max.   :3470.0  
+ NA's   :5       </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuTVJfVU5fZ2VuZXNcbmBgYCJ9 -->
 <pre class="r"><code>MR_UN_genes</code></pre>
@@ -514,122 +537,48 @@ p.vals &lt;- tibble(mr.cutoff=map_int(fisher.results,function(x) x[[&quot;cutoff
 
 p.vals</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6NH0sInJkZiI6Ikg0c0lBQUFBQUFBQUF3dHlpVERpaXVCaVlHQmdZbUJtWVdGZ1lnWXlXWmlBQkNNREN3TW5pSzVnWUdBV0JpdGdZT0FGeVFJeFNJTUlFTXNCc1JFUTg0SEU3ZC8vQndQYmpOQWpyQmM1OTlpWlpraHU2NzNJYkgwODMvdlp3cnV6MEF4bVRjNUpMQzRHTWdTUUJMbFNFa3NTOWRLS0VuTlQwWlhuQWNWZ3lwbWdncHk1UlhySnBTWDVhV2xRQVo2MHpPS00xQ0s5QXIyeXhCdzBFemlMOHN2MVlLYUFmTUxVQUNTQUR2NERwUDZoS1diUEx5akp6TThES21VQ2VaNFZ6WjJNUldnQ0FxVjVJS05UZEpNelN2T3lkUTFOb0tIRXlBQUJ2RkEyQ3hLYkNXSW44MytvV2F4UXM5aFM4OUl6ODFKaEhzOUpURXJOZ1hMNGdINEFlMEd2b0NnenJ3UVdha0RSWXIyUy9KSkVtRHF1NVB3Y21Balljd3ovQUpOYjVSenJBUUFBIn0= -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6NH0sInJkZiI6Ikg0c0lBQUFBQUFBQUF3dHlpVERpaXVCaVlHQmdZbUJtWVdGZ1lnWXlXWmlBQkNNREN3TW5pSzVnWUdBV0JpdGdZT0FGeVFJeFNJTUlFTXNCc1JFUTg0SEU3ZC8vQndQYmpOQWpyQmM1OTlpWlpraHU2NzNJYkgwODMvdlp3cnV6MEF4bVRjNUpMQzRHTWdTUUJMbFNFa3NTOWRLS0VuTlQwWlhuQWNWZ3lwbWdncHk1UlhySnBTWDVhV2xRQVo2MHpPS00xQ0s5QXIyeXhCdzBFemlMOHN2MVlLYUFmTUxVQUNTQUR2NERwUDZoS1diUEx5akp6TThES21VQ2VaNFZ6WjJNUldnQ0FxVjVJS05UZEpNelN2T3lkUTNOb2FIRXlBQUJ2RkEyQ3hLYkNXSW44MytvV2F4UXM5aFM4OUl6ODFKaEhzOUpURXJOZ1hMNGdINEFlMEd2b0NnenJ3UVdha0RSWXIyUy9KSkVtRHF1NVB3Y21Balljd3ovQVBVOUI3bnJBUUFBIn0= -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["mr.cutoff"],"name":[1],"type":["int"],"align":["right"]},{"label":["fisher.p.val"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"10","2":"1.000000e+00"},{"1":"20","2":"6.916429e-13"},{"1":"30","2":"4.984122e-09"},{"1":"50","2":"9.925003e-21"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[4]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-frame-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5maXNoZXIucmVzdWx0c1xuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5sYXBwbHkoZmlzaGVyLnJlc3VsdHMsZnVuY3Rpb24oeCkgeFtbXCJkYXRhXCJdXSlcbmBgYCJ9 -->
 <pre class="r"><code>
-fisher.results</code></pre>
+lapply(fisher.results,function(x) x[[&quot;data&quot;]])</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiW1sxXV1cbltbMV1dJGN1dG9mZlxuWzFdIDEwXG5cbltbMV1dJGRhdGFcbiAgICAgUVRMXG5NUiAgICAgICBubyB5ZXNcbiAgbm8gIDQyNTE3IDk0NVxuICB5ZXMgICAgIDEgICAwXG5cbltbMV1dJGZpc2hlclxuXG5cdEZpc2hlcidzIEV4YWN0IFRlc3QgZm9yIENvdW50IERhdGFcblxuZGF0YTogIG1cbnAtdmFsdWUgPSAxXG5hbHRlcm5hdGl2ZSBoeXBvdGhlc2lzOiB0cnVlIG9kZHMgcmF0aW8gaXMgbm90IGVxdWFsIHRvIDFcbjk1IHBlcmNlbnQgY29uZmlkZW5jZSBpbnRlcnZhbDpcbiAgICAwLjAwMCAxNzA3LjkxMVxuc2FtcGxlIGVzdGltYXRlczpcbm9kZHMgcmF0aW8gXG4gICAgICAgICAwIFxuXG5cblxuW1syXV1cbltbMl1dJGN1dG9mZlxuWzFdIDIwXG5cbltbMl1dJGRhdGFcbiAgICAgUVRMXG5NUiAgICAgICBubyB5ZXNcbiAgbm8gIDQyNTE0IDkzNlxuICB5ZXMgICAgIDQgICA5XG5cbltbMl1dJGZpc2hlclxuXG5cdEZpc2hlcidzIEV4YWN0IFRlc3QgZm9yIENvdW50IERhdGFcblxuZGF0YTogIG1cbnAtdmFsdWUgPSA2LjkxNmUtMTNcbmFsdGVybmF0aXZlIGh5cG90aGVzaXM6IHRydWUgb2RkcyByYXRpbyBpcyBub3QgZXF1YWwgdG8gMVxuOTUgcGVyY2VudCBjb25maWRlbmNlIGludGVydmFsOlxuICAyOC40MzIxNSA0NTIuNzEwNzBcbnNhbXBsZSBlc3RpbWF0ZXM6XG5vZGRzIHJhdGlvIFxuICAxMDEuOTA2NiBcblxuXG5cbltbM11dXG5bWzNdXSRjdXRvZmZcblsxXSAzMFxuXG5bWzNdXSRkYXRhXG4gICAgIFFUTFxuTVIgICAgICAgbm8geWVzXG4gIG5vICA0MjQ5OSA5MzZcbiAgeWVzICAgIDE5ICAgOVxuXG5bWzNdXSRmaXNoZXJcblxuXHRGaXNoZXIncyBFeGFjdCBUZXN0IGZvciBDb3VudCBEYXRhXG5cbmRhdGE6ICBtXG5wLXZhbHVlID0gNC45ODRlLTA5XG5hbHRlcm5hdGl2ZSBoeXBvdGhlc2lzOiB0cnVlIG9kZHMgcmF0aW8gaXMgbm90IGVxdWFsIHRvIDFcbjk1IHBlcmNlbnQgY29uZmlkZW5jZSBpbnRlcnZhbDpcbiAgOC41NDM5ODIgNTAuMDczODIwXG5zYW1wbGUgZXN0aW1hdGVzOlxub2RkcyByYXRpbyBcbiAgMjEuNTAwNjQgXG5cblxuXG5bWzRdXVxuW1s0XV0kY3V0b2ZmXG5bMV0gNTBcblxuW1s0XV0kZGF0YVxuICAgICBRVExcbk1SICAgICAgIG5vIHllc1xuICBubyAgNDI0ODIgOTI0XG4gIHllcyAgICAzNiAgMjFcblxuW1s0XV0kZmlzaGVyXG5cblx0RmlzaGVyJ3MgRXhhY3QgVGVzdCBmb3IgQ291bnQgRGF0YVxuXG5kYXRhOiAgbVxucC12YWx1ZSA8IDIuMmUtMTZcbmFsdGVybmF0aXZlIGh5cG90aGVzaXM6IHRydWUgb2RkcyByYXRpbyBpcyBub3QgZXF1YWwgdG8gMVxuOTUgcGVyY2VudCBjb25maWRlbmNlIGludGVydmFsOlxuIDE0LjgxMjE3IDQ3LjM4ODg2XG5zYW1wbGUgZXN0aW1hdGVzOlxub2RkcyByYXRpbyBcbiAgMjYuODA4MDggXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiW1sxXV1cbiAgICAgUVRMXG5NUiAgICAgICBubyB5ZXNcbiAgbm8gIDQyNTE3IDk0NVxuICB5ZXMgICAgIDEgICAwXG5cbltbMl1dXG4gICAgIFFUTFxuTVIgICAgICAgbm8geWVzXG4gIG5vICA0MjUxNCA5MzZcbiAgeWVzICAgICA0ICAgOVxuXG5bWzNdXVxuICAgICBRVExcbk1SICAgICAgIG5vIHllc1xuICBubyAgNDI0OTkgOTM2XG4gIHllcyAgICAxOSAgIDlcblxuW1s0XV1cbiAgICAgUVRMXG5NUiAgICAgICBubyB5ZXNcbiAgbm8gIDQyNDgyIDkyNFxuICB5ZXMgICAgMzYgIDIxXG4ifQ== -->
 <pre><code>[[1]]
-[[1]]$cutoff
-[1] 10
-
-[[1]]$data
      QTL
 MR       no yes
   no  42517 945
   yes     1   0
 
-[[1]]$fisher
-
-    Fisher's Exact Test for Count Data
-
-data:  m
-p-value = 1
-alternative hypothesis: true odds ratio is not equal to 1
-95 percent confidence interval:
-    0.000 1707.911
-sample estimates:
-odds ratio 
-         0 
-
-
-
 [[2]]
-[[2]]$cutoff
-[1] 20
-
-[[2]]$data
      QTL
 MR       no yes
   no  42514 936
   yes     4   9
 
-[[2]]$fisher
-
-    Fisher's Exact Test for Count Data
-
-data:  m
-p-value = 6.916e-13
-alternative hypothesis: true odds ratio is not equal to 1
-95 percent confidence interval:
-  28.43215 452.71070
-sample estimates:
-odds ratio 
-  101.9066 
-
-
-
 [[3]]
-[[3]]$cutoff
-[1] 30
-
-[[3]]$data
      QTL
 MR       no yes
   no  42499 936
   yes    19   9
 
-[[3]]$fisher
-
-    Fisher's Exact Test for Count Data
-
-data:  m
-p-value = 4.984e-09
-alternative hypothesis: true odds ratio is not equal to 1
-95 percent confidence interval:
-  8.543982 50.073820
-sample estimates:
-odds ratio 
-  21.50064 
-
-
-
 [[4]]
-[[4]]$cutoff
-[1] 50
-
-[[4]]$data
      QTL
 MR       no yes
   no  42482 924
-  yes    36  21
-
-[[4]]$fisher
-
-    Fisher's Exact Test for Count Data
-
-data:  m
-p-value &lt; 2.2e-16
-alternative hypothesis: true odds ratio is not equal to 1
-95 percent confidence interval:
- 14.81217 47.38886
-sample estimates:
-odds ratio 
-  26.80808 </code></pre>
+  yes    36  21</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUVRMIENhbmRpZGF0ZSBBbm5vdGF0aW9uIGZvciBNUiBuZXR3b3JrIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgojIyBCYWNrZ3JvdW5kCgpSb2IgQmFrZXIgZXQgYWwgZml0IGdyb3d0aCBwYXJhbWV0ZXJzIHRvIEIuIHJhcGEgZ3Jvd3RoIGRhdGEgYW5kIHRoZW4gdXNlZCB0aG9zZSB0byBkbyBmdW5jdGlvbi12YWx1ZS10cmFpdCBRVEwgbWFwcGluZyBhbmQgdG8gZmluZCBnZW5lcyB1bmRlciB0aG9zZSBwZWFrcwoKSSB1c2VkIHRoYXQgc2FtZSBmdW5jdGlvbi12YWx1ZS10cmFpdCBkYXRhIHRvIHF1ZXJ5IGEgbXV0dWFsIHJhbmsgKE1SKSBnZW5lIGV4cHJlc3Npb24gbmV0d29yayB0aGF0IEkgaGFkIGJ1aWx0LiAgVGhpcyByZXR1cm5lZCBnZW5lcyB0aGF0IHdlcmUgaW4gYSBuZXR3b3JrcyBhc3NvY2lhdGVkIHdpdGggdGhlIGdyb3d0aCBwYXJhbXRlcnMuICBUaGlzIHdhcyBkb25lIHNlcGFyYXRlbHkgZm9yIHRoZSBDUiBhbmQgVU4gZW52aXJvbm1lbnRzLiAgKEN1cnJlbnRseSB3ZSBhcmUgb25seSBmb2N1c2VkIG9uIHRoZSBVTiBlbnZpcm9ubWVudCkKCkhlcmUgSSB3YW50IHRvIGFubm90YXRlIGNhbmRpZGF0ZSBRVEwgZ2VuZXMgd2l0aDoKCjEuIEFyZSBhbnkgbmV0d29yayBnZW5lcyB1bmRlciB0aGUgUVRMIHBlYWtzPyAgSSBoYXZlIHVzZWQgTXV0dWFsIFJhbmsgdG8gZGVmaW5lIGdlbmUgbmV0d29ya3MgYXJvdW5kIHRoZSBwbGFudCBncm93dGggdHJhaXRzLiAgSSBhbSBjdXJpb3VzIGFzIHRvIHdoZXRoZXIgb3Igbm90IGFueSBvZiB0aGUgZ2VuZXMgaW4gdGhlc2UgbmV0d29ya3MgdW5kZXJsaWUgUVRMcyBmb3IgdGhlc2UgdHJhaXRzLgoKMi4gVGhlIGRlZ3JlZSBvZiBkaWZmZXJlbnRpYWwgZXhwcmVzc2lvbiBhbW9uZyB0aGUgbGluZXMgZm9yIHRoZSBncm93dGggUVRMIGdlbmVzLgoKYGBge3J9CmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KG1hZ3JpdHRyKQpsaWJyYXJ5KGxpbW1hKQpgYGAKCiMjIEFubm90YXRpb24gd2l0aCBNUiBuZXR3b3JrIG1lbWJlcnNoaXAKCmBgYHtyfQpRVExnZW5lcyA8LSByZWFkX2NzdigiLi4vaW5wdXQvQmF5ZXNpYW4yMDEySGVpZ2h0X2dlbmVzdW5kZXJRVExTLmNzdiIpWywtMV0Kc3VtbWFyeShRVExnZW5lcykKUVRMZ2VuZXMKYGBgCgpgYGB7cn0KTVJfVU5fZ2VuZXMgPC0gcmVhZF9jc3YoIi4uL291dHB1dC9NUl9VTl9ncmFwaHNfbm9kZV9hbm5vdGF0aW9uXzIwMTIuY3N2IikKc3VtbWFyeShNUl9VTl9nZW5lcykKTVJfVU5fZ2VuZXMKYGBgCgpgYGB7cn0KUVRMZ2VuZXMgPC0gTVJfVU5fZ2VuZXMgJT4lCiAgc2VsZWN0KG5hbWUsIFVOX25ldHdvcms9LmlkLCBNUl9DdXRvZmYpICU+JQogIHJpZ2h0X2pvaW4oUVRMZ2VuZXMsYnk9Im5hbWUiKQpgYGAKCmBgYHtyfQpRVExnZW5lcyAlPiUgZmlsdGVyKCFpcy5uYShVTl9uZXR3b3JrKSApICU+JSBhcnJhbmdlKC5pZCkKYGBgCgoKIyMgQW5ub3RhdGlvbiB3aXRoIERFIGluZm9ybWF0aW9uCgpgYGB7cn0KbG9hZCgiLi4vb3V0cHV0L1Zvb21fVU4uUmRhdGEiKQpgYGAKCmBgYHtyfQpSSUwuY29lZnMuVU4gPC0gZ3JlcCgiUklMIixjb2xuYW1lcyhjb2VmKHZvb20uZml0LlVOKSkpClJJTC5wdmFscy5VTiA8LSB0b3BUYWJsZSh2b29tLmZpdC5VTixjb2VmID0gUklMLmNvZWZzLlVOLG51bWJlciA9IEluZikKYGBgCgpgYGB7cn0KUklMLnB2YWxzLlVOJHJhbmtfRiA8LSByYW5rKFJJTC5wdmFscy5VTiRGKQoKUklMLnB2YWxzLlVOICU8PiUgc2VsZWN0KC1zdGFydHNfd2l0aCgicGRhdGEiKSkKY29sbmFtZXMoUklMLnB2YWxzLlVOKSAlPD4lIHBhc3RlKCIuVU4iLHNlcD0iIikKYGBgCgpgYGB7cn0KUVRMZ2VuZXMgPC0gbWVyZ2UoUVRMZ2VuZXMsIFJJTC5wdmFscy5VTiwgYnkueD0ibmFtZSIsIGJ5Lnk9MCxhbGwueCA9IFRSVUUsIGFsbC55ID0gRkFMU0UpCmBgYAoKYGBge3J9CndyaXRlX2NzdihRVExnZW5lcywiLi4vb3V0cHV0L0JheWVzaWFuMjAxMkhlaWdodF9nZW5lc3VuZGVyUVRMU19ERV9NUl9VTi5jc3YiKQpgYGAKCkFsc28gc3Vic2V0IHRvIG9ubHkgaW5jbHVkZSBnZW5lcyB0aGF0IGFyZSBpbiBhbiBNUiBuZXR3b3JrCgpgYGB7cn0KUVRMZ2VuZXMgICU+JSBmaWx0ZXIoIWlzLm5hKFVOX25ldHdvcmspICkgJT4lCiAgd3JpdGVfY3N2KCIuLi9vdXRwdXQvQmF5ZXNpYW4yMDEySGVpZ2h0X2dlbmVzdW5kZXJRVExTX25ldHdvcmtnZW5lc29ubHlfREVfTVJfVU4uY3N2IikKYGBgCgojIyBUZXN0IGZvciBlbnJpY2htZW50CgpEZXRlcm1pbmUgbnVtYmVyIG9mIGdlbmVzIHdpdGhpbiBRVEwgYm91bmRhcmllcywgbnVtYmVyIG9mIE1SIGdlbmVzLCBhbmQgb3ZlcmxhcCwgdGhlbiBGaXNoZXIncyBleGFjdCB0ZXN0LgoKVG90YWwgZ2VuZXMKYGBge3J9CmFubm90YXRpb24gPC0gcmVhZF9jc3YoIi4uL2lucHV0L0JyYXBhX1YxLjVfYW5ub3RhdGVkLmNzdiIpCmFsbC5nZW5lcyA8LSBucm93KGFubm90YXRpb24pCmFsbC5nZW5lcwpgYGAKClFUTCBnZW5lcwpgYGB7cn0KcXRsLmdlbmVzIDwtIG5yb3coUVRMZ2VuZXMpCnF0bC5nZW5lcwpgYGAKCm5vdyBnbyB0aHJvdWdoIGVhY2ggTVJfY3V0b2ZmCgpgYGB7cn0KZmlzaGVyLnJlc3VsdHMgPC0gTVJfVU5fZ2VuZXMkTVJfQ3V0b2ZmICU+JQogIHVuaXF1ZSgpICU+JQogIG1hcChmdW5jdGlvbihjdXRvZmYpIHsKICAgIG1yLmdlbmVzIDwtIHN1bShNUl9VTl9nZW5lcyRNUl9DdXRvZmYgPD0gY3V0b2ZmKQogICAgcXRsLm1yLmdlbmVzIDwtIHN1bShRVExnZW5lcyRNUl9DdXRvZmYgPD0gY3V0b2ZmLG5hLnJtID0gVFJVRSkKICAgIG0gPC0gbWF0cml4KGMoYWxsLmdlbmVzLXF0bC5nZW5lcy1tci5nZW5lcytxdGwubXIuZ2VuZXMsIHF0bC5nZW5lcy1xdGwubXIuZ2VuZXMsCiAgICAgICAgICAgICBtci5nZW5lcy1xdGwubXIuZ2VuZXMscXRsLm1yLmdlbmVzKSwKICAgICAgICAgICBieXJvdz1UUlVFLAogICAgICAgICAgIG5jb2w9MiwKICAgICAgICAgICBkaW1uYW1lcz1saXN0KE1SPWMoIm5vIiwieWVzIiksUVRMPWMoIm5vIiwieWVzIikpCiAgICApCiAgICByZXR1cm4obGlzdChjdXRvZmY9Y3V0b2ZmLGRhdGE9bSxmaXNoZXI9ZmlzaGVyLnRlc3QobSkpKQogIH0KICApCgpwLnZhbHMgPC0gdGliYmxlKG1yLmN1dG9mZj1tYXBfaW50KGZpc2hlci5yZXN1bHRzLGZ1bmN0aW9uKHgpIHhbWyJjdXRvZmYiXV0pLAogICAgICAgICAgICAgICAgZmlzaGVyLnAudmFsPW1hcF9kYmwoZmlzaGVyLnJlc3VsdHMsZnVuY3Rpb24oeCkgeFtbImZpc2hlciJdXSRwLnZhbHVlKQopCgpwLnZhbHMKCmZpc2hlci5yZXN1bHRzCmBgYAogICAgCiAgICAKICAgIAogICAgCiAgICA=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUVRMIENhbmRpZGF0ZSBBbm5vdGF0aW9uIGZvciBNUiBuZXR3b3JrIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgojIyBCYWNrZ3JvdW5kCgpSb2IgQmFrZXIgZXQgYWwgZml0IGdyb3d0aCBwYXJhbWV0ZXJzIHRvIEIuIHJhcGEgZ3Jvd3RoIGRhdGEgYW5kIHRoZW4gdXNlZCB0aG9zZSB0byBkbyBmdW5jdGlvbi12YWx1ZS10cmFpdCBRVEwgbWFwcGluZyBhbmQgdG8gZmluZCBnZW5lcyB1bmRlciB0aG9zZSBwZWFrcwoKSSB1c2VkIHRoYXQgc2FtZSBmdW5jdGlvbi12YWx1ZS10cmFpdCBkYXRhIHRvIHF1ZXJ5IGEgbXV0dWFsIHJhbmsgKE1SKSBnZW5lIGV4cHJlc3Npb24gbmV0d29yayB0aGF0IEkgaGFkIGJ1aWx0LiAgVGhpcyByZXR1cm5lZCBnZW5lcyB0aGF0IHdlcmUgaW4gYSBuZXR3b3JrcyBhc3NvY2lhdGVkIHdpdGggdGhlIGdyb3d0aCBwYXJhbXRlcnMuICBUaGlzIHdhcyBkb25lIHNlcGFyYXRlbHkgZm9yIHRoZSBDUiBhbmQgVU4gZW52aXJvbm1lbnRzLiAgKEN1cnJlbnRseSB3ZSBhcmUgb25seSBmb2N1c2VkIG9uIHRoZSBVTiBlbnZpcm9ubWVudCkKCkhlcmUgSSB3YW50IHRvIGFubm90YXRlIGNhbmRpZGF0ZSBRVEwgZ2VuZXMgd2l0aDoKCjEuIEFyZSBhbnkgbmV0d29yayBnZW5lcyB1bmRlciB0aGUgUVRMIHBlYWtzPyAgSSBoYXZlIHVzZWQgTXV0dWFsIFJhbmsgdG8gZGVmaW5lIGdlbmUgbmV0d29ya3MgYXJvdW5kIHRoZSBwbGFudCBncm93dGggdHJhaXRzLiAgSSBhbSBjdXJpb3VzIGFzIHRvIHdoZXRoZXIgb3Igbm90IGFueSBvZiB0aGUgZ2VuZXMgaW4gdGhlc2UgbmV0d29ya3MgdW5kZXJsaWUgUVRMcyBmb3IgdGhlc2UgdHJhaXRzLgoKMi4gVGhlIGRlZ3JlZSBvZiBkaWZmZXJlbnRpYWwgZXhwcmVzc2lvbiBhbW9uZyB0aGUgbGluZXMgZm9yIHRoZSBncm93dGggUVRMIGdlbmVzLgoKYGBge3J9CmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KG1hZ3JpdHRyKQpsaWJyYXJ5KGxpbW1hKQpgYGAKCiMjIEFubm90YXRpb24gd2l0aCBNUiBuZXR3b3JrIG1lbWJlcnNoaXAKCmBgYHtyfQpRVExnZW5lcyA8LSByZWFkX2NzdigiLi4vaW5wdXQvQmF5ZXNpYW4yMDEySGVpZ2h0X2dlbmVzdW5kZXJRVExTLmNzdiIpWywtMV0Kc3VtbWFyeShRVExnZW5lcykKUVRMZ2VuZXMKYGBgCgpgYGB7cn0KTVJfVU5fZ2VuZXMgPC0gcmVhZF9jc3YoIi4uL291dHB1dC9NUl9VTl9ncmFwaHNfbm9kZV9hbm5vdGF0aW9uXzIwMTIuY3N2IikKc3VtbWFyeShNUl9VTl9nZW5lcykKTVJfVU5fZ2VuZXMKYGBgCgpgYGB7cn0KUVRMZ2VuZXMgPC0gTVJfVU5fZ2VuZXMgJT4lCiAgc2VsZWN0KG5hbWUsIFVOX25ldHdvcms9LmlkLCBNUl9DdXRvZmYpICU+JQogIHJpZ2h0X2pvaW4oUVRMZ2VuZXMsYnk9Im5hbWUiKQpgYGAKCmBgYHtyfQpRVExnZW5lcyAlPiUgZmlsdGVyKCFpcy5uYShVTl9uZXR3b3JrKSApICU+JSBhcnJhbmdlKC5pZCkKYGBgCgoKIyMgQW5ub3RhdGlvbiB3aXRoIERFIGluZm9ybWF0aW9uCgpgYGB7cn0KbG9hZCgiLi4vb3V0cHV0L1Zvb21fVU4uUmRhdGEiKQpgYGAKCmBgYHtyfQpSSUwuY29lZnMuVU4gPC0gZ3JlcCgiUklMIixjb2xuYW1lcyhjb2VmKHZvb20uZml0LlVOKSkpClJJTC5wdmFscy5VTiA8LSB0b3BUYWJsZSh2b29tLmZpdC5VTixjb2VmID0gUklMLmNvZWZzLlVOLG51bWJlciA9IEluZikKYGBgCgpgYGB7cn0KUklMLnB2YWxzLlVOJHJhbmtfRiA8LSByYW5rKFJJTC5wdmFscy5VTiRGKQoKUklMLnB2YWxzLlVOICU8PiUgc2VsZWN0KC1zdGFydHNfd2l0aCgicGRhdGEiKSkKY29sbmFtZXMoUklMLnB2YWxzLlVOKSAlPD4lIHBhc3RlKCIuVU4iLHNlcD0iIikKYGBgCgpgYGB7cn0KUVRMZ2VuZXMgPC0gbWVyZ2UoUVRMZ2VuZXMsIFJJTC5wdmFscy5VTiwgYnkueD0ibmFtZSIsIGJ5Lnk9MCxhbGwueCA9IFRSVUUsIGFsbC55ID0gRkFMU0UpCmBgYAoKYGBge3J9CndyaXRlX2NzdihRVExnZW5lcywiLi4vb3V0cHV0L0JheWVzaWFuMjAxMkhlaWdodF9nZW5lc3VuZGVyUVRMU19ERV9NUl9VTi5jc3YiKQpgYGAKCkFsc28gc3Vic2V0IHRvIG9ubHkgaW5jbHVkZSBnZW5lcyB0aGF0IGFyZSBpbiBhbiBNUiBuZXR3b3JrCgpgYGB7cn0KUVRMZ2VuZXMgICU+JSBmaWx0ZXIoIWlzLm5hKFVOX25ldHdvcmspICkgJT4lCiAgd3JpdGVfY3N2KCIuLi9vdXRwdXQvQmF5ZXNpYW4yMDEySGVpZ2h0X2dlbmVzdW5kZXJRVExTX25ldHdvcmtnZW5lc29ubHlfREVfTVJfVU4uY3N2IikKYGBgCgojIyBUZXN0IGZvciBlbnJpY2htZW50CgpEZXRlcm1pbmUgbnVtYmVyIG9mIGdlbmVzIHdpdGhpbiBRVEwgYm91bmRhcmllcywgbnVtYmVyIG9mIE1SIGdlbmVzLCBhbmQgb3ZlcmxhcCwgdGhlbiBGaXNoZXIncyBleGFjdCB0ZXN0LgoKVG90YWwgZ2VuZXMKYGBge3J9CmFubm90YXRpb24gPC0gcmVhZF9jc3YoIi4uL2lucHV0L0JyYXBhX1YxLjVfYW5ub3RhdGVkLmNzdiIpCmFsbC5nZW5lcyA8LSBucm93KGFubm90YXRpb24pCmFsbC5nZW5lcwpgYGAKClFUTCBnZW5lcwpgYGB7cn0KcXRsLmdlbmVzIDwtIG5yb3coUVRMZ2VuZXMpCnF0bC5nZW5lcwpgYGAKCm5vdyBnbyB0aHJvdWdoIGVhY2ggTVJfY3V0b2ZmCgpgYGB7cn0KZmlzaGVyLnJlc3VsdHMgPC0gTVJfVU5fZ2VuZXMkTVJfQ3V0b2ZmICU+JQogIHVuaXF1ZSgpICU+JQogIG1hcChmdW5jdGlvbihjdXRvZmYpIHsKICAgIG1yLmdlbmVzIDwtIHN1bShNUl9VTl9nZW5lcyRNUl9DdXRvZmYgPD0gY3V0b2ZmKQogICAgcXRsLm1yLmdlbmVzIDwtIHN1bShRVExnZW5lcyRNUl9DdXRvZmYgPD0gY3V0b2ZmLG5hLnJtID0gVFJVRSkKICAgIG0gPC0gbWF0cml4KGMoYWxsLmdlbmVzLXF0bC5nZW5lcy1tci5nZW5lcytxdGwubXIuZ2VuZXMsIHF0bC5nZW5lcy1xdGwubXIuZ2VuZXMsCiAgICAgICAgICAgICBtci5nZW5lcy1xdGwubXIuZ2VuZXMscXRsLm1yLmdlbmVzKSwKICAgICAgICAgICBieXJvdz1UUlVFLAogICAgICAgICAgIG5jb2w9MiwKICAgICAgICAgICBkaW1uYW1lcz1saXN0KE1SPWMoIm5vIiwieWVzIiksUVRMPWMoIm5vIiwieWVzIikpCiAgICApCiAgICByZXR1cm4obGlzdChjdXRvZmY9Y3V0b2ZmLGRhdGE9bSxmaXNoZXI9ZmlzaGVyLnRlc3QobSkpKQogIH0KICApCgpwLnZhbHMgPC0gdGliYmxlKG1yLmN1dG9mZj1tYXBfaW50KGZpc2hlci5yZXN1bHRzLGZ1bmN0aW9uKHgpIHhbWyJjdXRvZmYiXV0pLAogICAgICAgICAgICAgICAgZmlzaGVyLnAudmFsPW1hcF9kYmwoZmlzaGVyLnJlc3VsdHMsZnVuY3Rpb24oeCkgeFtbImZpc2hlciJdXSRwLnZhbHVlKQopCgpwLnZhbHMKCmxhcHBseShmaXNoZXIucmVzdWx0cyxmdW5jdGlvbih4KSB4W1siZGF0YSJdXSkKYGBgCiAgICAKICAgIAogICAgCiAgICAKICAgIA==</div>
 
 
 
