@@ -1,0 +1,39 @@
+---
+title: "Get MR Gene expression values"
+output: html_notebook
+---
+
+Get expression values for the genes in the MR network
+
+```{r}
+library(tidyverse)
+```
+
+Get MR genes
+```{r}
+MR_UN_2012 <- read_csv("../output/MR_UN_graphs_node_annotation_2012.csv")
+head(MR_UN_2012)
+```
+
+Get gene expression
+```{r}
+load("../output/MR_UN.Rdata")
+```
+
+Setup for merge
+
+```{r}
+expr.data.UN <- expr.data.UN %>% as.data.frame %>% rownames_to_column(var="name")
+expr.data.UN[1:10,1:10]
+```
+
+merge
+```{r}
+MR_UN_2012_expression <- left_join(MR_UN_2012,expr.data.UN)
+MR_UN_2012_expression
+```
+
+```{r}
+write_csv(MR_UN_2012_expression,"../output/MR_UN_2012_gene_expression.csv")
+```
+
