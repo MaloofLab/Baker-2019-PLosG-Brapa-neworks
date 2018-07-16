@@ -1,0 +1,206 @@
+---
+title: "B. rapa Gene Networks"
+author: "Julin N Maloof"
+date: "July 17, 2018"
+output:
+  revealjs::revealjs_presentation:
+    incremental: true
+    theme: sky
+    width: 1600
+    height: 900
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, cache = TRUE, autodep = TRUE)
+```
+
+```{r getdata, include=FALSE}
+library(tidyverse)
+library(knitr)
+library(limma)
+library(snowfall)
+library(igraph)
+
+load("../output/MR_UN.Rdata")
+annotation <- read.csv("../input/Brapa_V1.5_annotated.csv",row.names=1,as.is = TRUE)
+```
+
+```{r mr_subgraphs, echo=FALSE, cache.lazy=FALSE, warning=FALSE, eval=TRUE }
+get.mr.subgraph <- function(mr.cutoff,mr.matrix,annotation=NULL,neighborhood,order=1) {
+  #function to extract graph at a specificed correlation cutoff
+  gene.mr.tmp <- mr.matrix
+  gene.mr.tmp[abs(gene.mr.tmp) > mr.cutoff] <- 0
+  gene.mr.tmp[is.na(gene.mr.tmp)] <- 0 #important! otherwise vertices with NA edges are connected
+  
+  gene.graph <- graph.adjacency(adjmatrix = gene.mr.tmp,
+                                mode="undirected",
+                                weighted="mr",
+                                diag=FALSE)
+  
+  sub.graphs <- graph.neighborhood(gene.graph,order=order,nodes=neighborhood) #for each node of interest get all other nodes within order of 1
+  
+  #get combined list of vertices...
+  
+  sub.vertices <- unique(names(unlist(lapply(sub.graphs, V))))
+  
+  combined.sub.graph <- induced_subgraph(gene.graph,sub.vertices)
+  
+  V(combined.sub.graph)$color <- "lightblue"
+  V(combined.sub.graph)[neighborhood]$color <- "red"
+  if(!is.null(annotation)) V(combined.sub.graph)$gene <- 
+    annotation$At_symbol[match(V(combined.sub.graph)$name,annotation$name)]
+  list(cutoff=mr.cutoff,graph=combined.sub.graph,nodes=V(combined.sub.graph)$name)
+}
+```
+
+```{r, echo=FALSE, eval=TRUE}
+cutoffs <- c(10,20,30,50)
+
+blup.mr.graphs.UN.2012 <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup.mr.UN.2012, annotation= annotation, neighborhood = colnames(blups.UN) %>% str_subset("12"))
+names(blup.mr.graphs.UN.2012) <- sapply(blup.mr.graphs.UN.2012, function(x) paste("blup.mr.graph.UN.2012",x$cutoff,sep="."))
+```
+
+## get edge correlation info
+
+```{r}
+edge.col.sign <- function(graph,edge.colors) {#color edges by correlation sign
+  E(graph) %>% 
+    attr("vnames") %>% 
+    tibble(edge=.) %>% 
+    separate(edge,into=c("node1","node2"),remove = FALSE,sep="\\|") %>%
+    rowwise() %>% 
+    mutate(cor=expr.blup.cor.UN[node1,node2],
+           col=ifelse(cor > 0, edge.colors[1], edge.colors[2])) %>%
+    select(col) %>%
+    unlist()
+}
+```
+
+
+## plots
+
+```{r plot.function}
+plot.graph <- function (blup.graph) {
+    E(blup.graph$graph)$width <- rank(E(blup.graph$graph)$mr)^(1/4)
+    E(blup.graph$graph)$color <- edge.col.sign(blup.graph$graph, edge.colors=c("magenta","green"))
+    plot(blup.graph$graph,
+         layout = layout_with_kk, 
+         vertex.label = ifelse(is.na(V(blup.graph$graph)$gene)|V(blup.graph$graph)$gene=="",
+                               V(blup.graph$graph)$name,
+                               paste(V(blup.graph$graph)$gene,V(blup.graph$graph)$name,sep="\n")),
+         vertex.label.cex=1,
+         main=paste("MR cutoff =",sub("blup.mr.graph.","",blup.graph$cutoff,fixed=T)))
+    rm(blup.graph)
+}
+```
+
+
+## Intro
+
+* Goal: find genes & networks connected to _B. rapa_ growth
+* Rob Baker, Cynthia Weinig, Steve Welch, etc collected growth data on _B. rapa_ RIL set in field setting.
+* Growth functions were fitted for each line.
+* We have gene expression for the same lines.
+* Are there genes whose expression is associated with growth?
+* Can they help explain growth variation between lines?
+
+## Approach
+
+* Use Mutual Rank co-expression networks:
+  * For each growth trait, build a network of genes that have a similar pattern across the RILs
+  * In this case, look for association by mutual rank (MR) (next slide)
+* Alternatively use WGCNA:
+  * Build WGCNA co-expression network independent of growth traits
+  * Then look for correlation between network module Eigen genes and growth traits
+
+## Mutual Rank
+
+1. Build a correlation matrix of gene expression and trait values
+2. For each gene or trait, rank its correlations with the other genes and traits.  The gene with the highest correlation gets rank 1, etc.
+3. For each gene x gene, gene x trait, or trait x trait pair, calculate the geometric average.  This is the mutual rank.
+4. Look at the network of genes (and traits) around each trait.
+5. Determine significance by permutation.
+
+## Starting data
+
+```{r}
+expr.blup.UN <- expr.blup.UN %>% select(-matches("^UN.*11$"))
+
+knitr::kable(expr.blup.UN[1:10,1:10],digits=c(1,4,rep(1,8)))
+```
+
+
+## Build correlation matrix
+
+```{r}
+knitr::kable(cor(expr.blup.UN[,2:10]),digits=2)
+```
+
+## Calculate mutual ranks
+
+```{r}
+knitr::kable(expr.blup.mr.UN.2012[1:10,1:10],digits=0)
+```
+
+
+## What do we get?
+
+## MR < 20
+
+```{r}
+plot.graph(blup.graph = blup.mr.graphs.UN.2012[[2]])
+```
+
+## MR < 30
+
+```{r}
+plot.graph(blup.graph = blup.mr.graphs.UN.2012[[3]])
+```
+
+## MR < 50
+
+```{r}
+plot.graph(blup.graph = blup.mr.graphs.UN.2012[[4]])
+```
+
+
+## Significance thresholds
+
+* Randomize traits relative to gene expression
+* Make a graph, count # of connections
+* Repeat 100 times
+* Calculate 95th percentile # of connections
+* You would expect fewer than this number 95% of the time in random data
+
+## Significance thresholds
+
+```{r, eval=FALSE, echo=FALSE}
+sapply(blup.mr.graphs.CR,function(graph) sum(grepl("^Bra",graph$nodes)))
+```
+
+
+|*MR Threshold*|*95th percentile expectation (CR)*|*Observed (CR)*]
+|---------|----------|----------|
+| 20 | 1 | 6 |
+| 30 | 3 | 13 |
+| 50 | 9 | 33 |
+| 80 | 24 | 73 |
+
+So the networks are enriched for "real" connections
+
+## Candidates from CR condition
+
+* NACA3: Nascent polypeptide-associated complex gene (MR10+)
+* SMXL8: Involved in strigolactone-regulated growth (MR20+)
+* CIPK9: CBL interacting protein kinase 9.  K+ homeostasis (MR30+)
+* ATEXPB2: Beta Expansin.  (MR50+)
+* (And in UN: MES10, Methyl Jasmonate Esterase at MR10+)
+
+## Next Steps
+
+* Are any of these under QTL peaks for growth traits?
+* Compare with WGCNA
+
+
+
