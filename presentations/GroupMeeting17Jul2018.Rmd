@@ -182,10 +182,10 @@ sapply(blup.mr.graphs.CR,function(graph) sum(grepl("^Bra",graph$nodes)))
 
 |*MR Threshold*|*95th percentile expectation (CR)*|*Observed (CR)*]
 |---------|----------|----------|
-| 20 | 1 | 6 |
-| 30 | 3 | 13 |
-| 50 | 9 | 33 |
-| 80 | 24 | 73 |
+| 10 | 0 | 1 |
+| 20 | 0 | 13 |
+| 30 | 0 | 28 |
+| 50 | 0 | 57 |
 
 So the networks are enriched for "real" connections
 
