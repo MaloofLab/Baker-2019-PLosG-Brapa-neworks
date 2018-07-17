@@ -332,9 +332,11 @@ sapply(blup.mr.graphs.UN, function(g) {
 What is a reasonable threshold?  To find out, permute blups relative to gene expression, make graphs at different thresholds, and return number of genes in network
 
 ```{r}
-permute.graphs <- function(blups,expression,cutoffs=cutoffs,permute=TRUE) {
+permute.graphs <- function(expr.blup,cutoffs=cutoffs,permute=TRUE) {
+  blups <- expr.blup %>% select(Line, starts_with("UN"))
+  expression <- expr.blup %>% select(Line, matches("^Bra[0-9]"))
   if(permute) blups$Line <- sample(blups$Line,replace = FALSE) # permute!
-  expr.blup <- merge(blups,t(expression),by.x="Line",by.y=0)
+  expr.blup <- full_join(blups,expression, by = "Line")
   expr.blup.mr <- expr.blup[,-1] %>% 
     cor %>%  
     apply(2,function(x) rank(-abs(x))) %>%
@@ -344,10 +346,12 @@ permute.graphs <- function(blups,expression,cutoffs=cutoffs,permute=TRUE) {
   sapply(blup.mr.graphs,function(graph) sum(grepl("^Bra",graph$nodes)))
 }
 
-test <- permute.graphs(blups.UN,expr.data.UN,cutoffs=c(10,20,30,40),permute=FALSE)
+test <- expr.blup.UN %>% 
+  select(Line, ends_with("12"), starts_with("Bra"))  %>% 
+  permute.graphs(cutoffs=c(10,20,30,50),permute=FALSE)
 test
 # should be the same as the first 4 of
-sapply(blup.mr.graphs.UN,function(graph) sum(grepl("^Bra",graph$nodes)))
+sapply(blup.mr.graphs.UN.2012,function(graph) sum(grepl("^Bra",graph$nodes)))
 
 ```
 
@@ -355,16 +359,19 @@ sapply(blup.mr.graphs.UN,function(graph) sum(grepl("^Bra",graph$nodes)))
 ```{r, eval=FALSE}
 permutations <- 100
 
+expr.blup.UN.12 <- expr.blup.UN %>% 
+  select(Line, ends_with("12"), starts_with("Bra"))
+
 sfInit(parallel=TRUE,cpus = 4)
 
 sfLibrary(igraph)
 sfLibrary(magrittr)
-sfExport("blups.UN","expr.data.UN","permute.graphs","get.mr.subgraph","cutoffs")
+sfExport("expr.blup.UN.12","permute.graphs","get.mr.subgraph","cutoffs")
 system.time(perm.results.UN.100 <- sfSapply(1:permutations, function(p) {
-  permute.graphs(blups.UN,expr.data.UN,cutoffs=cutoffs)
+  permute.graphs(expr.blup.UN.12,cutoffs=cutoffs)
 }))
 
-save(perm.results.UN.100, file="../output/permutation_results.Rdata")
+save(perm.results.UN.100, file="../output/permutation_results_UN.Rdata")
 
 sfStop()
 ```
