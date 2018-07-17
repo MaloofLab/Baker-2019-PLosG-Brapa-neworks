@@ -359,16 +359,19 @@ sapply(blup.mr.graphs.UN.2012,function(graph) sum(grepl("^Bra",graph$nodes)))
 ```{r, eval=FALSE}
 permutations <- 100
 
+expr.blup.UN.12 <- expr.blup.UN %>% 
+  select(Line, ends_with("12"), starts_with("Bra"))
+
 sfInit(parallel=TRUE,cpus = 4)
 
 sfLibrary(igraph)
 sfLibrary(magrittr)
-sfExport("blups.UN","expr.data.UN","permute.graphs","get.mr.subgraph","cutoffs")
+sfExport("expr.blup.UN.12","permute.graphs","get.mr.subgraph","cutoffs")
 system.time(perm.results.UN.100 <- sfSapply(1:permutations, function(p) {
-  permute.graphs(blups.UN,expr.data.UN,cutoffs=cutoffs)
+  permute.graphs(expr.blup.UN.12,cutoffs=cutoffs)
 }))
 
-save(perm.results.UN.100, file="../output/permutation_results.Rdata")
+save(perm.results.UN.100, file="../output/permutation_results_UN.Rdata")
 
 sfStop()
 ```
