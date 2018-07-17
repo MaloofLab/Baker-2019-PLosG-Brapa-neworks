@@ -180,7 +180,7 @@ sapply(blup.mr.graphs.CR,function(graph) sum(grepl("^Bra",graph$nodes)))
 ```
 
 
-|*MR Threshold*|*95th percentile expectation (CR)*|*Observed (CR)*]
+|*MR Threshold*|*95th percentile expectation *|*Observed*]
 |---------|----------|----------|
 | 10 | 0 | 1 |
 | 20 | 0 | 13 |
@@ -189,13 +189,14 @@ sapply(blup.mr.graphs.CR,function(graph) sum(grepl("^Bra",graph$nodes)))
 
 So the networks are enriched for "real" connections
 
-## Candidates from CR condition
+## Candidates from UN condition
 
-* NACA3: Nascent polypeptide-associated complex gene (MR10+)
-* SMXL8: Involved in strigolactone-regulated growth (MR20+)
-* CIPK9: CBL interacting protein kinase 9.  K+ homeostasis (MR30+)
-* ATEXPB2: Beta Expansin.  (MR50+)
-* (And in UN: MES10, Methyl Jasmonate Esterase at MR10+)
+* ATMES10:	Methyl jasmonate esterase activity; increases JA.  Negatively correlated with growth and final height.
+* AtAAS: Induced by JA.  Positively correlated with growth (strange...)
+* ENH1: Enhancer of Salt Over Sensitive.  Negatively correlated.
+* BEL1: interacts with STM and KNAT1.  Required for ovule specification, but could be more general growth regulator.  Restricts WUS expression.  Negatively correlated with growth.
+* LPPEPSILON 2: lipid phosphatidic acid phosphatase.  In chlroplast
+* LBD37: LOB domain containing protein.  Nitrogen Metabolism.  Negatively correlated with growth.
 
 ## Next Steps
 
