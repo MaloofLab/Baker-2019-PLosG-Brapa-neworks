@@ -340,6 +340,7 @@ save(annotation,blups.cor,blups.cor.5,blups.cor.P,blups.cor.sig,moduleColors,MEs
 ## 2012 only
 
 ```{r}
+#load("../output/WGCNA_UN_all.Rdata")
 ME.blups <- blups.UN %>% select("Line", ends_with("12")) %>% merge(MEs,by.x=1.,by.y=0)
 head(ME.blups)
 ```
@@ -373,7 +374,7 @@ plot it
 par(mar = c(8, 8, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
-               yLabels = names(blups.UN)[-1],
+               yLabels = rownames(blups.cor),
                xLabels = names(MEs),
                xSymbols = names(MEs),
                colorLabels = FALSE,
@@ -388,7 +389,7 @@ pdf("../output/Module-trait_heatmap_UN_2012.pdf",height = 8,width = 12)
 par(mar = c(8, 8, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
-               yLabels = names(blups.UN)[-1],
+               yLabels = rownames(blups.cor),
                xLabels = names(MEs),
                xSymbols = names(MEs),
                colorLabels = FALSE,

@@ -61,8 +61,6 @@ blup.mr.graphs.UN.2012 <- lapply(cutoffs, get.mr.subgraph, mr.matrix = expr.blup
 names(blup.mr.graphs.UN.2012) <- sapply(blup.mr.graphs.UN.2012, function(x) paste("blup.mr.graph.UN.2012",x$cutoff,sep="."))
 ```
 
-## get edge correlation info
-
 ```{r}
 edge.col.sign <- function(graph,edge.colors) {#color edges by correlation sign
   E(graph) %>% 
@@ -76,9 +74,6 @@ edge.col.sign <- function(graph,edge.colors) {#color edges by correlation sign
     unlist()
 }
 ```
-
-
-## plots
 
 ```{r plot.function}
 plot.graph <- function (blup.graph) {
@@ -96,7 +91,9 @@ plot.graph <- function (blup.graph) {
 ```
 
 
-## Intro
+# Intro
+
+## Background
 
 * Goal: find genes & networks connected to _B. rapa_ growth
 * Rob Baker, Cynthia Weinig, Steve Welch, etc collected growth data on _B. rapa_ RIL set in field setting.
@@ -114,7 +111,9 @@ plot.graph <- function (blup.graph) {
   * Build WGCNA co-expression network independent of growth traits
   * Then look for correlation between network module Eigen genes and growth traits
 
-## Mutual Rank
+# Mutual Rank
+
+## Basic idea of Mutual Rank
 
 1. Build a correlation matrix of gene expression and trait values
 2. For each gene or trait, rank its correlations with the other genes and traits.  The gene with the highest correlation gets rank 1, etc.
@@ -180,7 +179,7 @@ sapply(blup.mr.graphs.CR,function(graph) sum(grepl("^Bra",graph$nodes)))
 ```
 
 
-|*MR Threshold*|*95th percentile expectation *|*Observed*]
+|*MR Threshold*|*95th percentile expectation *|*Observed*
 |---------|----------|----------|
 | 10 | 0 | 1 |
 | 20 | 0 | 13 |
@@ -198,10 +197,113 @@ So the networks are enriched for "real" connections
 * LPPEPSILON 2: lipid phosphatidic acid phosphatase.  In chlroplast
 * LBD37: LOB domain containing protein.  Nitrogen Metabolism.  Negatively correlated with growth.
 
-## Next Steps
+## MR genes and growth QTL
 
-* Are any of these under QTL peaks for growth traits?
-* Compare with WGCNA
+Do any of the the MR genes co-localize with QTL peaks for growth?
+
+Yes!
+
+| MR Cutoff | Network Genes | Network Genes under QTL | P-Value for enrichment
+|-----------|-------|-----------------|-----------------------
+| 10 | 1  | 0  | 1
+| 20 | 13 | 9  | 6.9 E-13
+| 30 | 28 | 9  | 5.0 E-09
+| 50 | 57 | 21 | 9.9 E-21
+
+Caveat: Linkage...
+
+## Could any of these be causal?
+
+Null hypothesis: Causal QTL and expression QTL for MR genes are genetically linked by not causally linked
+
+Alternative: Causal QTL and expression QTL are the same gene.
+
+Test:
+
+$$
+growth \sim QTL\_marker\tag{1}
+\\ 
+\\ VS
+$$
+$$
+\\growth \sim QTL\_marker + gene\_expression\tag{2}
+$$
+
+Model 2 is favored (AIC -1702 vs -1814)
+
+# WGCNA
+
+## Basic idea
+
+* WGCNA is an alternative method for reconstructing genetic networks
+* Also based on gene co-expression
+* Use a 'soft threshold' to build a network that approximates scale-free topology
+* For my network I did NOT include growth trait info.
+
+## Correlation with traits
+
+After reconstructing the network, calculate the Eigen gene for each module and then correlate with traits:
+
+![](../output/Module-trait_heatmap_UN_2012.png)
+
+## GO enrichment of correlated modules
+
+Blue: Cell division (pos correlation)
+
+```{r, include=FALSE}
+GO <- read_csv("../output/SupTable_JM5_WGCNA_UN_GO_2012.csv",col_names = c("module","term","ontology","FDR","P","ID","underP","observed","total"))
+GO <- GO %>% select(module, term, ontology, FDR)
+```
+
+```{r, echo=FALSE}
+GO %>% filter(module=="blue", ontology=="BP") %>% knitr::kable()
+```
+
+## GO enrichment of correlated modules
+
+Cyan: Translation (pos correlation)
+
+```{r, echo=FALSE}
+GO %>% filter(module=="cyan") %>% knitr::kable()
+```
+
+## GO enrichment of correlated modules
+
+MidnightBlue: Stress/defense? (pos correlation)
+
+```{r, echo=FALSE}
+GO %>% filter(module=="midnightblue") %>% knitr::kable()
+```
+
+## GO enrichment of correlated modules
+
+Brown: ? (neg correlation)
+
+```{r, echo=FALSE}
+GO %>% filter(module=="brown") %>% knitr::kable()
+```
+
+## Module Eigen gene eQTL
+
+What regions of the genome controls expression of these modules?
+
+![](../output/eigen_gene_eQTL_UN_CIM_2012.png)
+
+## eQTL / trait QTL overlap
+
+Do any of the module eQTL overlap with growth trait QTL?
+
+Yes, there are two regions that overlap.  p < 0.001.
+
+A10 (cyan, midnightblue, blue); A03 (darkslateblue)
+
+![](../output/eigen_gene_eQTL_UN_CIM_2012.png)
+
+# Summary
+
+## Summary
+
+Network analysis has defined possible mechanisms underlying growth trait QTL.
 
 
 
