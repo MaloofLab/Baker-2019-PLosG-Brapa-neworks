@@ -366,6 +366,7 @@ sfInit(parallel=TRUE,cpus = 4)
 
 sfLibrary(igraph)
 sfLibrary(magrittr)
+sfLibrary(tidyverse)
 sfExport("expr.blup.UN.12","permute.graphs","get.mr.subgraph","cutoffs")
 system.time(perm.results.UN.100 <- sfSapply(1:permutations, function(p) {
   permute.graphs(expr.blup.UN.12,cutoffs=cutoffs)
@@ -377,14 +378,14 @@ sfStop()
 ```
 
 ```{r}
-load("../output/permutation_results.Rdata")
+load("../output/permutation_results_UN.Rdata")
 apply(perm.results.UN.100,1,quantile,.95)
 ```
 
 ```{r}
 kable(cbind(threshold=cutoffs,
             "0.95 expectation"=apply(perm.results.UN.100,1,quantile,.95),
-            observed=sapply(blup.mr.graphs.UN,function(graph) sum(grepl("^Bra",graph$nodes)))
+            observed=sapply(blup.mr.graphs.UN.2012,function(graph) sum(grepl("^Bra",graph$nodes)))
 ), caption="Permutation analysis: UN network",digits=0)
 ```
 
