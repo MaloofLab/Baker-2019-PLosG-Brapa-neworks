@@ -105,11 +105,11 @@ plot.graph <- function (blup.graph) {
 ## Approach
 
 * Use Mutual Rank co-expression networks:
-  * For each growth trait, build a network of genes that have a similar pattern across the RILs
-  * In this case, look for association by mutual rank (MR) (next slide)
+    - For each growth trait, build a network of genes that have a similar pattern across the RILs
+    - In this case, look for association by mutual rank (MR) (next slide)
 * Alternatively use WGCNA:
-  * Build WGCNA co-expression network independent of growth traits
-  * Then look for correlation between network module Eigen genes and growth traits
+    - Build WGCNA co-expression network independent of growth traits
+    - Then look for correlation between network module Eigen genes and growth traits
 
 # Mutual Rank
 
@@ -178,13 +178,16 @@ plot.graph(blup.graph = blup.mr.graphs.UN.2012[[4]])
 sapply(blup.mr.graphs.CR,function(graph) sum(grepl("^Bra",graph$nodes)))
 ```
 
+```{r}
+load("../output/permutation_results_UN.Rdata")
+```
 
-|*MR Threshold*|*95th percentile expectation *|*Observed*
-|---------|----------|----------|
-| 10 | 0 | 1 |
-| 20 | 0 | 13 |
-| 30 | 0 | 28 |
-| 50 | 0 | 57 |
+```{r}
+kable(cbind(threshold=cutoffs,
+            "0.95 expectation"=apply(perm.results.UN.100,1,quantile,.95),
+            observed=sapply(blup.mr.graphs.UN.2012,function(graph) sum(grepl("^Bra",graph$nodes)))
+), caption="Permutation analysis: UN network",digits=0)
+```
 
 So the networks are enriched for "real" connections
 
@@ -214,11 +217,8 @@ Caveat: Linkage...
 
 ## Could any of these be causal?
 
-Null hypothesis: Causal QTL and expression QTL for MR genes are genetically linked by not causally linked
-
-Alternative: Causal QTL and expression QTL are the same gene.
-
-Test:
+* Null hypothesis: Causal QTL and expression QTL for MR genes are genetically linked by not causally linked
+* Alternative: Causal QTL and expression QTL are the same gene.
 
 $$
 growth \sim QTL\_marker\tag{1}
@@ -229,7 +229,15 @@ $$
 \\growth \sim QTL\_marker + gene\_expression\tag{2}
 $$
 
-Model 2 is favored (AIC -1702 vs -1814)
+* Model 2 is favored (Model1 AIC = -1702; Model2 AIC = -1814)
+
+## MR eQTL growth QTL overlap
+Do eQTL for the MR genes overlap with the growth QTL?
+![](../output/MR gene eQTL UN.png)
+
+## Any trans eQTL?
+
+![](../output/MR_gene_eQTL_cistrans_UN.png)
 
 # WGCNA
 
@@ -284,19 +292,10 @@ GO %>% filter(module=="brown") %>% knitr::kable()
 ```
 
 ## Module Eigen gene eQTL
-
-What regions of the genome controls expression of these modules?
-
 ![](../output/eigen_gene_eQTL_UN_CIM_2012.png)
 
 ## eQTL / trait QTL overlap
-
-Do any of the module eQTL overlap with growth trait QTL?
-
-Yes, there are two regions that overlap.  p < 0.001.
-
-A10 (cyan, midnightblue, blue); A03 (darkslateblue)
-
+A10 (cyan, midnightblue, blue) and A03 (darkslateblue) overlap with growth QTL
 ![](../output/eigen_gene_eQTL_UN_CIM_2012.png)
 
 # Summary
@@ -304,6 +303,11 @@ A10 (cyan, midnightblue, blue); A03 (darkslateblue)
 ## Summary
 
 Network analysis has defined possible mechanisms underlying growth trait QTL.
+
+Linkage is a major caveat
+
+Model comparison is encouraging that more than linkage is going on
+
 
 
 

@@ -39,7 +39,8 @@ MR genes from UN
 ```{r}
 MR_UN_genes <- read_csv("../output/MR_UN_graphs_node_annotation_2012.csv") %>%
   filter(MR_Cutoff <= 50, !duplicated(name)) %>%
-  select(MR_Cutoff,name)
+  mutate(pos=floor((start+end)/2)) %>%
+  select(MR_Cutoff,name, transcript_chrom=chrom, transcript_pos=pos)
 MR_UN_genes
 ```
 
@@ -47,10 +48,6 @@ eQTL
 ```{r}
 load("../../brassica_eqtl_paper/input/scanone-eqtl-UN.Rdata")
 scanone_imp_UN <- scanone_imp_un
-```
-
-```{r}
-ls()
 ```
 
 ## Find eQTL intervals
@@ -62,7 +59,7 @@ Get the scanone data in a nice format for summarizing and plotting
 ```{r}
 scanone_UN_gather <- scanone_imp_UN %>%
   gather(key = gene, value = LOD, -chr, -pos) %>%
-  semi_join(MR_UN_genes,by=c("gene"="name")) # only keep genes in MR networks
+  right_join(MR_UN_genes,by=c("gene"="name")) # only keep genes in MR networks
 ```
 
 plot eQTL peaks...
@@ -76,7 +73,31 @@ pl.UN <- scanone_UN_gather %>%
   ggtitle("MR gene eQTL")
 pl.UN
 ggsave("../output/MR gene eQTL UN.pdf",width=12,height=8)
+ggsave("../output/MR gene eQTL UN.png",width=10,height=5)
+
 ```
+
+## cis and trans plot
+
+```{r}
+scanone_UN_gather %>%
+  arrange(transcript_chrom,transcript_pos,pos) %>%
+  filter(LOD>4) %>%
+  group_by(gene,chr) %>%
+  filter(LOD==max(LOD)) %>%
+  ungroup() %>%
+  mutate(transcript_index=row_number(),cis_trans=ifelse(chr==transcript_chrom,"cis","trans")) %>%
+  ggplot(aes(x=pos,y=transcript_index,shape=cis_trans,color=LOD)) +
+  scale_color_gradient(low="magenta1",high="magenta4") +
+  geom_point() +
+  facet_wrap(~chr,nrow=1) +
+  theme_bw() + 
+  xlab("QTL position")
+ggsave("../output/MR_gene_eQTL_cistrans_UN.png",width=10,height = 5)
+```
+
+
+
 
 
 ```{r}
@@ -185,6 +206,7 @@ For each eQTL, randomly select a chromosome, then a position, and widen based on
 Make table of chromosome info
 ```{r}
 chr.info <- scanone_imp_UN %>% 
+  as.data.frame() %>%
   rownames_to_column("marker") %>%
   select(marker) %>%
   separate(marker,into=c("chr","bp"),sep="x",convert=TRUE) %>%
