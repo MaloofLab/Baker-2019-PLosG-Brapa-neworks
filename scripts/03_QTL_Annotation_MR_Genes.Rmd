@@ -25,7 +25,7 @@ library(limma)
 
 ```{r}
 QTLgenes <- read_csv("../input/Bayesian2012Height_genesunderQTLS.csv")[,-1]
-summary(QTLgenes)
+QTLgenes <- QTLgenes %>% filter(str_detect(FVTtrait,"^UN"))
 QTLgenes
 ```
 

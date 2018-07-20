@@ -51,7 +51,7 @@ ggsave("../output/eigen gene eQTL UN 2012.pdf",width=12,height=8)
 
 For each eigen gene, find QTL borders and look for overlap with growth QTL
 
-For each eigen gene first identify chromosomes with "significant" peaks (in this case > 99% permuation threshold) and then runs bayesint() on them to define the intervals
+For each eigen gene first identify chromosomes with "significant" peaks (in this case > 99% permuation threshold) and then run bayesint() on them to define the intervals
 
 ```{r}
 sig.chrs <- scanone.gather %>% filter(LOD > perm.threshold) %>%
@@ -127,6 +127,7 @@ given bayesint results, find overlaps with UN growth QTL
 
 ```{r}
 QTLgenes <- read_csv("../input/Bayesian2012Height_genesunderQTLS.csv")[,-1] #genes under height QTL peaks
+QTLgenes <- QTLgenes %>% filter(str_detect(FVTtrait,"^UN"))
 QTLgenes
 ```
 
@@ -142,7 +143,7 @@ sort(unique(QTLgenes$.id))
 sort(unique(eigen.qtl.combined$.id))
 ```
 
-seven of nine
+three of four
 
 are all eigen genes overlapping?
 
@@ -151,7 +152,7 @@ unique(eigen.annotated.small$trait)
 unique(eigen.qtl.combined$trait)
 ```
 
-No, 8 of 9
+No, 7 of 11
 
 ```{r}
 write_csv(eigen.qtl.combined,"../output/Bayesian2012Height_genesunderQTLS_eigenQTL_overlap.csv")
@@ -179,6 +180,7 @@ eQTL.ranges <- GenomicRanges::reduce(eQTL.ranges)
 Make table of chromosome info
 ```{r}
 chr.info <- scanone_eigen.phys %>% 
+  as.data.frame() %>%
   rownames_to_column("marker") %>%
   select(marker) %>%
   separate(marker,into=c("chr","bp"),sep="x",convert=TRUE) %>%
@@ -334,6 +336,7 @@ given bayesint results, find overlaps with UN growth QTL
 
 ```{r}
 QTLgenes <- read_csv("../input/Bayesian2012Height_genesunderQTLS.csv")[,-1] #genes under height QTL peaks
+QTLgenes <- QTLgenes %>% filter(str_detect(FVTtrait,"^UN"))
 QTLgenes
 ```
 
@@ -349,7 +352,7 @@ unique(QTLgenes$.id)
 unique(eigen.qtl.combined$.id)
 ```
 
-four of nine
+two of four
 
 are all eigen genes overlapping?
 

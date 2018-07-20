@@ -53,16 +53,16 @@ colnames(expr.data.UN)[1] <- "RIL_1"
 head(expr.data.UN[,1:6])
 ```
 
-Get Rob's Data
+Get Rob's Data.  Remove STP trait and other not-needed columns
 ```{r}
 blups2011 <- read.csv("../input/Brapa2011BayesHeight_blups.csv",row.names = 1)
 blups2012 <- read.csv("../input/Brapa2012BayesHeight_blups.csv", row.names = 1)
 blups2011$Line %<>% paste("RIL",.,sep="_")
 blups2012$Line %<>% paste("RIL",.,sep="_")
-blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.))) %>%
+blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat|STP",colnames(.))) %>%
   rename(UNiD=UNInflect_DD,UNd=UNduration) %>%
   select(starts_with("Line"),starts_with("UN"),-matches("Inflect.*_size"))
-blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.))) %>%
+blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat|STP",colnames(.))) %>%
   rename(UNiD=UNInflection_DD,UNd=UNduration) %>%
     select(starts_with("Line"),starts_with("UN"),-matches("Inflect.*_size"))
 head(blups2011)
@@ -114,8 +114,9 @@ sfStop()
 
 
 ```{r}
-save(blups.UN, expr.blup.UN, expr.blup.mr.UN.all, expr.blup.mr.UN.2012, expr.blup.mr.UN.2011,expr.data.UN, expr.blup.cor.UN,file = "~/Box Sync/BrapaNetworks/MR_UN.Rdata")
-file.copy(from = "~/Box Sync/BrapaNetworks/MR_UN.Rdata", to= "../output/MR_UN.Rdata",overwrite = TRUE)
+save(blups.UN, expr.blup.UN, expr.blup.mr.UN.all, expr.blup.mr.UN.2012, expr.blup.mr.UN.2011,expr.data.UN, expr.blup.cor.UN,file = "../output/MR_UN.Rdata")
+#save(blups.UN, expr.blup.UN, expr.blup.mr.UN.all, expr.blup.mr.UN.2012, expr.blup.mr.UN.2011,expr.data.UN, expr.blup.cor.UN,file = "~/Box Sync/BrapaNetworks/MR_UN.Rdata")
+#file.copy(from = "~/Box Sync/BrapaNetworks/MR_UN.Rdata", to= "../output/MR_UN.Rdata",overwrite = TRUE)
 ```
 
 Get graphs at different MR
@@ -346,11 +347,13 @@ permute.graphs <- function(expr.blup,cutoffs=cutoffs,permute=TRUE) {
   sapply(blup.mr.graphs,function(graph) sum(grepl("^Bra",graph$nodes)))
 }
 
-test <- expr.blup.UN %>% 
+system.time(test <- expr.blup.UN %>% 
   select(Line, ends_with("12"), starts_with("Bra"))  %>% 
-  permute.graphs(cutoffs=c(10,20,30,50),permute=FALSE)
+  permute.graphs(cutoffs=c(10,20,30,50),permute=FALSE)) # 70 seconds
+
 test
 # should be the same as the first 4 of
+
 sapply(blup.mr.graphs.UN.2012,function(graph) sum(grepl("^Bra",graph$nodes)))
 
 ```
@@ -362,7 +365,7 @@ permutations <- 100
 expr.blup.UN.12 <- expr.blup.UN %>% 
   select(Line, ends_with("12"), starts_with("Bra"))
 
-sfInit(parallel=TRUE,cpus = 4)
+#sfInit(parallel=TRUE,cpus = 4)
 
 sfLibrary(igraph)
 sfLibrary(magrittr)

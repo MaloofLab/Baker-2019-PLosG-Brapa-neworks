@@ -56,16 +56,16 @@ colnames(expr.data.UN)[1] <- "RIL_1"
 head(expr.data.UN[,1:6])
 ```
 
-Get Rob's Data
+Get Rob's Data; remove STP Blup and other un-needed columns
 ```{r}
 blups2011 <- read.csv("../input/Brapa2011BayesHeight_blups.csv",row.names = 1)
 blups2012 <- read.csv("../input/Brapa2012BayesHeight_blups.csv", row.names = 1)
 blups2011$Line %<>% paste("RIL",.,sep="_")
 blups2012$Line %<>% paste("RIL",.,sep="_")
-blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.))) %>%
+blups2011 %<>% subset(select=!grepl("V1|individual|blk|trt|treat|STP",colnames(.))) %>%
   rename(UNiD=UNInflect_DD,UNd=UNduration) %>%
   select(starts_with("Line"),starts_with("UN"),-matches("Inflect.*_size"))
-blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat",colnames(.))) %>%
+blups2012 %<>% subset(select=!grepl("V1|individual|blk|trt|treat|STP",colnames(.))) %>%
   rename(UNiD=UNInflection_DD,UNd=UNduration) %>%
     select(starts_with("Line"),starts_with("UN"),-matches("Inflect.*_size"))
 head(blups2011)
@@ -245,7 +245,8 @@ head(ME.blups)
 ```
 
 ```{r}
-blups.cor <- cor(ME.blups[,2:11],ME.blups[,12:61])
+blups.cor <- cor(select(ME.blups,starts_with("UN")),
+                 select(ME.blups, starts_with("ME")))
 range(blups.cor)
 blups.cor
 ```
@@ -346,7 +347,8 @@ head(ME.blups)
 ```
 
 ```{r}
-blups.cor <- cor(ME.blups[,2:6],ME.blups[,7:ncol(ME.blups)])
+blups.cor <- cor(select(ME.blups,starts_with("UN")),
+                 select(ME.blups, starts_with("ME")))
 range(blups.cor)
 blups.cor
 ```
@@ -554,5 +556,6 @@ modules_genes.pl %>%
   facet_grid(module ~ chrom) +
   theme(axis.text.x = element_text(angle = 90),
         strip.text.y = element_text(angle=0))
+ggsave("../output/WGCNA_2012_UN_module_by_chromosome.pdf")
 ```
 
