@@ -121,6 +121,17 @@ p.vals <- tibble(mr.cutoff=map_int(fisher.results,function(x) x[["cutoff"]]),
 p.vals
 
 lapply(fisher.results,function(x) x[["data"]])
+
+combined.results <- t(sapply(fisher.results,function(x) x[["data"]])) %>% as.tibble()
+colnames(combined.results) <- c("Genes_NoQTL_NoMR","Genes_NoQTL_YesMR","Genes_YesQTL_NoMR","Genes_YesQTL_YesMR")
+
+combined.results <- cbind(p.vals,combined.results)
+
+combined.results
+
+write_csv(combined.results,
+          path=str_c("../output/", "Bayesian2012Height_genesunderQTLS", "_MRoverlap_pvals_", Sys.Date(), ".csv") 
+)
 ```
     
     
