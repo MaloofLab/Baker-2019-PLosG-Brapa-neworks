@@ -126,7 +126,11 @@ eigen.annotated.small
 given bayesint results, find overlaps with UN growth QTL
 
 ```{r}
-QTLgenes <- read_csv("../input/Bayesian2012Height_genesunderQTLS.csv")[,-1] #genes under height QTL peaks
+filepath <- "../input/All2012HeightQTL2.xlsx"
+filebase <- filepath %>% basename() %>% str_replace("\\..*$","")
+
+QTLgenes <- readxl::read_excel(filepath)[,-1]
+QTLgenes <- QTLgenes %>% dplyr::rename(.id=QTL, FVTtrait=FVT) # change names to match previous file
 QTLgenes <- QTLgenes %>% filter(str_detect(FVTtrait,"^UN"))
 QTLgenes
 ```
@@ -155,7 +159,8 @@ unique(eigen.qtl.combined$trait)
 No, 7 of 11
 
 ```{r}
-write_csv(eigen.qtl.combined,"../output/Bayesian2012Height_genesunderQTLS_eigenQTL_overlap.csv")
+write_csv(eigen.qtl.combined,
+          path=str_c("../output/", filebase, "_eigenQTL_overlap_", Sys.Date(), ".csv"))
 ```
 
 ## overlaps and significance
@@ -194,7 +199,7 @@ sims <- 1000
 
 set.seed(2323)
 sim.results <- sapply(1:sims, function(s) {
-  if (s %% 10 == 0) print(s)
+  if (s %% 100 == 0) print(s)
   sim.eQTL <- tibble(
     chr=sample(chr.info$chr,
                size = length(eQTL.ranges),
@@ -220,9 +225,18 @@ sim.results <- sapply(1:sims, function(s) {
 
 
 ```{r}
-true.overlap <- sum(countOverlaps(qtl.ranges,eQTL.ranges))
+true.overlap <- sum(countOverlaps(qtl.ranges,eQTL.ranges)) #OK to ignore warnings
+
 true.overlap
-mean(sim.results < true.overlap)
+
+mean(sim.results >= true.overlap)
+
+tibble(FVTQTL_vs_MReQTL_True_Overlaps=true.overlap,
+       N_Simulations_fewer_overlaps=sum(sim.results < true.overlap),
+       N_Simulations_greater_equal_overlaps=sum(sim.results >= true.overlap),
+       P_value=mean(sim.results >= true.overlap)
+) %>%
+  write_csv(str_c("../output/", filebase, "_WGCNA_eigen_eQTL_scanone_overlap_pval_", Sys.Date(), ".csv"))
 ```
 
 # cim
@@ -335,7 +349,11 @@ eigen.annotated.small
 given bayesint results, find overlaps with UN growth QTL
 
 ```{r}
-QTLgenes <- read_csv("../input/Bayesian2012Height_genesunderQTLS.csv")[,-1] #genes under height QTL peaks
+filepath <- "../input/All2012HeightQTL2.xlsx"
+filebase <- filepath %>% basename() %>% str_replace("\\..*$","")
+
+QTLgenes <- readxl::read_excel(filepath)[,-1]
+QTLgenes <- QTLgenes %>% dplyr::rename(.id=QTL, FVTtrait=FVT) # change names to match previous file
 QTLgenes <- QTLgenes %>% filter(str_detect(FVTtrait,"^UN"))
 QTLgenes
 ```
@@ -364,7 +382,8 @@ unique(eigen.qtl.combined$trait)
 No, 2
 
 ```{r}
-write_csv(eigen.qtl.combined,"../output/Bayesian2012Height_genesunderQTLS_eigenQTL_overlap_CIM.csv")
+write_csv(eigen.qtl.combined,
+          path=str_c("../output/", filebase, "_eigenQTL_overlap_CIM_", Sys.Date(), ".csv"))
 ```
 
 ## overlaps and signficance
@@ -382,7 +401,7 @@ sims <- 1000
 
 set.seed(4545)
 sim.results <- sapply(1:sims, function(s) {
-  if (s %% 10 == 0) print(s)
+  if (s %% 100 == 0) print(s)
   sim.eQTL <- tibble(
     chr=sample(chr.info$chr,
                size = length(eQTL.ranges),
@@ -408,7 +427,18 @@ sim.results <- sapply(1:sims, function(s) {
 
 
 ```{r}
-true.overlap <- sum(countOverlaps(qtl.ranges,eQTL.ranges))
+true.overlap <- sum(countOverlaps(qtl.ranges,eQTL.ranges)) #OK to ignore warnings
+
 true.overlap
-mean(sim.results < true.overlap)
+
+mean(sim.results >= true.overlap)
+
+tibble(FVTQTL_vs_MReQTL_True_Overlaps=true.overlap,
+       N_Simulations_fewer_overlaps=sum(sim.results < true.overlap),
+       N_Simulations_greater_equal_overlaps=sum(sim.results >= true.overlap),
+       P_value=mean(sim.results >= true.overlap)
+) %>%
+  write_csv(str_c("../output/", filebase, "_WGCNA_eigen_eQTL_CIM_overlap_pval_", Sys.Date(), ".csv"))
 ```
+
+

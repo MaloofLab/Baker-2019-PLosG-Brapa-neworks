@@ -277,16 +277,16 @@ sim.results <- sapply(1:sims, function(s) {
 
 
 ```{r}
-overlaps <- sum(countOverlaps(qtl.ranges,eQTL.ranges)) #OK to ignore warnings
+true.overlap <- sum(countOverlaps(qtl.ranges,eQTL.ranges)) #OK to ignore warnings
 
-overlaps
+true.overlap
 
-mean(sim.results >= overlaps)
+mean(sim.results >= true.overlap)
 
-tibble(FVTQTL_vs_MReQTL_True_Overlaps=overlaps,
-       N_Simulations_fewer_overlaps=sum(sim.results < overlaps),
-       N_Simulations_greater_equal_overlaps=sum(sim.results >= overlaps),
-       P_value=mean(sim.results >= overlaps)
+tibble(FVTQTL_vs_MReQTL_True_Overlaps=true.overlap,
+       N_Simulations_fewer_overlaps=sum(sim.results < true.overlap),
+       N_Simulations_greater_equal_overlaps=sum(sim.results >= true.overlap),
+       P_value=mean(sim.results >= true.overlap)
 ) %>%
   write_csv(str_c("../output/", filebase, "_MReQTL_overlap_pval_", Sys.Date(), ".csv"))
 ```
