@@ -34,7 +34,7 @@ filepath <- "../input/All2012HeightQTL2.xlsx"
 filebase <- filepath %>% basename() %>% str_replace("\\..*$","")
 
 QTLgenes <- readxl::read_excel(filepath)[,-1]
-QTLgenes <- QTLgenes %>% rename(.id=QTL, FVTtrait=FVT) # change names to match previous file
+QTLgenes <- QTLgenes %>% dplyr::rename(.id=QTL, FVTtrait=FVT) # change names to match previous file
 QTLgenes <- QTLgenes %>% filter(str_detect(FVTtrait,"^UN"))
 QTLgenes
 ```
@@ -203,11 +203,11 @@ UN_MReQTL_QTL_combined %>% filter(MR_gene==eQTL_candidate)
 
 how many QTL have at least some overlap?
 ```{r}
-unique(QTLgenes$.id)
-unique(UN_MReQTL_QTL_combined$.id)
+length(unique(QTLgenes$.id))
+length(unique(UN_MReQTL_QTL_combined$.id))
 ```
 
-ALL
+10 of 16
 
 ```{r}
 write_csv(UN_MReQTL_QTL_combined,
