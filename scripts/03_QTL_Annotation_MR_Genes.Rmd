@@ -19,12 +19,15 @@ Here I want to annotate candidate QTL genes with:
 library(tidyverse)
 library(magrittr)
 library(limma)
+filepath <- "../input/All2012HeightQTL2.xlsx"
+filebase <- filepath %>% basename() %>% str_replace("\\..*$","")
 ```
 
 ## Annotation with MR network membership
 
 ```{r}
-QTLgenes <- read_csv("../input/Bayesian2012Height_genesunderQTLS.csv")[,-1]
+QTLgenes <- readxl::read_excel(filepath)[,-1]
+QTLgenes <- QTLgenes %>% rename(.id=QTL, FVTtrait=FVT) # change names to match previous file
 QTLgenes <- QTLgenes %>% filter(str_detect(FVTtrait,"^UN"))
 QTLgenes
 ```
@@ -69,14 +72,19 @@ QTLgenes <- merge(QTLgenes, RIL.pvals.UN, by.x="name", by.y=0,all.x = TRUE, all.
 ```
 
 ```{r}
-write_csv(QTLgenes,"../output/Bayesian2012Height_genesunderQTLS_DE_MR_UN.csv")
+write_csv(QTLgenes,
+          path=str_c("../output/", filebase, "_DE_MR_UN_", Sys.Date(), ".csv")
+)
+                
 ```
 
 Also subset to only include genes that are in an MR network
 
 ```{r}
 QTLgenes  %>% filter(!is.na(UN_network) ) %>%
-  write_csv("../output/Bayesian2012Height_genesunderQTLS_networkgenesonly_DE_MR_UN.csv")
+  write_csv(
+    path=str_c("../output/", filebase, "_networkgenesonly_DE_MR_UN_", Sys.Date(), ".csv")
+            )
 ```
 
 ## Test for enrichment
@@ -121,8 +129,23 @@ p.vals <- tibble(mr.cutoff=map_int(fisher.results,function(x) x[["cutoff"]]),
 p.vals
 
 lapply(fisher.results,function(x) x[["data"]])
+
+combined.results <- t(sapply(fisher.results,function(x) x[["data"]])) %>% as.tibble()
+colnames(combined.results) <- c("Genes_NoQTL_NoMR","Genes_NoQTL_YesMR","Genes_YesQTL_NoMR","Genes_YesQTL_YesMR")
+
+combined.results <- cbind(p.vals,combined.results)
+
+combined.results
+
+write_csv(combined.results,
+          path=str_c("../output/", filebase, "_MRoverlap_pvals_", Sys.Date(), ".csv") 
+)
 ```
     
+```{r}
+fisher.results
+```
+
     
     
     
