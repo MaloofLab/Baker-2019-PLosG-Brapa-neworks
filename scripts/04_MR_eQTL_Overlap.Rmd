@@ -155,9 +155,10 @@ bayesint_result_UN <- as.tibble(bind_rows(bayesint_list_UN,.id="gene")) %>%
   select(gene,chr,pos,markername,LOD) %>%
   separate(markername,into=c("chr1","Mbp"),sep="x", convert=TRUE) %>%
   group_by(gene,chr) %>%
-  summarize(start=min(Mbp),end=max(Mbp),min_eQTL_LOD=min(LOD),max_eQTL_LOD=max(LOD)) %>%
+  summarize(eQTL_start=min(Mbp),eQTL_end=max(Mbp),min_eQTL_LOD=min(LOD),max_eQTL_LOD=max(LOD)) %>%
   #for the high QTL peaks the interval width is 0.  That is overly precise and need to widen those.
-  mutate(start=ifelse(start==end,max(0,start-20000),start), end=ifelse(start==end,end+20000,end))
+  mutate(eQTL_start=ifelse(eQTL_start==eQTL_end,max(0,eQTL_start-20000),eQTL_start),
+         eQTL_end=ifelse(eQTL_start==eQTL_end,eQTL_end+20000,eQTL_end))
 
 bayesint_result_UN
 ```
@@ -175,8 +176,8 @@ BrapaAnnotation
 UN_annotated <- lapply(1:nrow(bayesint_result_UN),function(row) {
   qtl <- bayesint_result_UN[row,]
   subset(BrapaAnnotation, chrom==qtl$chr &
-           start >= qtl$start &
-           end <= qtl$end) 
+           start >= qtl$eQTL_start &
+           end <= qtl$eQTL_end) 
 }
 )
 names(UN_annotated) <- bayesint_result_UN$gene
@@ -186,7 +187,7 @@ UN_annotated <- bind_rows(UN_annotated,.id="MR_gene") %>%
   dplyr::rename(eQTL_candidate=name)
 
 
-UN_annotated_small <- UN_annotated %>% select(MR_gene,MR_Cutoff,eQTL_candidate,ends_with("LOD"))
+UN_annotated_small <- UN_annotated %>% select(MR_gene,MR_Cutoff,eQTL_start, eQTL_end, eQTL_candidate,ends_with("LOD"))
 
 UN_annotated_small
 ```
@@ -201,7 +202,7 @@ given bayesint results, find overlaps with UN growth QTL
 
 ```{r}
 UN_MReQTL_QTL_combined <- inner_join(QTLgenes,UN_annotated_small,by=c("name"="eQTL_candidate")) %>%
-  select(.id, MR_gene, MR_Cutoff, ends_with("LOD"), everything()) %>%
+  select(.id, MR_gene, MR_Cutoff, eQTL_start, eQTL_end, ends_with("LOD"), everything()) %>%
   arrange(.id,desc(max_eQTL_LOD)) %>%
   dplyr::rename(eQTL_candidate=name)
 UN_MReQTL_QTL_combined
@@ -213,7 +214,12 @@ UN_MReQTL_QTL_combined_small
 
 cis eQTL?
 ```{r}
-UN_MReQTL_QTL_combined %>% filter(MR_gene==eQTL_candidate)
+UN_MReQTL_QTL_combined %>% filter(MR_gene==eQTL_candidate) %>% arrange(MR_gene)
+```
+
+Total number of MR genes with an eQTL that overlaps with an FVT
+```{r}
+UN_MReQTL_QTL_combined %>% select(MR_gene) %>% unique()
 ```
 
 
@@ -255,7 +261,7 @@ qtl.info <- QTLgenes %>%
   summarize(chrom=unique(chrom),start=min(start),end=max(end))
 qtl.info
 qtl.ranges <- GRanges(seqnames = qtl.info$chrom,ranges=IRanges(start=qtl.info$start,end=qtl.info$end))
-qtl.ranges <- reduce(qtl.ranges)
+qtl.ranges <- GenomicRanges::reduce(qtl.ranges)
 ```
 
 
@@ -265,8 +271,8 @@ The eQTL are in Bayesint_results
 ```{r}
 sims <- 1000
 eQTL.ranges <- GRanges(bayesint_result_UN$chr,
-                       ranges = IRanges(start=bayesint_result_UN$start,
-                                        end=bayesint_result_UN$end))
+                       ranges = IRanges(start=bayesint_result_UN$eQTL_start,
+                                        end=bayesint_result_UN$eQTL_end))
 eQTL.ranges <- GenomicRanges::reduce(eQTL.ranges)
 
 set.seed(54321)
