@@ -1,0 +1,158 @@
+---
+title: "Mutual Rank eQTL overlap"
+output: html_notebook
+---
+
+## Background
+
+Rob Baker et al fit growth parameters to B. rapa growth data and then used those to do function-value-trait QTL mapping.
+
+I used those same parameters and queried a mutual rank (MR) gene expression network to find genes that were in a networks associated with these growth paramters.  This was done separately for the CR and UN environments.  I looked for overlap between those MR-associated genes and growth parameters.
+
+The goal now is to find the trans eQTL for each of the MR-growth associated genes and ask if the trans eQTL overlap with the growth/function-value QTL.  I think I am only going to take the top eQTL for each chromosome (seems reasonable...pretty much one peak per chromosome).
+
+__This script uses CIM to find eQTL for MR UN network genes.__
+
+## Load the libraries and data
+
+Libraries
+```{r}
+library(qtl)
+library(tidyverse)
+library(snowfall)
+```
+
+MR genes from UN
+```{r}
+MR_UN_genes <- read_csv("../output/MR_UN_graphs_node_annotation_2012.csv") %>%
+  filter(MR_Cutoff <= 50, !duplicated(name)) %>%
+  mutate(pos=floor((start+end)/2)) %>%
+  select(MR_Cutoff,name, transcript_chrom=chrom, transcript_pos=pos)
+MR_UN_genes
+```
+
+expression data
+```{r}
+MR_UN_2012_expression <- read_csv("../output/MR_UN_2012_gene_expression.csv")
+MR_UN_2012_expression
+```
+
+confirm that we have the same genes in each:
+
+```{r}
+setdiff(MR_UN_2012_expression$name, MR_UN_genes$name)
+setdiff(MR_UN_genes$name, MR_UN_2012_expression$name)
+```
+
+## CIM mapping
+
+set up data
+```{r}
+MR_UN_2012_expression <- MR_UN_2012_expression %>% 
+  select(id=name, starts_with("RIL"))
+```
+
+```{r}
+write_csv(MR_UN_2012_expression,"../output/MR_UN_genes_qtl_input_2012.csv")
+```
+
+```{r}
+cross.all <- read.cross("csvsr", 
+                       genfile="../input/snp_map_rqtl_Mbp_ref1.5.2_cross_output_gen.csv" , 
+	                       phefile="../output/MR_UN_genes_qtl_input_2012.csv", 
+	                       genotypes=c("AA","BB"), na.strings = "-")
+
+class(cross.all)[1] <- "riself"
+cross.all <- jittermap(cross.all)
+cross.all
+```
+
+```{r}
+cross.all <- est.rf(cross.all)
+plotRF(cross.all) 
+
+cross.all <- calc.errorlod(cross.all, error.prob=0.001)
+cross.all <- sim.geno(cross.all,step=2)
+```
+
+```{r}
+system.time(scanone_MR <- scanone(cross.all, pheno.col = 2:ncol(cross.all$pheno), 
+	         method = "imp", use = "all.obs"))
+system.time(scanone_MR_cim <- lapply(2:ncol(cross.all$pheno),function(pheno) cim(cross.all, pheno.col = pheno, 
+	         method = "imp")))
+
+scanone_MR_cim <- do.call(c,scanone_MR_cim)
+colnames(scanone_MR_cim)[-1:-2] <- colnames(cross.all$pheno)[-1]
+
+```
+
+```{r}
+
+#the built-in parallel method for scanone is hanging, so roll my own
+sfInit(parallel = TRUE, cpus = 4)
+
+sfLibrary(qtl)
+
+sfExport("cross.all")
+
+set.seed(12345)
+system.time(permtest <- sfLapply(1:4,function(x) scanone(cross.all, method = "imp", 
+                       pheno.col = 2:ncol(cross.all$pheno),
+                       n.perm = 100)))
+
+sfStop()
+
+permtest <- do.call(rbind,permtest)
+
+attr(permtest,"method") <- "imp"
+attr(permtest,"model") <- "normal"
+attr(permtest,"type") <- "riself"
+attr(permtest,"class") <- c("scanoneperm","matrix")
+
+permtest[1:5,1:5]
+
+dim(permtest)
+
+```
+
+```{r}
+sfInit(parallel = TRUE, cpus = 4)
+
+sfLibrary(qtl)
+
+sfExport("cross.all")
+
+system.time(permtest.cim <- sfSapply(2:ncol(cross.all$pheno),
+                                     function(pheno) cim(cross.all,
+                                                         pheno.col = pheno, 
+                                                         method = "imp",
+                                                         n.perm=100))
+)
+
+sfStop()
+
+attr(permtest.cim,"class") <- "scanoneperm"
+
+colnames(permtest.cim) <- colnames(cross.all$pheno)[-1]
+```
+
+
+```{r}
+lod.thrs <- summary(permtest, 0.05)
+lod.thrs
+mean(lod.thrs)
+sd(lod.thrs)
+```
+
+```{r}
+lod.thrs.cim <- summary(permtest.cim, 0.05)
+lod.thrs.cim
+mean(lod.thrs.cim)
+sd(lod.thrs.cim)
+```
+
+
+```{r}
+save(cross.all,scanone_MR,scanone_MR_cim,permtest,permtest.cim,lod.thrs,lod.thrs.cim,file = "../output/scanone-MRgene-qtl_2012.RData")
+```
+
