@@ -1,0 +1,321 @@
+---
+title: "Mutual Rank eQTL overlap"
+output: html_notebook
+---
+
+## Background
+
+Rob Baker et al fit growth parameters to B. rapa growth data and then used those to do function-value-trait QTL mapping.
+
+I used those same parameters and queried a mutual rank (MR) gene expression network to find genes that were in a networks associated with these growth paramters.  This was done separately for the CR and UN environments.  I looked for overlap between those MR-associated genes and growth parameters.
+
+The goal now is to find the trans eQTL for each of the MR-growth associated genes and ask if the trans eQTL overlap with the growth/function-value QTL.  I think I am only going to take the top eQTL for each.
+
+Focused on UN genes only.
+
+__This is for the CIM eQTL results__
+
+## Methodology
+
+For each gene in a MR network with a growth parameter query the eQTL database to find its trans eQTL regions.  Then compare overlaps between those and the growth QTL.
+
+## Load the libraries and data
+
+Libraries
+```{r}
+library(qtl)
+library(GenomicRanges)
+library(tidyverse)
+library(magrittr)
+```
+
+Growth QTL
+
+```{r}
+filepath <- "../input/All2012HeightQTL2.xlsx"
+filebase <- filepath %>% basename() %>% str_replace("\\..*$","")
+
+QTLgenes <- readxl::read_excel(filepath)[,-1]
+QTLgenes <- QTLgenes %>% dplyr::rename(.id=QTL, FVTtrait=FVT) # change names to match previous file
+QTLgenes <- QTLgenes %>% filter(str_detect(FVTtrait,"^UN"))
+QTLgenes
+```
+
+MR genes from UN
+```{r}
+MR_UN_genes <- read_csv("../output/MR_UN_graphs_node_annotation_2012.csv") %>%
+  filter(MR_Cutoff <= 50, !duplicated(name)) %>%
+  mutate(pos=floor((start+end)/2)) %>%
+  select(MR_Cutoff,name, transcript_chrom=chrom, transcript_pos=pos)
+MR_UN_genes
+```
+
+eQTL
+```{r}
+load("../output/scanone-MRgene-qtl_2012.RData")
+scanone_CIM_UN <- scanone_MR_cim
+scanone_CIM_UN <- scanone_CIM_UN[!str_detect(rownames(scanone_CIM_UN),"loc"),] #downstream code cannot deal with interpolated markers.
+```
+
+## Find eQTL intervals
+
+
+### UN data
+
+Get the scanone data in a nice format for summarizing and plotting
+```{r}
+scanone_UN_gather <- scanone_CIM_UN %>%
+  gather(key = gene, value = LOD, -chr, -pos) %>%
+  right_join(MR_UN_genes,by=c("gene"="name")) # only keep genes in MR networks
+```
+
+plot eQTL peaks...
+```{r, fig.height=10}
+pl.UN <- scanone_UN_gather %>%
+  ggplot(aes(x=pos,y=LOD,color=gene)) +
+  geom_line() +
+  geom_hline(aes(yintercept=mean(lod.thrs.cim)),lty=2,lwd=.5,alpha=.5) +
+  facet_grid( ~ chr, scales="free") +
+  theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
+  ggtitle("MR gene eQTL")
+pl.UN
+ggsave(str_c("../output/MR50 gene eQTL UN CIM", Sys.Date(), ".pdf"),width=12,height=8)
+ggsave(str_c("../output/MR50 gene eQTL UN CIM", Sys.Date(), ".png"),width=10,height=5)
+pl.UN + coord_cartesian(ylim=c(0,10))
+```
+
+plot eQTL peaks for MR30
+```{r, fig.height=10}
+pl.UN <- scanone_UN_gather %>%
+  filter(MR_Cutoff <=30) %>%
+  ggplot(aes(x=pos,y=LOD,color=gene)) +
+  geom_line() +
+  geom_hline(aes(yintercept=mean(lod.thrs.cim)),lty=2,lwd=.5,alpha=.5) +
+  facet_grid( ~ chr, scales="free") +
+  theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
+  ggtitle("MR gene eQTL")
+pl.UN
+ggsave(str_c("../output/MR30 gene eQTL UN CIM", Sys.Date(), ".pdf"),width=12,height=8)
+ggsave(str_c("../output/MR30 gene eQTL UN CIM", Sys.Date(), ".png"),width=10,height=5)
+
+```
+
+## cis and trans plot
+
+```{r}
+scanone_UN_gather %>%
+  arrange(transcript_chrom,transcript_pos,pos) %>%
+  filter(LOD>mean(lod.thrs.cim)) %>%
+  group_by(gene,chr) %>%
+  filter(LOD==max(LOD)) %>%
+  ungroup() %>%
+  mutate(transcript_index=row_number(),cis_trans=ifelse(chr==transcript_chrom,"cis","trans")) %>%
+  ggplot(aes(x=pos,y=transcript_index,shape=cis_trans,color=LOD)) +
+  scale_color_gradient(low="magenta1",high="magenta4") +
+  geom_point() +
+  facet_wrap(~chr,nrow=1) +
+  theme_bw() + 
+  xlab("QTL position")
+ggsave(str_c("../output/MR_gene_eQTL_cistrans_UN_CIM_", Sys.Date(), ".png"),width=10,height = 5)
+```
+
+
+
+
+
+```{r}
+sig_chromosomes_UN <- scanone_UN_gather %>%
+  
+  group_by(gene,chr) %>%
+  summarize(pos=pos[which.max(LOD)],LOD=max(LOD)) %>%
+  filter(LOD > mean(lod.thrs.cim))
+
+sig_chromosomes_UN
+```
+
+now for each significant chromosome/trait combo run bayesint
+
+```{r}
+bayesint_list_UN <- apply(sig_chromosomes_UN,1,function(hit) {
+  result <- bayesint(scanone_CIM_UN[c("chr","pos",hit["gene"])], 
+                     chr=hit["chr"], 
+                     lodcolumn = 1,
+                     prob=0.99,
+                     expandtomarkers = TRUE
+  )
+  colnames(result)[3] <- "LOD"
+  result
+})
+names(bayesint_list_UN) <- sig_chromosomes_UN$gene
+
+bayesint_list_UN <- lapply(bayesint_list_UN,function(x) x %>% 
+                             as.data.frame(stringsAsFactors=FALSE) %>%
+                             rownames_to_column(var="markername") %>%
+                             mutate(chr=as.character(chr))
+)
+```
+
+```{r}
+bayesint_result_UN <- as.tibble(bind_rows(bayesint_list_UN,.id="gene")) %>% 
+  select(gene,chr,pos,markername,LOD) %>%
+  separate(markername,into=c("chr1","Mbp"),sep="x", convert=TRUE) %>%
+  group_by(gene,chr) %>%
+  summarize(eQTL_start=min(Mbp),eQTL_end=max(Mbp),min_eQTL_LOD=min(LOD),max_eQTL_LOD=max(LOD)) %>%
+  #for the high QTL peaks the interval width is 0.  That is overly precise and need to widen those.
+  mutate(eQTL_start=ifelse(eQTL_start==eQTL_end,max(0,eQTL_start-20000),eQTL_start),
+         eQTL_end=ifelse(eQTL_start==eQTL_end,eQTL_end+20000,eQTL_end))
+
+bayesint_result_UN
+```
+
+## annotate UN eQTL
+
+Load annotation
+```{r}
+BrapaAnnotation <- read_csv("../input/Brapa_V1.5_annotated.csv")
+BrapaAnnotation
+```
+
+
+```{r}
+UN_annotated <- lapply(1:nrow(bayesint_result_UN),function(row) {
+  qtl <- bayesint_result_UN[row,]
+  subset(BrapaAnnotation, chrom==qtl$chr &
+           start >= qtl$eQTL_start &
+           end <= qtl$eQTL_end) 
+}
+)
+names(UN_annotated) <- bayesint_result_UN$gene
+UN_annotated <- bind_rows(UN_annotated,.id="MR_gene") %>%
+  left_join(bayesint_result_UN,by=c("MR_gene"="gene","chrom"="chr")) %>% #get eQTL LOD
+  left_join(MR_UN_genes,by=c("MR_gene"="name")) %>% # get cutoff
+  dplyr::rename(eQTL_candidate=name)
+
+
+UN_annotated_small <- UN_annotated %>% select(MR_gene,MR_Cutoff,eQTL_start, eQTL_end, eQTL_candidate,ends_with("LOD"))
+
+UN_annotated_small
+```
+
+cis eQTL?
+```{r}
+UN_annotated_small %>% filter(MR_gene==eQTL_candidate)
+```
+
+
+given bayesint results, find overlaps with UN growth QTL
+
+```{r}
+UN_MReQTL_QTL_combined <- inner_join(QTLgenes,UN_annotated_small,by=c("name"="eQTL_candidate")) %>%
+  select(.id, MR_gene, MR_Cutoff, eQTL_start, eQTL_end, ends_with("LOD"), everything()) %>%
+  arrange(.id,desc(max_eQTL_LOD)) %>%
+  dplyr::rename(eQTL_candidate=name)
+UN_MReQTL_QTL_combined
+
+UN_MReQTL_QTL_combined_small <- UN_MReQTL_QTL_combined %>% filter(!duplicated(eQTL_candidate)) %>%
+  select(-MR_gene,-MR_Cutoff) 
+UN_MReQTL_QTL_combined_small
+```
+
+cis eQTL?
+```{r}
+UN_MReQTL_QTL_combined %>% filter(MR_gene==eQTL_candidate) %>% arrange(MR_gene)
+```
+
+Total number of MR genes with an eQTL that overlaps with an FVT
+```{r}
+UN_MReQTL_QTL_combined %>% select(MR_gene) %>% unique()
+```
+
+
+how many QTL have at least some overlap?
+```{r}
+length(unique(QTLgenes$.id))
+length(unique(UN_MReQTL_QTL_combined$.id))
+```
+
+10 of 16
+
+```{r}
+write_csv(UN_MReQTL_QTL_combined,
+          path=str_c("../output/", filebase, "_MR_eQTL_UN_overlap_CIM_", Sys.Date(), ".csv"))
+```
+
+How to assess if overlap is significant?
+
+I think pull regions of same size as eQTL and ask how often they overlap with growth QTL.
+
+For each eQTL, randomly select a chromosome, then a position, and widen based on interval.  Then check overlap.  Repeat.
+
+Make table of chromosome info
+```{r}
+chr.info <- scanone_CIM_UN %>% 
+  as.data.frame() %>%
+  rownames_to_column("marker") %>%
+  select(marker) %>%
+  separate(marker,into=c("chr","bp"),sep="x",convert=TRUE) %>%
+  group_by(chr) %>%
+  summarize(start=min(bp),end=max(bp))
+```
+
+Make a table of QTL info
+
+```{r}
+qtl.info <- QTLgenes %>%
+  group_by(.id) %>%
+  summarize(chrom=unique(chrom),start=min(start),end=max(end))
+qtl.info
+qtl.ranges <- GRanges(seqnames = qtl.info$chrom,ranges=IRanges(start=qtl.info$start,end=qtl.info$end))
+qtl.ranges <- GenomicRanges::reduce(qtl.ranges)
+```
+
+
+The eQTL are in Bayesint_results
+
+
+```{r}
+sims <- 1000
+eQTL.ranges <- GRanges(bayesint_result_UN$chr,
+                       ranges = IRanges(start=bayesint_result_UN$eQTL_start,
+                                        end=bayesint_result_UN$eQTL_end))
+eQTL.ranges <- GenomicRanges::reduce(eQTL.ranges)
+
+set.seed(54321)
+sim.results <- sapply(1:sims, function(s) {
+  sim.eQTL <- tibble(
+    chr=sample(chr.info$chr,
+               size = length(eQTL.ranges),
+               replace = TRUE,
+               prob=chr.info$end/sum(chr.info$end)),
+    width=width(eQTL.ranges) # width of the QTL to simulate
+  )
+  sim.eQTL <- chr.info %>% 
+    select(chr,chr.start=start,chr.end=end) %>% right_join(sim.eQTL,by="chr") #need to get the chrom end so we can sample correctly
+  sim.eQTL <- sim.eQTL %>% mutate(qtl.start = runif(n=n(),
+                                                    min = chr.start,
+                                                    max= max(chr.start,chr.end-width)),
+                                  qtl.end=qtl.start+width)
+  sim.eQTL.ranges <- GRanges(seqnames = sim.eQTL$chr,ranges = IRanges(start=sim.eQTL$qtl.start,end=sim.eQTL$qtl.end))
+  suppressWarnings(result <- sum(countOverlaps(qtl.ranges,sim.eQTL.ranges)>0))
+  result
+})
+
+```
+
+
+```{r}
+true.overlap <- sum(countOverlaps(qtl.ranges,eQTL.ranges)) #OK to ignore warnings
+
+true.overlap
+
+mean(sim.results >= true.overlap)
+
+tibble(FVTQTL_vs_MReQTL_True_Overlaps=true.overlap,
+       N_Simulations_fewer_overlaps=sum(sim.results < true.overlap),
+       N_Simulations_greater_equal_overlaps=sum(sim.results >= true.overlap),
+       P_value=mean(sim.results >= true.overlap)
+) %>%
+  write_csv(str_c("../output/", filebase, "_MReQTL_overlap_pval_CIM", Sys.Date(), ".csv"))
+```
+
+significant at p = 0.005; only 0.5% of the simulations had as many overlaps as in the true data set.
