@@ -318,4 +318,4 @@ tibble(FVTQTL_vs_MReQTL_True_Overlaps=true.overlap,
   write_csv(str_c("../output/", filebase, "_MReQTL_overlap_pval_CIM", Sys.Date(), ".csv"))
 ```
 
-significant at p = 0.005; only 0.5% of the simulations had as many overlaps as in the true data set.
+significant at p = 0.003; only 0.3% of the simulations had as many overlaps as in the true data set.
