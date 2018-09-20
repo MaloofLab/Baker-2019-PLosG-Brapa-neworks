@@ -275,7 +275,7 @@ par(mar = c(8, 8, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
                yLabels = names(blups.UN)[-1],
-               xLabels = names(MEs),
+               xLabels = names(MEs) %>% str_replace("^ME",""),
                xSymbols = names(MEs),
                colorLabels = FALSE,
                colors = blueWhiteRed(50),
@@ -290,7 +290,7 @@ par(mar = c(8, 8, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
                yLabels = names(blups.UN)[-1],
-               xLabels = names(MEs),
+               xLabels = names(MEs) %>% str_replace("^ME",""),
                xSymbols = names(MEs),
                colorLabels = FALSE,
                colors = blueWhiteRed(50),
@@ -377,7 +377,7 @@ par(mar = c(8, 8, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
                yLabels = rownames(blups.cor),
-               xLabels = names(MEs),
+               xLabels = names(MEs) %>% str_replace("^ME",""),
                xSymbols = names(MEs),
                colorLabels = FALSE,
                colors = blueWhiteRed(50),
@@ -392,7 +392,7 @@ par(mar = c(8, 8, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
                yLabels = rownames(blups.cor),
-               xLabels = names(MEs),
+               xLabels = names(MEs) %>% str_replace("^ME",""),
                xSymbols = names(MEs),
                colorLabels = FALSE,
                colors = blueWhiteRed(50),
