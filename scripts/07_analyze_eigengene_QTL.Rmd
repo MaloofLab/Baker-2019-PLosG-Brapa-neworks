@@ -370,7 +370,7 @@ unique(QTLgenes$.id)
 unique(eigen.qtl.combined$.id)
 ```
 
-two of four
+six of 16
 
 are all eigen genes overlapping?
 
@@ -379,7 +379,7 @@ unique(eigen.annotated.small$trait)
 unique(eigen.qtl.combined$trait)
 ```
 
-No, 2
+No, 6 of 9
 
 ```{r}
 write_csv(eigen.qtl.combined,

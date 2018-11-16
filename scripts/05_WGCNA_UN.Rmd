@@ -377,9 +377,9 @@ par(mar = c(8, 8, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
                yLabels = rownames(blups.cor),
-               xLabels = names(MEs) %>% str_replace("^ME",""),
-               xSymbols = names(MEs),
-               colorLabels = FALSE,
+               xLabels = names(MEs),
+               xSymbols = names(MEs) %>% str_replace("^ME",""),
+               xColorLabels = TRUE,
                colors = blueWhiteRed(50),
                textMatrix = p.asterisk,
                setStdMargins = FALSE,
@@ -387,14 +387,14 @@ labeledHeatmap(Matrix = blups.cor,
                zlim = c(-1,1),
                main = "UN Module-trait relationships")
 
-pdf("../output/Module-trait_heatmap_UN_2012.pdf",height = 8,width = 12)
+pdf("../output/Module-trait_heatmap_UN_2012.pdf",height = 4,width = 12)
 par(mar = c(8, 8, 3, 3));
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = blups.cor,
                yLabels = rownames(blups.cor),
-               xLabels = names(MEs) %>% str_replace("^ME",""),
-               xSymbols = names(MEs),
-               colorLabels = FALSE,
+               xLabels = names(MEs),
+               xSymbols = names(MEs) %>% str_replace("^ME",""),
+               XcolorLabels = FALSE,
                colors = blueWhiteRed(50),
                textMatrix = p.asterisk,
                setStdMargins = FALSE,
@@ -469,7 +469,8 @@ head(go.terms)
 names(go.terms) <- c("GeneID","GO")
 summary(go.terms)
 
-gene.lengths <- read.table("../input/Brapa_CDS_lengths.txt",as.is=TRUE)
+gene.lengths <- read_tsv("../input/Brapa_CDS_lengths.txt")
+
 head(gene.lengths)
 summary(gene.lengths)
 
@@ -519,8 +520,8 @@ GO.results <- lapply(sig.modules, function(module) {
   #calculate p-values for each GO term
   GO.out.tmp <- goseq(pwf = nullp.result.tmp,gene2cat = go.list,test.cats=("GO:BP"))
   
-  #Keep CC and BP
-  GO.out.tmp <- GO.out.tmp[GO.out.tmp$ontology=="BP" | GO.out.tmp$ontology=="CC",]
+  #Keep BP only
+  GO.out.tmp <- GO.out.tmp[GO.out.tmp$ontology=="BP",]
   
   #Calculate FDR
   GO.out.tmp <- GO.out.tmp %>% as.tibble() %>%
@@ -534,6 +535,7 @@ GO.results <- lapply(sig.modules, function(module) {
 })
 names(GO.results) <- sig.modules
 ```
+
 
 ```{r}
 GO.results
