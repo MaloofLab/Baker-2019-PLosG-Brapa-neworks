@@ -195,6 +195,11 @@ UN_annotated <- bind_rows(UN_annotated,.id="MR_gene") %>%
 UN_annotated_small <- UN_annotated %>% select(MR_gene,MR_Cutoff,eQTL_start, eQTL_end, eQTL_candidate,ends_with("LOD"))
 
 UN_annotated_small
+
+write_csv(UN_annotated_small, path=str_c("../output/", 
+                                         filebase, 
+                                         "_MR_eQTL_UN_ALL_CIM_", 
+                                         Sys.Date(), ".csv"))
 ```
 
 cis eQTL?

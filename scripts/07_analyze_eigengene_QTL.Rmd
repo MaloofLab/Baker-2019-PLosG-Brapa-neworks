@@ -121,6 +121,9 @@ eigen.annotated <- bind_rows(eigen.annotated,.id="trait") %>%
 eigen.annotated.small <- eigen.annotated %>% select(trait,eigen_eQTL_candidate,ends_with("LOD"))
 
 eigen.annotated.small
+
+write_csv(eigen.annotated.small, 
+          path=str_c("../output/", filebase, "_eigenQTL_ALL_", Sys.Date(), ".csv"))
 ```
 
 given bayesint results, find overlaps with UN growth QTL
