@@ -192,7 +192,7 @@ UN_annotated <- bind_rows(UN_annotated,.id="MR_gene") %>%
   dplyr::rename(eQTL_candidate=name)
 
 
-UN_annotated_small <- UN_annotated %>% select(MR_gene,MR_Cutoff,eQTL_start, eQTL_end, eQTL_candidate,ends_with("LOD"))
+UN_annotated_small <- UN_annotated %>% select(MR_gene,MR_Cutoff,eQTL_chrom=chrom, eQTL_start, eQTL_end, eQTL_candidate,ends_with("LOD"))
 
 UN_annotated_small
 
