@@ -5,22 +5,21 @@ output: html_notebook
 
 Creating B. rapa networks from eQTL data to enhance Rob Baker et al's FVT analysis for stem elongation.
 
-Using BoxR to connect R to Box
-
 ### set up
 ```{r set_up}
 library(edgeR)
-library(boxr)
+#library(boxr)
 library(magrittr)
-box_auth()
-box_setwd(24503987860)
-box_ls()
+#box_auth()
+#box_setwd(24503987860)
+#box_ls() %>% as.data.frame()
 library(rio)
 ```
 
 ## Get data
 ```{r}
-counts <- box_read_tsv(162218089685)
+#counts <- box_read_tsv(162218089685)
+counts <- read.csv("../input/RIL_v1.5_mapping_UN.csv.gz")
 row.names(counts) <- counts$gene
 counts <- counts [-1,-1] #remove first row (umapped reads) and first column (gene IDs)
 counts[is.na(counts)] <- 0
