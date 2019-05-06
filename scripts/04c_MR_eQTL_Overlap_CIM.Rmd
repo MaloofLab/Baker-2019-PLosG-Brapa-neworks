@@ -69,12 +69,27 @@ scanone_UN_gather <- scanone_CIM_UN %>%
   right_join(MR_UN_genes,by=c("gene"="name")) # only keep genes in MR networks
 ```
 
-plot eQTL peaks...
+#### Alternate thredhold.
+
+previously I calcualted the 0.05 threshold of each gene separately and then took the average.  What if I calculate the experimenwise threshold?
+
+```{r}
+dim(permtest.cim) 
+```
+This represents the 100 permutations for each gene.  So to get an experiment wise threshold I could take the max for each row and then to the 95% of that.
+
+```{r}
+newthreshold <- permtest.cim %>% apply(1,max) %>% quantile(0.95)
+newthreshold
+```
+
+
+#### plot eQTL peaks...
 ```{r, fig.height=10}
 pl.UN <- scanone_UN_gather %>%
   ggplot(aes(x=pos,y=LOD,color=gene)) +
   geom_line() +
-  geom_hline(aes(yintercept=mean(lod.thrs.cim)),lty=2,lwd=.5,alpha=.5) +
+  geom_hline(aes(yintercept=newthreshold),lty=2,lwd=.5,alpha=.5) +
   facet_grid( ~ chr, scales="free") +
   theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
   ggtitle("MR gene eQTL")
@@ -90,7 +105,7 @@ pl.UN <- scanone_UN_gather %>%
   filter(MR_Cutoff <=30) %>%
   ggplot(aes(x=pos,y=LOD,color=gene)) +
   geom_line() +
-  geom_hline(aes(yintercept=mean(lod.thrs.cim)),lty=2,lwd=.5,alpha=.5) +
+  geom_hline(aes(yintercept=newthreshold),lty=2,lwd=.5,alpha=.5) +
   facet_grid( ~ chr, scales="free") +
   theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
   ggtitle("MR gene eQTL")
@@ -105,7 +120,7 @@ ggsave(str_c("../output/MR30 gene eQTL UN CIM", Sys.Date(), ".png"),width=10,hei
 ```{r}
 scanone_UN_gather %>%
   arrange(transcript_chrom,transcript_pos,pos) %>%
-  filter(LOD>mean(lod.thrs.cim)) %>%
+  filter(LOD>newthreshold) %>%
   group_by(gene,chr) %>%
   filter(LOD==max(LOD)) %>%
   ungroup() %>%
@@ -128,7 +143,7 @@ sig_chromosomes_UN <- scanone_UN_gather %>%
   
   group_by(gene,chr) %>%
   summarize(pos=pos[which.max(LOD)],LOD=max(LOD)) %>%
-  filter(LOD > mean(lod.thrs.cim))
+  filter(LOD > newthreshold)
 
 sig_chromosomes_UN
 ```
@@ -215,7 +230,7 @@ given bayesint results, find overlaps with UN growth QTL
 
 ```{r}
 UN_MReQTL_QTL_combined <- inner_join(QTLgenes,UN_annotated_small,by=c("name"="eQTL_candidate")) %>%
-  select(.id, MR_gene, MR_Cutoff, eQTL_start, eQTL_end, ends_with("LOD"), everything()) %>%
+  select(.id, MR_gene, MR_Cutoff, eQTL_start_bp, eQTL_end_bp, ends_with("LOD"), everything()) %>%
   arrange(.id,desc(max_eQTL_LOD)) %>%
   dplyr::rename(eQTL_candidate=name)
 UN_MReQTL_QTL_combined
@@ -242,7 +257,7 @@ length(unique(QTLgenes$.id))
 length(unique(UN_MReQTL_QTL_combined$.id))
 ```
 
-10 of 16
+8 of 16
 
 ```{r}
 write_csv(UN_MReQTL_QTL_combined,
@@ -284,8 +299,8 @@ The eQTL are in Bayesint_results
 ```{r}
 sims <- 1000
 eQTL.ranges <- GRanges(bayesint_result_UN$chr,
-                       ranges = IRanges(start=bayesint_result_UN$eQTL_start,
-                                        end=bayesint_result_UN$eQTL_end))
+                       ranges = IRanges(start=bayesint_result_UN$eQTL_start_bp,
+                                        end=bayesint_result_UN$eQTL_end_bp))
 eQTL.ranges <- GenomicRanges::reduce(eQTL.ranges)
 
 set.seed(54321)
@@ -326,4 +341,4 @@ tibble(FVTQTL_vs_MReQTL_True_Overlaps=true.overlap,
   write_csv(str_c("../output/", filebase, "_MReQTL_overlap_pval_CIM", Sys.Date(), ".csv"))
 ```
 
-significant at p = 0.003; only 0.3% of the simulations had as many overlaps as in the true data set.
+significant; 0 of the simulations had as many overlaps as in the true data set.

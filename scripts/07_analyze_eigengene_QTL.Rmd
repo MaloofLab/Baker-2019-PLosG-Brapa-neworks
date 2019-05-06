@@ -263,6 +263,23 @@ scanone.gather <- scanone_eigen_cim %>%
 scanone.gather
 ```
 
+#### alternate threshold taking multiple traits into account
+
+```{r}
+
+threshold.95 <- permtest.cim %>% apply(1,max) %>% quantile(.95)
+threshold.95
+
+scanone.gather <- scanone_eigen_cim %>%
+  gather(key = trait, value = LOD, -chr, -pos) %>%
+  mutate(condition=str_sub(trait,1,2), 
+         color=str_sub(trait,6,100),
+         perm.threshold=threshold.95)
+
+scanone.gather
+```
+
+
 ```{r}
    pl.UN <- scanone.gather %>% filter(condition=="UN") %>%
   ggplot(aes(x=pos,y=LOD)) +
@@ -280,7 +297,7 @@ ggsave("../output/eigen gene eQTL UN CIM 2012.pdf",width=12,height=8)
 
 For each eigen gene, find QTL borders and look for overlap with growth QTL
 
-For each eigen gene first identify chromosomes with "significant" peaks (in this case > 99% permuation threshold) and then runs bayesint() on them to define the intervals
+For each eigen gene first identify chromosomes with "significant" peaks (in this case > 95% permuation threshold) and then run bayesint() on them to define the intervals
 
 ```{r}
 sig.chrs <- scanone.gather %>% filter(LOD > perm.threshold) %>%
@@ -377,7 +394,7 @@ unique(QTLgenes$.id)
 unique(eigen.qtl.combined$.id)
 ```
 
-six of 16
+five of 16
 
 are all eigen genes overlapping?
 
@@ -395,7 +412,25 @@ write_csv(eigen.qtl.combined,
 
 ## overlaps and signficance
 
+Make table of chromosome info
 ```{r}
+chr.info.cim <- scanone_eigen_cim.phys %>% 
+  as.data.frame() %>%
+  rownames_to_column("marker") %>%
+  select(marker) %>%
+  separate(marker,into=c("chr","bp"),sep="x",convert=TRUE) %>%
+  group_by(chr) %>%
+  summarize(start=min(bp),end=max(bp))
+```
+
+```{r}
+qtl.info <- QTLgenes %>%
+  group_by(.id) %>%
+  summarize(chrom=unique(chrom),start=min(start),end=max(end))
+qtl.info
+qtl.ranges <- GRanges(seqnames = qtl.info$chrom,ranges=IRanges(start=qtl.info$start,end=qtl.info$end))
+qtl.ranges <- GenomicRanges::reduce(qtl.ranges)
+
 eQTL.ranges <- GRanges(bayesint.result$chr,
                        ranges = IRanges(start=bayesint.result$start,
                                         end=bayesint.result$end))
@@ -410,13 +445,13 @@ set.seed(4545)
 sim.results <- sapply(1:sims, function(s) {
   if (s %% 100 == 0) print(s)
   sim.eQTL <- tibble(
-    chr=sample(chr.info$chr,
+    chr=sample(chr.info.cim$chr,
                size = length(eQTL.ranges),
                replace = TRUE,
-               prob=chr.info$end/sum(chr.info$end)),
+               prob=chr.info.cim$end/sum(chr.info.cim$end)),
     width=width(eQTL.ranges) # width of the QTL to simulate
   )
-  sim.eQTL <- chr.info %>% 
+  sim.eQTL <- chr.info.cim %>% 
     select(chr,chr.start=start,chr.end=end) %>% right_join(sim.eQTL,by="chr") #need to get the chrom end so we can sample correctly
   sim.eQTL <- sim.eQTL %>% mutate(qtl.start = runif(n=n(),
                                                     min = chr.start,
