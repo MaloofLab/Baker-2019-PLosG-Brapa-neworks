@@ -3,6 +3,10 @@ title: "Mutual Rank eQTL overlap"
 output: html_notebook
 ---
 
+# Deprecated
+
+See scripts 04b and 04c for what was done for paper.
+
 ## Background
 
 Rob Baker et al fit growth parameters to B. rapa growth data and then used those to do function-value-trait QTL mapping.

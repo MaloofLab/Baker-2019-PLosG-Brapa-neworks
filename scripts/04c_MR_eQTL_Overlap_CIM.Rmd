@@ -76,12 +76,25 @@ previously I calcualted the 0.05 threshold of each gene separately and then took
 ```{r}
 dim(permtest.cim) 
 ```
-This represents the 100 permutations for each gene.  So to get an experiment wise threshold I could take the max for each row and then to the 95% of that.
+This represents the 1000 permutations for each gene.  So to get an experiment wise threshold I could take the max for each row and then to the 95% of that.
 
 ```{r}
 newthreshold <- permtest.cim %>% apply(1,max) %>% quantile(0.95)
 newthreshold
 ```
+
+For MR30, this should only include the MR30 genes
+
+```{r}
+MR30genes <- MR_UN_genes %>% filter(MR_Cutoff <=30) %>% pull(name)
+
+newthresholdMR30 <- permtest.cim[, MR30genes] %>%
+  apply(1,max) %>%
+  quantile(0.95)
+
+newthresholdMR30
+```
+
 
 
 #### plot eQTL peaks...
@@ -105,7 +118,7 @@ pl.UN <- scanone_UN_gather %>%
   filter(MR_Cutoff <=30) %>%
   ggplot(aes(x=pos,y=LOD,color=gene)) +
   geom_line() +
-  geom_hline(aes(yintercept=newthreshold),lty=2,lwd=.5,alpha=.5) +
+  geom_hline(aes(yintercept=newthresholdMR30),lty=2,lwd=.5,alpha=.5) +
   facet_grid( ~ chr, scales="free") +
   theme(strip.text.y = element_text(angle=0), axis.text.x = element_text(angle=90)) +
   ggtitle("MR gene eQTL")
@@ -210,7 +223,7 @@ UN_annotated <- bind_rows(UN_annotated,.id="MR_gene") %>%
   dplyr::rename(eQTL_candidate=name)
 
 
-UN_annotated_small <- UN_annotated %>% select(MR_gene,MR_Cutoff,eQTL_chrom=chrom, eQTL_start_bp, eQTL_end_bp, eQTL_start_cM, eQTL_end_cM, eQTL_candidate,ends_with("LOD"))
+UN_annotated_small <- UN_annotated %>% select(MR_gene,MR_Cutoff,MR_chrom=transcript_chrom,MR_pos=transcript_pos,eQTL_chrom=chrom, eQTL_start_bp, eQTL_end_bp, eQTL_start_cM, eQTL_end_cM, eQTL_candidate,ends_with("LOD"))
 
 UN_annotated_small
 
@@ -220,9 +233,37 @@ write_csv(UN_annotated_small, path=str_c("../output/",
                                          Sys.Date(), ".csv"))
 ```
 
-cis eQTL?
+cis eQTL? Because the BayesInt intervals may be too small, define cis as anything on the same chromosome
 ```{r}
-UN_annotated_small %>% filter(MR_gene==eQTL_candidate)
+UN_annotated_small %>% 
+  filter(MR_chrom==eQTL_chrom) %>%
+  filter(!duplicated(MR_gene))
+```
+
+total # of MR genes with cis eQTL
+```{r}
+#total MR genes with an eQTL at all:
+cat("total MR genes with an eQTL:", {
+  scanone_UN_gather %>%
+  filter(LOD > newthreshold) %>%
+  filter(!duplicated(gene)) %>%
+  nrow()})
+
+#total MR genes with a cis eQTL
+cat("\ntotal MR genes with a cis eQTL:", {
+  UN_annotated_small %>% 
+  filter(MR_chrom==eQTL_chrom) %>%
+  filter(!duplicated(MR_gene)) %>%
+  nrow()
+})
+
+
+```
+
+number of genes with a trans eQTL:
+
+```{r}
+##FILL THIS IN
 ```
 
 
@@ -240,14 +281,17 @@ UN_MReQTL_QTL_combined_small <- UN_MReQTL_QTL_combined %>% filter(!duplicated(eQ
 UN_MReQTL_QTL_combined_small
 ```
 
-cis eQTL?
+number of cis eQTL in overlapping regions
 ```{r}
-UN_MReQTL_QTL_combined %>% filter(MR_gene==eQTL_candidate) %>% arrange(MR_gene)
+UN_MReQTL_QTL_combined %>% 
+  filter(MR_gene==eQTL_candidate) %>% 
+  filter(!duplicated(MR_gene)) %>%
+  nrow()
 ```
 
 Total number of MR genes with an eQTL that overlaps with an FVT
 ```{r}
-UN_MReQTL_QTL_combined %>% select(MR_gene) %>% unique()
+UN_MReQTL_QTL_combined %>% select(MR_gene) %>% unique() %>% nrow()
 ```
 
 

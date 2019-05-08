@@ -98,7 +98,7 @@ sfExport("cross.all")
 set.seed(12345)
 system.time(permtest <- sfLapply(1:4,function(x) scanone(cross.all, method = "imp", 
                        pheno.col = 2:ncol(cross.all$pheno),
-                       n.perm = 100)))
+                       n.perm = 250)))
 
 sfStop()
 
@@ -126,7 +126,7 @@ system.time(permtest.cim <- sfSapply(2:ncol(cross.all$pheno),
                                      function(pheno) cim(cross.all,
                                                          pheno.col = pheno, 
                                                          method = "imp",
-                                                         n.perm=100))
+                                                         n.perm=1000))
 )
 
 sfStop()
