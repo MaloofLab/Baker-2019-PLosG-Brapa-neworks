@@ -261,11 +261,27 @@ cat("\ntotal MR genes with a cis eQTL:", {
 ```
 
 number of genes with a trans eQTL:
-
+For simplicity we will consider a single trans eQTL per chromosome
 ```{r}
-##FILL THIS IN
+UN_annotated_small %>%
+  filter(MR_chrom!=eQTL_chrom) %>%
+  group_by(MR_gene, eQTL_chrom) %>%
+  filter(!duplicated(MR_gene)) %>%
+  ungroup() %>%
+  arrange(MR_gene)
 ```
 
+```{r}
+UN_annotated_small %>%
+  group_by(MR_gene, eQTL_chrom) %>%
+  filter(!duplicated(MR_gene)) %>%
+  ungroup() %>%
+  summarize(cis_eQTL=sum(MR_chrom==eQTL_chrom),
+            trans_eQTL=sum(MR_chrom!=eQTL_chrom),
+            total_genes=length(unique(MR_gene)))
+```
+
+So, of the 40 genes with eQTL, 29 had cis, 12 had trans, and 1 had both.
 
 given bayesint results, find overlaps with UN growth QTL
 
@@ -284,10 +300,19 @@ UN_MReQTL_QTL_combined_small
 number of cis eQTL in overlapping regions
 ```{r}
 UN_MReQTL_QTL_combined %>% 
-  filter(MR_gene==eQTL_candidate) %>% 
+  filter(MR_chrom==eQTL_chrom) %>% 
   filter(!duplicated(MR_gene)) %>%
   nrow()
 ```
+
+number of trans eQTL in overlapping regions
+```{r}
+UN_MReQTL_QTL_combined %>% 
+  filter(MR_chrom!=eQTL_chrom) %>% 
+  filter(!duplicated(MR_gene)) %>%
+  nrow()
+```
+
 
 Total number of MR genes with an eQTL that overlaps with an FVT
 ```{r}
