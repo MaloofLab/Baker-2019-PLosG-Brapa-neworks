@@ -233,6 +233,26 @@ write_csv(UN_annotated_small, path=str_c("../output/",
                                          Sys.Date(), ".csv"))
 ```
 
+Total # of MR genes:
+```{r}
+MR_UN_genes %>% pull(name) %>% unique() %>% length()
+```
+
+
+Total # of MR genes with an eQTL:
+```{r}
+UN_annotated_small %>% pull(MR_gene) %>% unique() %>% length()
+```
+
+Chromosomes with eQTL:
+```{r}
+UN_annotated_small %>%
+  group_by(MR_gene, eQTL_chrom) %>%
+  filter(!duplicated(MR_gene)) %>%
+  pull(eQTL_chrom) %>% unique() %>% sort()
+```
+
+
 cis eQTL? Because the BayesInt intervals may be too small, define cis as anything on the same chromosome
 ```{r}
 UN_annotated_small %>% 
