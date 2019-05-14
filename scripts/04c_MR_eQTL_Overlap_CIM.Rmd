@@ -191,13 +191,27 @@ bayesint_result_UN <- as.tibble(bind_rows(bayesint_list_UN,.id="gene")) %>%
   
   
   summarize(eQTL_start_bp=min(Mbp), eQTL_end_bp=max(Mbp), eQTL_start_cM=min(pos), eQTL_end_cM=max(pos), min_eQTL_LOD=min(LOD), max_eQTL_LOD=max(LOD)) %>% 
-      
-  #for the high QTL peaks the interval width is 0.  That is overly precise and need to widen those.
-  mutate(eQTL_start_bp=ifelse(eQTL_start_bp==eQTL_end_bp ,max(0, eQTL_start_bp - 20000), eQTL_start_bp), eQTL_end_bp=ifelse(eQTL_start_bp==eQTL_end_bp, eQTL_end_bp + 20000, eQTL_end_bp))
   
+  #for the high QTL peaks the interval width is 0.  That is overly precise and need to widen those.
+  mutate(expand_interval=eQTL_start_cM==eQTL_end_cM,
+         eQTL_start_cM=ifelse(expand_interval ,max(0, eQTL_start_cM - 2.5), eQTL_start_cM), 
+         eQTL_end_cM=ifelse(expand_interval, eQTL_end_cM + 2.5, eQTL_end_cM),
+         eQTL_start_bp=ifelse(expand_interval,
+                              {find.flanking(cross.all, chr, eQTL_start_cM) %>% 
+                                  pull(left) %>% 
+                                  str_remove("^A[01][0-9]x") %>% 
+                                  as.numeric()},
+                              eQTL_start_bp),
+         eQTL_end_bp=ifelse(expand_interval,
+                              {find.flanking(cross.all, chr, eQTL_end_cM) %>% 
+                                  pull(left) %>% 
+                                  str_remove("^A[01][0-9]x") %>% 
+                                  as.numeric()},
+                              eQTL_end_bp))
 
 bayesint_result_UN
 ```
+
 
 ## annotate UN eQTL
 
@@ -256,7 +270,7 @@ UN_annotated_small %>%
 cis eQTL? Because the BayesInt intervals may be too small, define cis as anything on the same chromosome
 ```{r}
 UN_annotated_small %>% 
-  filter(MR_chrom==eQTL_chrom) %>%
+  filter(MR_gene==eQTL_candidate) %>%
   filter(!duplicated(MR_gene))
 ```
 
@@ -265,43 +279,34 @@ total # of MR genes with cis eQTL
 #total MR genes with an eQTL at all:
 cat("total MR genes with an eQTL:", {
   scanone_UN_gather %>%
-  filter(LOD > newthreshold) %>%
-  filter(!duplicated(gene)) %>%
-  nrow()})
+    filter(LOD > newthreshold) %>%
+    filter(!duplicated(gene)) %>%
+    nrow()})
 
 #total MR genes with a cis eQTL
 cat("\ntotal MR genes with a cis eQTL:", {
   UN_annotated_small %>% 
-  filter(MR_chrom==eQTL_chrom) %>%
-  filter(!duplicated(MR_gene)) %>%
-  nrow()
+    filter(MR_gene==eQTL_candidate) %>%
+    filter(!duplicated(MR_gene)) %>%
+    nrow()
 })
 
 
 ```
 
-number of genes with a trans eQTL:
-For simplicity we will consider a single trans eQTL per chromosome
+number of genes with a trans eQTL (only consider a single eQTL per chrom):
 ```{r}
-UN_annotated_small %>%
-  filter(MR_chrom!=eQTL_chrom) %>%
+cis_eQTL <- UN_annotated_small %>%
+  filter(MR_gene==eQTL_candidate)
+
+UN_annotated_small %>% anti_join(cis_eQTL, by=c("MR_gene", "eQTL_chrom", "eQTL_start_bp", "eQTL_end_bp")) %>%
   group_by(MR_gene, eQTL_chrom) %>%
   filter(!duplicated(MR_gene)) %>%
   ungroup() %>%
   arrange(MR_gene)
 ```
 
-```{r}
-UN_annotated_small %>%
-  group_by(MR_gene, eQTL_chrom) %>%
-  filter(!duplicated(MR_gene)) %>%
-  ungroup() %>%
-  summarize(cis_eQTL=sum(MR_chrom==eQTL_chrom),
-            trans_eQTL=sum(MR_chrom!=eQTL_chrom),
-            total_genes=length(unique(MR_gene)))
-```
-
-So, of the 40 genes with eQTL, 29 had cis, 12 had trans, and 1 had both.
+So, of the 40 genes with eQTL, 22 had cis, 19 had trans, and 1 had both.
 
 given bayesint results, find overlaps with UN growth QTL
 
@@ -319,28 +324,40 @@ UN_MReQTL_QTL_combined_small
 
 number of cis eQTL in overlapping regions
 ```{r}
-UN_MReQTL_QTL_combined %>% 
-  filter(MR_chrom==eQTL_chrom) %>% 
-  filter(!duplicated(MR_gene)) %>%
-  nrow()
+#total MR genes with an eQTL at all:
+cat("total MR genes with an eQTL that overlaps FVT:", {
+  UN_MReQTL_QTL_combined %>%
+    filter(!duplicated(MR_gene)) %>%
+    nrow()})
+
+#total MR genes with a cis eQTL
+cat("\ntotal MR genes with a cis eQTL that overlaps FVT eQTL:", {
+  UN_MReQTL_QTL_combined %>% 
+    filter(MR_gene==eQTL_candidate) %>%
+    filter(!duplicated(MR_gene)) %>%
+    nrow()
+})
 ```
 
 number of trans eQTL in overlapping regions
 ```{r}
-UN_MReQTL_QTL_combined %>% 
-  filter(MR_chrom!=eQTL_chrom) %>% 
+cis_eQTL_FVT <- UN_MReQTL_QTL_combined %>%
+  filter(MR_gene==eQTL_candidate)
+
+UN_MReQTL_QTL_combined %>% anti_join(cis_eQTL_FVT, by=c("MR_gene", "eQTL_chrom", "eQTL_start_bp", "eQTL_end_bp")) %>%
+  group_by(MR_gene, eQTL_chrom) %>%
   filter(!duplicated(MR_gene)) %>%
+  ungroup() %>%
   nrow()
 ```
 
-
-Total number of MR genes with an eQTL that overlaps with an FVT
+eQTL LOD score
 ```{r}
-UN_MReQTL_QTL_combined %>% select(MR_gene) %>% unique() %>% nrow()
+range(c(UN_MReQTL_QTL_combined$min_eQTL_LOD, UN_MReQTL_QTL_combined$max_eQTL_LOD))
 ```
 
 
-how many QTL have at least some overlap?
+how many FVT QTL have at least some overlap?
 ```{r}
 length(unique(QTLgenes$.id))
 length(unique(UN_MReQTL_QTL_combined$.id))
@@ -421,6 +438,7 @@ true.overlap <- sum(countOverlaps(qtl.ranges,eQTL.ranges)) #OK to ignore warning
 true.overlap
 
 mean(sim.results >= true.overlap)
+sum(sim.results >= true.overlap)
 
 tibble(FVTQTL_vs_MReQTL_True_Overlaps=true.overlap,
        N_Simulations_fewer_overlaps=sum(sim.results < true.overlap),
@@ -430,4 +448,4 @@ tibble(FVTQTL_vs_MReQTL_True_Overlaps=true.overlap,
   write_csv(str_c("../output/", filebase, "_MReQTL_overlap_pval_CIM", Sys.Date(), ".csv"))
 ```
 
-significant; 0 of the simulations had as many overlaps as in the true data set.
+significant;  only 1 of the simulations had as many overlaps as in the true data set.
