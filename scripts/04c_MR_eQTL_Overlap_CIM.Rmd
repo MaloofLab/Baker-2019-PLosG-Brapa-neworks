@@ -69,7 +69,7 @@ scanone_UN_gather <- scanone_CIM_UN %>%
   right_join(MR_UN_genes,by=c("gene"="name")) # only keep genes in MR networks
 ```
 
-#### Alternate thredhold.
+#### Alternate threshold.
 
 previously I calcualted the 0.05 threshold of each gene separately and then took the average.  What if I calculate the experimenwise threshold?
 
@@ -267,7 +267,7 @@ UN_annotated_small %>%
 ```
 
 
-cis eQTL? Because the BayesInt intervals may be too small, define cis as anything on the same chromosome
+cis eQTL? 
 ```{r}
 UN_annotated_small %>% 
   filter(MR_gene==eQTL_candidate) %>%
@@ -322,6 +322,7 @@ UN_MReQTL_QTL_combined_small <- UN_MReQTL_QTL_combined %>% filter(!duplicated(eQ
 UN_MReQTL_QTL_combined_small
 ```
 
+
 number of cis eQTL in overlapping regions
 ```{r}
 #total MR genes with an eQTL at all:
@@ -350,6 +351,8 @@ UN_MReQTL_QTL_combined %>% anti_join(cis_eQTL_FVT, by=c("MR_gene", "eQTL_chrom",
   ungroup() %>%
   nrow()
 ```
+
+So, total eQTL in overlapping region is 38.
 
 eQTL LOD score
 ```{r}
