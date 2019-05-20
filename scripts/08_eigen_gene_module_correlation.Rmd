@@ -1,0 +1,51 @@
+---
+title: "Eigen gene/module correlation"
+output: html_notebook
+---
+
+Does + Eigen gene mean + overal module gene expression?
+
+```{r}
+library(tidyverse)
+library(WGCNA)
+load("../output/WGCNA_UN_all.Rdata")
+```
+
+```{r}
+expr <- expr.data.UN.t %>% 
+  scale() %>%
+  t() %>%
+  as.tibble() %>%
+  mutate(color=merge$colors,
+         ID=colnames(expr.data.UN.t)) %>%
+  select(ID, color, everything())
+expr[1:10, 1:10]
+```
+
+```{r}
+expr_MEs <- MEs %>% 
+  scale() %>% 
+  t()  %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ID") %>% 
+  mutate(color=str_sub(ID, 3)) %>%
+  select(ID, color, everything()) %>%
+  bind_rows(., expr) %>%
+  mutate(type=ifelse(str_detect(ID, "^ME"), "eigen", "gene")) %>%
+  select(ID, color, type, everything())
+expr_MEs
+```
+
+```{r}
+map(unique(expr_MEs$color), function(x) {
+  expr_MEs %>%
+    filter(color==x) %>%
+    gather(key = "RIL", value="expression", -ID, -color, -type) %>%
+    ggplot(aes(x=RIL, y=expression, group=ID, alpha=type, color=type )) +
+    geom_line() +
+    scale_alpha_manual(values = c("eigen" = 1, "gene" = 0.05)) +
+    scale_color_manual(values = c("eigen" = "red", "gene" = "black")) +
+    ggtitle(x)
+})
+```
+
