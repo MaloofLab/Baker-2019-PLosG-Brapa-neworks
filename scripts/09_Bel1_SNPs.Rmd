@@ -1,0 +1,51 @@
+---
+title: "BEL1 SNPs"
+output: html_notebook
+---
+
+Are there any SNPs between IMB211 and R500 in BEL1?  Asking for a reviewer....
+
+Bel1 is Bra025497 A04:8699173-8703567
+
+BAMfiles are at /iplant/home/shared/ucd.plantbio/maloof.lab/members/upendra/RILs_mapping
+
+Subset the BAM files:
+
+    for f in $(ls *bam)
+        do
+        echo $f
+        samtools index $f
+        samtools view -b $f "A04:8699173-8703567" > subset/$f
+        samtools index subset/$f
+        done
+
+Run Freebayes
+
+    freebayes  -f  ~/Sequences/ref_genomes/B_rapa/genome/V1.5/Brapa_sequence_v1.5.fa mapping_v1.5_merged_bam_files/*.bam > bel1.vcf 
+    
+Run Snpeff
+
+    java -jar snpEff/snpEff.jar  Brassica_rapa bel1.vcf > bel1_ann.vcf
+    
+Bring it into R
+
+```{r}
+library(tidyverse)
+```
+
+    
+```{r}
+vcf.data <- read_tsv("../output/bel1_ann.vcf",na = c("","NA","."),comment="#",col_names = FALSE)
+```
+
+```{r}
+vcf.header <- system("grep '#C' ../output/bel1_ann.vcf",intern = TRUE) #might not work on Windows
+vcf.header
+vcf.header <- vcf.header %>% str_replace("#","") #get rid of the pound sign
+vcf.header <- vcf.header %>% str_split(pattern = "\t")
+colnames(vcf.data) <- vcf.header[[1]] #we need the [[1]] because str_split returns a list and we want the first element
+View(vcf.data)
+```
+
+get the ANN column:
+
