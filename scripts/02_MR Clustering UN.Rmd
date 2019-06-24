@@ -271,14 +271,13 @@ annotate.edges <- function(graph.list) {
         attr("vnames") %>% 
         tibble(edge=.) %>% 
         separate(edge,into=c("node1","node2"),remove = FALSE,sep="\\|") %>%
-        rowwise() %>% 
-        mutate(cor=expr.blup.cor.UN[node1,node2]) %>%
-        as.data.frame()
+        group_by(edge) %>% 
+        summarize(MR_Cutoff=blup.graph$cutoff, node1, node2, cor=expr.blup.cor.UN[node1,node2])
     }
   }
   )
   
-  bind_rows(tmp.results) %>% filter(!duplicated(edge))
+  bind_rows(tmp.results, .id = "graph") %>% filter(!duplicated(edge))
 }
 ```
 

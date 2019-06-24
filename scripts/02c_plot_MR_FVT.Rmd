@@ -1,0 +1,62 @@
+---
+title: "02C Plot MR gens and FVT"
+output: html_notebook
+---
+
+Goal is to plot relationship between FVT traits and MR genes.  Plots are for 2012
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+load("../output/MR_UN.Rdata")
+edges <- read_csv("../output/MR_UN_graphs_edge_annotation_2012.csv")
+nodes <- read_csv("../output/MR_UN_graphs_node_annotation_2012.csv")
+```
+
+```{r}
+nodes
+edges
+```
+
+filter edges to keep those between one FVT and one gene and rename
+```{r}
+edges <- edges %>%
+  filter(str_detect(edge,"UN"), str_detect(edge, "Bra")) %>%
+  mutate(FVT=ifelse(str_detect(node1, "UN"), node1, node2),
+         gene=ifelse(str_detect(node2, "Bra"), node2, node1)) %>%
+  select(graph, edge, MR_Cutoff, FVT, gene, cor)
+edges
+```
+
+
+take a look at data
+```{r}
+expr.blup.UN[1:10,1:10]
+```
+
+
+```{r}
+makeplots <- function(edges, data=expr.blup.UN) { # function to make scatter plots for listed edges
+   plt <- data %>%
+    select_at(.vars=unique(c("Line", edges$FVT, edges$gene))) %>%
+    gather(key="gene", value="expression_value", starts_with("Bra")) %>%
+    gather(key="FVT", value="FVT_value", starts_with("UN")) %>%
+    inner_join(edges, by=c("gene","FVT")) %>%
+    ggplot(aes(x=FVT_value, y=expression_value)) +
+    geom_point() +
+    facet_wrap(~edge, scales = "free") + ggtitle(str_c("MR",unique(edges$MR_Cutoff)))
+  ggsave(file=str_c("../output/MR", unique(edges$MR_Cutoff), "_scatter.pdf"), plot=plt, height = 12, width = 12)
+  plt
+} 
+```
+
+```{r}
+plts <- map(unique(edges$MR_Cutoff), function(x) makeplots(edges[edges$MR_Cutoff==x,]))
+```
+
+```{r, fig.height=12, fig.width=12}
+walk(plts, print)
+```
+
