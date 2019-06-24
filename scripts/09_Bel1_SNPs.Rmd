@@ -44,8 +44,19 @@ vcf.header
 vcf.header <- vcf.header %>% str_replace("#","") #get rid of the pound sign
 vcf.header <- vcf.header %>% str_split(pattern = "\t")
 colnames(vcf.data) <- vcf.header[[1]] #we need the [[1]] because str_split returns a list and we want the first element
-View(vcf.data)
+vcf.data <- vcf.data %>% filter(QUAL > 40,
+                                str_detect(unknown, fixed("0/1"))) #because this is a pooled sample, "heterozygotes" indicate segregrating SNPs
 ```
 
 get the ANN column:
+
+```{r}
+vcf.data <- vcf.data %>%
+  mutate(ann=str_extract(INFO, "ANN=.*"))
+vcf.data
+```
+
+```{r}
+hist(vcf.data$QUAL)
+```
 
