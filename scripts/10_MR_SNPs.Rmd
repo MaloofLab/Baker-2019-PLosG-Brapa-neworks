@@ -1,0 +1,136 @@
+---
+title: "MR SNPs"
+output: html_notebook
+---
+
+Find SNPs in all MR genes
+
+```{r}
+library(tidyverse)
+```
+
+get list of genes
+```{r}
+genes <- read_csv("../output/MR_UN_graphs_node_annotation_2012.csv")
+genes
+```
+
+output BED file for use by samtools
+
+```{r}
+genes %>%
+  select(chrom, start, end, name) %>%
+  mutate(start = start - 1) %>% # first base is base 0 in BED system.
+  # but end base is not included, so leave that alone
+  write_tsv("../output/MR_genes.bed", col_names = FALSE)
+```
+
+
+On whitney...  Only use the UN files to keep things faster
+```{bash, eval=FALSE}
+for f in $(ls bamsnew/mapping_v1.5_merged_bam_files/*UN*bam)
+do
+  f=$(basename $f)
+  echo $f
+  samtools view -b bamsnew/mapping_v1.5_merged_bam_files/$f -L MR_genes.bed > subsetbams/$f
+  samtools index subsetbams/$f
+done
+```
+
+now run freebayes in parallel.  First split up the bed file into chunks
+
+```{bash, eval=FALSE}
+split MR_genes.bed -n "l/12" MR_gene.bedx
+```
+
+
+```{bash, eval=FALSE}
+parallel -j 12 freebayes --targets {} -f ~/Sequences/ref_genomes/B_rapa/genome/V1.5/Brapa_sequence_v1.5.fa subsetbams/*.bam  ::: *.bedx* > MRgenes.vcf
+```
+
+snpeff
+```{bash, eval=FALSE}
+java -jar snpEff/snpEff.jar  Brassica_rapa MRgenes.vcf > MRgenes_ann.vcf
+```
+
+now bring to R and process
+
+```{R}
+vcf.header <- system("grep '#C' ../output/MRGenes_ann.vcf",intern = TRUE)  %>% 
+  str_replace("#","")  %>% str_split(pattern = "\t") %>% 
+  magrittr::extract2(1)
+vcf.header
+```
+
+```{r}
+vcf.data <- read_tsv("../output/MRGenes_ann.vcf",na = c("","NA","."),comment="#",col_names = vcf.header) %>%
+  select(-FILTER) %>%
+  mutate(ID=str_c(CHROM,"_",POS))
+vcf.data
+```
+
+split the genotype record:
+```{r}
+vcf.data <- vcf.data %>%
+  separate(unknown, into=c("GT", "DP", "AD", "RO", "QR", "AO", "QA", "GL"), convert = TRUE, sep=":")
+vcf.data
+```
+
+Filter.  Because all of the RILs are considered together, we want to keep SNPs that are heterozygous (meaning segregating)
+```{r}
+vcf.data <- vcf.data %>% filter(!(GT %in% c("0/0", "1/1")))
+vcf.data
+```
+
+filter by depth.  We had a large number of samples go into this (like 400).  Filter to require a depth of at least 400
+
+```{r}
+vcf.data <- vcf.data %>% filter(DP > 400)
+vcf.data
+```
+
+scanning through this, qualities and depth all look good so will not do further filtering.
+
+now pull out the snp info...
+
+first, pull out the full annotation ino
+```{r}
+vcf.data <- vcf.data %>%
+  mutate(ANN=str_extract(INFO,"ANN.*$"),
+         ANN=str_remove(ANN, "ANN="))
+head(vcf.data$ANN)
+```
+
+the tricky part is that each SNP may have a different number of annotations, so I need to create a list-column
+
+```{r}
+ann.header <- str_split("Allele | Annotation | Annotation_Impact | Gene_Name | Gene_ID | Feature_Type | Feature_ID | Transcript_BioType | Rank | HGVS.c | HGVS.p | cDNA.pos / cDNA.length | CDS.pos / CDS.length | AA.pos / AA.length | Distance | ERRORS / WARNINGS / INFO", pattern=fixed("|")) %>% magrittr::extract2(1) %>% str_remove_all(" ")
+
+vcf.data <- vcf.data %>%
+  mutate(ANN = str_split(ANN, pattern=",")) %>%
+  unnest() %>%
+  mutate(ANN = str_remove(ANN, pattern = ";.*$")) %>%
+  separate(ANN, into=ann.header, sep="\\|")
+
+vcf.data
+```
+
+```{r}
+vcf.data.filter <- vcf.data %>% 
+  filter(Annotation_Impact != "LOW",
+         Annotation_Impact != "MODIFIER") %>%
+  arrange(CHROM, POS)
+vcf.data.filter
+```
+
+```{r}
+vcf.data.filter <- vcf.data.filter %>% 
+  mutate(IGV=str_c(CHROM, ":", POS, "-", POS)) %>%
+  select(CHROM, POS, ID, IGV, everything())
+vcf.data.filter
+```
+
+```{r}
+write_csv(vcf.data.filter, "../output/MR_gene_Annotated_Filtered_SNPs.csv")
+```
+
